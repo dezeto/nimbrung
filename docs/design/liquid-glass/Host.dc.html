@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Host page</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./glass.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div class="nb dark-glass" style="width: 100%; min-height: 1490px; --art-1: {{np.a1}}; --art-2: {{np.a2}}; --art-3: {{np.a3}}; --ambient-dim: {{np.dim}}">
+<div class="ambient is-moving"></div>
+
+<header class="glass-toolbar layer" aria-label="Player" style="position: relative; z-index: 5">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: 12px 24px">
+<div role="group" aria-label="Playback" style="display: flex; align-items: center; gap: 6px">
+<button class="btn-plain" style="width: 48px; height: 48px; padding: 0; background: rgb(255 255 255 / 0.16)" aria-label="Pause" aria-keyshortcuts="Alt+P"><svg class="ico fill" viewBox="0 0 24 24" aria-hidden="true" style="stroke: none"><rect x="6" y="4" width="4" height="16" rx="1.2"></rect><rect x="14" y="4" width="4" height="16" rx="1.2"></rect></svg></button>
+<button class="btn-plain is-ghost" style="width: 44px; height: 44px; padding: 0; color: #f5f5f7" aria-label="Skip" aria-keyshortcuts="Alt+S"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4l10 8-10 8z" fill="currentColor"></path><path d="M19 5v14"></path></svg></button>
+</div>
+
+<div aria-label="Now playing" style="flex: 1 1 380px; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 6px 14px 6px 6px; border-radius: 16px; background: rgb(0 0 0 / 0.2); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08)">
+<div class="art art-now" style="width: 48px; height: 48px; border-radius: 10px"></div>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+<p style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; min-width: 0">
+<span class="trunc" style="font-size: 14px; font-weight: 650">{{np.title}} <span class="t-2" style="font-weight: 500">· {{np.artist}}</span></span>
+<span class="t-xs t-2 by" style="flex: none">Added by <span class="av {{np.byClass}}">{{np.byInitial}}</span>{{np.by}}</span>
+</p>
+<div style="display: flex; align-items: center; gap: 10px">
+<span class="t-xs t-2 num" style="font-weight: 600">1:58</span>
+<div class="progress" role="progressbar" aria-label="Song progress" aria-valuemin="0" aria-valuemax="222" aria-valuenow="118" style="flex: 1"><i style="width: 53%"></i></div>
+<span class="t-xs t-2 num" style="font-weight: 600">−1:44</span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 8px; flex: 0 1 300px; min-width: 220px">
+<button class="btn-plain is-ghost" style="width: 40px; height: 40px; padding: 0; color: #f5f5f7" aria-label="Mute" aria-keyshortcuts="Alt+M"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg></button>
+<input type="range" class="range" min="0" max="100" value="64" aria-label="Volume" style="--v: 64%">
+<span role="status" class="t-sm" style="flex: none; display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 11px 0 8px; border-radius: 999px; background: rgb(0 0 0 / 0.34); box-shadow: inset 0 0 0 1px rgb(255 107 99 / 0.6); color: var(--lg-ink); font-weight: 600"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true" style="color: var(--nb-accent); stroke-width: 2.6"><path d="m18 15-6-6-6 6"></path></svg><span class="num">2</span> ask louder</span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 8px">
+<button class="btn-plain" aria-label="7 in the jam. Show guests" style="height: 40px; padding: 0 12px 0 8px; gap: 8px"><span class="av-stack" aria-hidden="true"><span class="av c-rina">R</span><span class="av c-bima">B</span><span class="av c-sari">S</span><span class="av c-dewi">D</span></span><span class="num">7</span></button>
+<a href="HostRoom.dc.html" class="btn-plain" style="height: 40px; gap: 6px" aria-keyshortcuts="Alt+R"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"></rect><path d="M8 21h8M12 17v4"></path></svg>Room view</a>
+<button class="btn-plain is-primary" style="height: 40px; gap: 6px" aria-keyshortcuts="Alt+C"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M19 8v6M22 11h-6"></path></svg>Invite</button>
+<button class="btn-plain" style="width: 40px; height: 40px; padding: 0" aria-label="Keyboard shortcuts">?</button>
+</div>
+</div>
+</header>
+
+<div class="layer" style="max-width: 1400px; margin: 0 auto; padding: 16px 16px 0">
+<section class="glass-card glass-rim" aria-label="Waiting to join" style="display: flex; align-items: center; gap: 14px; padding: 10px 10px 10px 12px; border-radius: 24px">
+<span class="av xl c-tasya" aria-hidden="true">T</span>
+<p class="t-body" style="flex: 1; min-width: 0"><b style="font-weight: 650">Tasya wants in</b><span class="t-2"> · asked 20 seconds ago · Ask to join is on</span></p>
+<button class="btn-plain" style="height: 44px; padding: 0 18px; font-size: 15px" aria-label="Turn Tasya away">Turn away</button>
+<button class="btn-plain is-primary" style="height: 44px; padding: 0 24px; font-size: 15px" aria-label="Let Tasya in">Let in</button>
+</section>
+</div>
+
+<div class="layer" style="max-width: 1400px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: flex-start">
+
+<aside class="glass-card" aria-label="Sections" style="flex: 1 1 230px; min-width: 0; margin: 16px 0 16px 16px; padding: 18px 14px; border-radius: 28px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; align-items: center; gap: 10px; padding: 0 6px">
+<svg viewBox="100 100 824 824" width="34" height="34" aria-hidden="true" style="flex: none; border-radius: 8px">
+<defs>
+<linearGradient id="hbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a2342"></stop><stop offset="1" stop-color="#1c1226"></stop></linearGradient>
+<linearGradient id="hjam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6d5e"></stop><stop offset="1" stop-color="#c41e2d"></stop></linearGradient>
+<clipPath id="hclip"><rect x="314" y="344" width="396" height="436" rx="92"></rect></clipPath>
+</defs>
+<rect x="100" y="100" width="824" height="824" rx="186" fill="url(#hbg)"></rect>
+<g clip-path="url(#hclip)"><path d="M300 545 C 372 502 444 506 512 545 S 652 586 724 540 V 800 H 300 Z" fill="url(#hjam)"></path></g>
+<rect x="296" y="326" width="432" height="472" rx="110" fill="#ffffff" fill-opacity="0.1" stroke="#ffffff" stroke-opacity="0.55" stroke-width="14"></rect>
+<rect x="360" y="236" width="304" height="100" rx="34" fill="#f2eff6"></rect>
+</svg>
+<div style="min-width: 0">
+<h1 class="t-body trunc" style="font-weight: 650">Rina’s rooftop</h1>
+<p class="t-xs t-2">Hosting</p>
+</div>
+</div>
+<nav aria-label="Host sections" style="display: flex; flex-direction: column; gap: 2px">
+<a href="#upnext" aria-current="true" class="menu-row" style="background: rgb(255 255 255 / 0.12); font-weight: 600"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true" style="color: #ff6b63"><path d="M21 15V6M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM12 12H3M16 6H3M12 18H3"></path></svg>Up next<span class="key num">6</span></a>
+<a href="#injam" class="menu-row"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true" style="color: #ff6b63"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg>In the jam<span class="key num">7 · 1 waiting</span></a>
+<a href="#rules" class="menu-row"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true" style="color: #ff6b63"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"></path></svg>House rules</a>
+<a href="#chat" class="menu-row"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true" style="color: #ff6b63"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>Chat<span class="key num">12</span></a>
+</nav>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 12px 14px; border-radius: 20px; background: rgb(0 0 0 / 0.22)">
+<p class="t-xs t-2" style="font-weight: 600">Scan to join</p>
+<div class="qr" style="width: 168px; height: 168px; padding: 11px; border-radius: 16px">
+<svg viewBox="0 0 29 29" role="img" aria-label="QR code for https://jam.example.com/join/K7QX" shape-rendering="crispEdges"><path fill="#000" d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM11 0h1v1h-1zM12 0h1v1h-1zM18 0h1v1h-1zM22 0h1v1h-1zM23 0h1v1h-1zM24 0h1v1h-1zM25 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM10 1h1v1h-1zM12 1h1v1h-1zM14 1h1v1h-1zM15 1h1v1h-1zM17 1h1v1h-1zM20 1h1v1h-1zM22 1h1v1h-1zM28 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM14 2h1v1h-1zM18 2h1v1h-1zM22 2h1v1h-1zM24 2h1v1h-1zM25 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM16 3h1v1h-1zM19 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM25 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM17 4h1v1h-1zM20 4h1v1h-1zM22 4h1v1h-1zM24 4h1v1h-1zM25 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM11 5h1v1h-1zM15 5h1v1h-1zM18 5h1v1h-1zM19 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM28 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM23 6h1v1h-1zM24 6h1v1h-1zM25 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM8 7h1v1h-1zM13 7h1v1h-1zM17 7h1v1h-1zM0 8h1v1h-1zM1 8h1v1h-1zM3 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM9 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM18 8h1v1h-1zM19 8h1v1h-1zM21 8h1v1h-1zM22 8h1v1h-1zM23 8h1v1h-1zM25 8h1v1h-1zM26 8h1v1h-1zM28 8h1v1h-1zM1 9h1v1h-1zM3 9h1v1h-1zM5 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM15 9h1v1h-1zM16 9h1v1h-1zM18 9h1v1h-1zM22 9h1v1h-1zM23 9h1v1h-1zM25 9h1v1h-1zM27 9h1v1h-1zM0 10h1v1h-1zM1 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM20 10h1v1h-1zM21 10h1v1h-1zM23 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM27 10h1v1h-1zM28 10h1v1h-1zM0 11h1v1h-1zM1 11h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM7 11h1v1h-1zM8 11h1v1h-1zM9 11h1v1h-1zM11 11h1v1h-1zM14 11h1v1h-1zM15 11h1v1h-1zM17 11h1v1h-1zM18 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM21 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM24 11h1v1h-1zM25 11h1v1h-1zM27 11h1v1h-1zM1 12h1v1h-1zM2 12h1v1h-1zM6 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM13 12h1v1h-1zM16 12h1v1h-1zM18 12h1v1h-1zM19 12h1v1h-1zM22 12h1v1h-1zM24 12h1v1h-1zM25 12h1v1h-1zM2 13h1v1h-1zM4 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM11 13h1v1h-1zM13 13h1v1h-1zM15 13h1v1h-1zM17 13h1v1h-1zM20 13h1v1h-1zM21 13h1v1h-1zM22 13h1v1h-1zM25 13h1v1h-1zM1 14h1v1h-1zM2 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM7 14h1v1h-1zM8 14h1v1h-1zM10 14h1v1h-1zM11 14h1v1h-1zM14 14h1v1h-1zM21 14h1v1h-1zM24 14h1v1h-1zM25 14h1v1h-1zM27 14h1v1h-1zM0 15h1v1h-1zM1 15h1v1h-1zM2 15h1v1h-1zM9 15h1v1h-1zM10 15h1v1h-1zM11 15h1v1h-1zM15 15h1v1h-1zM16 15h1v1h-1zM18 15h1v1h-1zM21 15h1v1h-1zM23 15h1v1h-1zM24 15h1v1h-1zM25 15h1v1h-1zM28 15h1v1h-1zM0 16h1v1h-1zM3 16h1v1h-1zM6 16h1v1h-1zM8 16h1v1h-1zM9 16h1v1h-1zM14 16h1v1h-1zM16 16h1v1h-1zM18 16h1v1h-1zM21 16h1v1h-1zM22 16h1v1h-1zM24 16h1v1h-1zM0 17h1v1h-1zM1 17h1v1h-1zM3 17h1v1h-1zM5 17h1v1h-1zM7 17h1v1h-1zM8 17h1v1h-1zM9 17h1v1h-1zM12 17h1v1h-1zM14 17h1v1h-1zM17 17h1v1h-1zM19 17h1v1h-1zM20 17h1v1h-1zM21 17h1v1h-1zM24 17h1v1h-1zM26 17h1v1h-1zM28 17h1v1h-1zM0 18h1v1h-1zM1 18h1v1h-1zM2 18h1v1h-1zM3 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM7 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM14 18h1v1h-1zM16 18h1v1h-1zM18 18h1v1h-1zM19 18h1v1h-1zM20 18h1v1h-1zM21 18h1v1h-1zM22 18h1v1h-1zM24 18h1v1h-1zM26 18h1v1h-1zM28 18h1v1h-1zM0 19h1v1h-1zM3 19h1v1h-1zM4 19h1v1h-1zM5 19h1v1h-1zM7 19h1v1h-1zM8 19h1v1h-1zM9 19h1v1h-1zM12 19h1v1h-1zM13 19h1v1h-1zM14 19h1v1h-1zM22 19h1v1h-1zM26 19h1v1h-1zM27 19h1v1h-1zM28 19h1v1h-1zM0 20h1v1h-1zM2 20h1v1h-1zM5 20h1v1h-1zM6 20h1v1h-1zM7 20h1v1h-1zM9 20h1v1h-1zM10 20h1v1h-1zM11 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM17 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM23 20h1v1h-1zM24 20h1v1h-1zM25 20h1v1h-1zM27 20h1v1h-1zM28 20h1v1h-1zM9 21h1v1h-1zM10 21h1v1h-1zM11 21h1v1h-1zM13 21h1v1h-1zM15 21h1v1h-1zM16 21h1v1h-1zM18 21h1v1h-1zM19 21h1v1h-1zM20 21h1v1h-1zM24 21h1v1h-1zM25 21h1v1h-1zM28 21h1v1h-1zM0 22h1v1h-1zM1 22h1v1h-1zM2 22h1v1h-1zM3 22h1v1h-1zM4 22h1v1h-1zM5 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM9 22h1v1h-1zM11 22h1v1h-1zM13 22h1v1h-1zM20 22h1v1h-1zM22 22h1v1h-1zM24 22h1v1h-1zM27 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM9 23h1v1h-1zM10 23h1v1h-1zM11 23h1v1h-1zM13 23h1v1h-1zM14 23h1v1h-1zM15 23h1v1h-1zM16 23h1v1h-1zM17 23h1v1h-1zM18 23h1v1h-1zM19 23h1v1h-1zM20 23h1v1h-1zM24 23h1v1h-1zM25 23h1v1h-1zM26 23h1v1h-1zM28 23h1v1h-1zM0 24h1v1h-1zM2 24h1v1h-1zM3 24h1v1h-1zM4 24h1v1h-1zM6 24h1v1h-1zM9 24h1v1h-1zM10 24h1v1h-1zM11 24h1v1h-1zM16 24h1v1h-1zM18 24h1v1h-1zM20 24h1v1h-1zM21 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM28 24h1v1h-1zM0 25h1v1h-1zM2 25h1v1h-1zM3 25h1v1h-1zM4 25h1v1h-1zM6 25h1v1h-1zM8 25h1v1h-1zM12 25h1v1h-1zM16 25h1v1h-1zM17 25h1v1h-1zM20 25h1v1h-1zM21 25h1v1h-1zM22 25h1v1h-1zM23 25h1v1h-1zM25 25h1v1h-1zM27 25h1v1h-1zM0 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM6 26h1v1h-1zM10 26h1v1h-1zM12 26h1v1h-1zM13 26h1v1h-1zM14 26h1v1h-1zM17 26h1v1h-1zM18 26h1v1h-1zM19 26h1v1h-1zM20 26h1v1h-1zM21 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM10 27h1v1h-1zM13 27h1v1h-1zM14 27h1v1h-1zM15 27h1v1h-1zM16 27h1v1h-1zM17 27h1v1h-1zM21 27h1v1h-1zM22 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM27 27h1v1h-1zM28 27h1v1h-1zM0 28h1v1h-1zM1 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM5 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM9 28h1v1h-1zM11 28h1v1h-1zM13 28h1v1h-1zM14 28h1v1h-1zM21 28h1v1h-1zM23 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1z"></path></svg>
+</div>
+<p class="mono" translate="no" style="font-size: 26px; line-height: 32px; font-weight: 600; letter-spacing: 0.3em; margin-right: -0.3em">K7QX</p>
+<p class="t-xs t-2 trunc" style="max-width: 100%">jam.example.com/join/K7QX</p>
+</div>
+</aside>
+
+<main style="flex: 999 1 600px; min-width: 0; padding: 28px 28px 64px; display: flex; flex-direction: column; gap: 36px; position: relative">
+<section aria-labelledby="upnext">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 2px 8px">
+<h2 id="upnext" class="t-large" style="font-size: 28px; line-height: 34px">Up next</h2>
+<div aria-hidden="true" style="display: flex; align-items: center; gap: 8px; min-width: 0">
+<p class="float-comment" style="position: static"><b>Putri</b>lagu siapa ini?? enak banget</p>
+<p class="float-comment" style="position: static; padding: 4px 12px 4px 8px; display: inline-flex; align-items: center; gap: 6px"><span style="font-size: 20px; line-height: 1">🎉</span><b style="margin: 0">Dewi</b></p>
+</div>
+</div>
+<ul class="list has-handle">
+<li class="row">
+<div class="handle"><button aria-label="Move Kopi Pagi up" disabled><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button><button aria-label="Move Kopi Pagi down"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<div class="art art-kopi thumb"></div>
+<div class="row-text"><p class="row-title">Kopi Pagi</p><p class="row-sub">Teman Sebangku</p></div>
+<span class="t-sm by" style="width: 120px"><span class="av lg c-bima">B</span>Bima</span>
+<span class="t-sm t-2 num" style="width: 44px; text-align: right">3:15</span>
+<button class="icon-btn" aria-label="Remove Kopi Pagi"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</li>
+<li class="row">
+<div class="handle"><button aria-label="Move Neon Slowdance up"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button><button aria-label="Move Neon Slowdance down"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<div class="art art-neon thumb"></div>
+<div class="row-text"><p class="row-title">Neon Slowdance</p><p class="row-sub">Kaca Pagi</p></div>
+<span class="t-sm by" style="width: 120px"><span class="av lg c-putri">P</span>Putri</span>
+<span class="t-sm t-2 num" style="width: 44px; text-align: right">3:28</span>
+<button class="icon-btn" aria-label="Remove Neon Slowdance"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</li>
+<li class="row glass-card is-lifted" aria-grabbed="true" style="padding: 8px 0 8px 12px; margin: 2px -12px; border-radius: 20px">
+<div class="handle" style="margin-left: 0"><button aria-label="Move Lampu Kota up"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button><button aria-label="Move Lampu Kota down"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<div class="art art-lampu thumb"></div>
+<div class="row-text"><p class="row-title">Lampu Kota</p><p class="row-sub">Orkes Malam</p></div>
+<span class="t-sm by" style="width: 120px"><span class="av lg c-sari">S</span>Sari</span>
+<span class="t-sm t-2 num" style="width: 44px; text-align: right">5:02</span>
+<button class="icon-btn" aria-label="Remove Lampu Kota"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</li>
+<li class="row">
+<div class="handle"><button aria-label="Move Jalan Pulang up"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button><button aria-label="Move Jalan Pulang down"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<div class="art art-pulang thumb"></div>
+<div class="row-text"><p class="row-title">Jalan Pulang</p><p class="row-sub">Rumah Kaca</p></div>
+<span class="t-sm by" style="width: 120px"><span class="av lg c-dewi">D</span>Dewi</span>
+<span class="t-sm t-2 num" style="width: 44px; text-align: right">3:51</span>
+<button class="icon-btn" aria-label="Remove Jalan Pulang"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</li>
+<li aria-hidden="true" style="height: 2px; margin: -1px 0 -1px 96px; border-radius: 2px; background: #ff3b3b; box-shadow: 0 0 10px #ff3b3b"></li>
+<li class="row">
+<div class="handle"><button aria-label="Move Tidur Siang up"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button><button aria-label="Move Tidur Siang down"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<div class="art art-mono thumb"></div>
+<div class="row-text"><p class="row-title">Tidur Siang</p><p class="row-sub">Pelangi Malam</p></div>
+<span class="t-sm by" style="width: 120px"><span class="av lg c-andi">A</span>Andi</span>
+<span class="t-sm t-2 num" style="width: 44px; text-align: right">3:05</span>
+<button class="icon-btn" aria-label="Remove Tidur Siang"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</li>
+<li class="row">
+<div class="handle"><button aria-label="Move Kota Senja up"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button><button aria-label="Move Kota Senja down" disabled><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<div class="art art-merah thumb"></div>
+<div class="row-text"><p class="row-title">Kota Senja</p><p class="row-sub">Teman Sebangku</p></div>
+<span class="t-sm by" style="width: 120px"><span class="av lg c-yoga">Y</span>Yoga</span>
+<span class="t-sm t-2 num" style="width: 44px; text-align: right">3:12</span>
+<button class="icon-btn" aria-label="Remove Kota Senja"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</li>
+</ul>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start">
+<section aria-labelledby="autoplay" style="flex: 1 1 320px; min-width: 0">
+<h2 id="autoplay" class="t-title" style="display: flex; align-items: center; gap: 8px; padding: 0 2px">Autoplay<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color: rgb(235 235 245 / 0.6)"><path d="M12 12c-2-2.67-4-4-6-4a4 4 0 1 0 0 8c2 0 4-1.33 6-4Zm0 0c2 2.67 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.33-6 4Z"></path></svg></h2>
+<p class="t-sm t-2" style="padding: 2px 2px 6px">Keeps the music going after Up next.</p>
+<ul class="list">
+<li class="row"><div class="art art-sore thumb"></div><div class="row-text"><p class="row-title">Lagu Sore</p><p class="row-sub">Sinar Kecil</p></div><span class="t-sm t-2 num">2:58</span><button class="icon-btn" aria-label="Remove Lagu Sore"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></li>
+<li class="row"><div class="art art-hujan thumb"></div><div class="row-text"><p class="row-title">Hujan di Blok M</p><p class="row-sub">Orkes Malam</p></div><span class="t-sm t-2 num">3:36</span><button class="icon-btn" aria-label="Remove Hujan di Blok M"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></li>
+</ul>
+</section>
+
+<section id="chat" aria-labelledby="chath" style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<h2 id="chath" class="t-title">Chat</h2>
+<div class="glass-group glass-rim" role="group" aria-label="React to the song">
+<button aria-label="Fire" style="width: 36px; height: 36px; font-size: 18px">🔥</button>
+<button aria-label="Love it" style="width: 36px; height: 36px; font-size: 18px">❤️</button>
+<button aria-label="Haha" style="width: 36px; height: 36px; font-size: 18px">😂</button>
+<button aria-label="Applause" style="width: 36px; height: 36px; font-size: 18px">👏</button>
+<button aria-label="Dance" style="width: 36px; height: 36px; font-size: 18px">💃</button>
+<button aria-label="Party" style="width: 36px; height: 36px; font-size: 18px">🎉</button>
+</div>
+</div>
+<div class="section" style="padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+<ol style="display: flex; flex-direction: column; gap: 9px; font-size: 14px; line-height: 20px">
+<li class="by"><span class="av c-putri">P</span><b style="font-weight: 650">Putri</b> lagu siapa ini?? enak banget</li>
+<li class="t-xs t-2" style="display: flex; align-items: center; gap: 6px; padding-left: 2px"><svg class="ico xs" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4l10 8-10 8z"></path><path d="M19 5v14"></path></svg>Skipped Bebas Lepas (3 votes)</li>
+<li class="by"><span class="av c-dewi">D</span><b style="font-weight: 650">Dewi</b> volume up dong</li>
+<li class="by"><span class="av c-bima">B</span><b style="font-weight: 650">Bima</b> this one is a banger</li>
+<li class="by"><span class="av c-rina">R</span><b class="t-accent" style="font-weight: 650">You</b> next one is mine, siap-siap</li>
+</ol>
+<form style="display: flex; gap: 8px">
+<div class="field-inset" style="flex: 1; min-width: 0">
+<input name="comment" aria-label="Comment" placeholder="Say something to the room…" autocomplete="off" enterkeyhint="send">
+<span class="t-xs t-3 num">0/80</span>
+</div>
+<button type="submit" class="btn-plain" style="width: 44px; height: 44px; padding: 0" aria-label="Send comment"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.7 3.05a.5.5 0 0 0-.68.63l2.84 7.62a2 2 0 0 1 0 1.4l-2.84 7.62a.5.5 0 0 0 .68.63l18-8.5a.5.5 0 0 0 0-.9z"></path><path d="M6 12h16"></path></svg></button>
+</form>
+</div>
+</section>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start">
+<section id="injam" aria-labelledby="injamh" style="flex: 1 1 320px; min-width: 0">
+<h2 id="injamh" class="t-title" style="padding: 0 2px 8px">In the jam · <span class="num">7</span></h2>
+<div class="section" style="padding: 6px 16px">
+<ul class="list">
+<li class="row" style="min-height: 48px"><span class="av lg c-rina">R</span><span class="row-title" style="flex: 1; display: flex; align-items: center; gap: 6px">Rina <svg class="ico xs" viewBox="0 0 24 24" role="img" aria-label="host" style="color: #ff3b3b"><path d="M11.56 3.27a.5.5 0 0 1 .88 0l2.95 5.6a1 1 0 0 0 1.52.3l4.27-3.67a.5.5 0 0 1 .8.52l-2.83 10.25a1 1 0 0 1-.96.73H5.81a1 1 0 0 1-.96-.73L2.02 6.02a.5.5 0 0 1 .8-.52l4.27 3.67a1 1 0 0 0 1.52-.3z"></path></svg></span><span class="t-sm t-2 num" style="padding-right: 40px">2 songs</span></li>
+<li class="row" style="min-height: 48px"><span class="av lg c-bima">B</span><span class="row-title" style="flex: 1">Bima</span><span class="t-sm t-2 num">4 songs</span><button class="icon-btn" style="width: 36px; height: 36px" aria-label="Remove Bima"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 11h-6"></path></svg></button></li>
+<li class="row" style="min-height: 48px"><span class="av lg c-sari">S</span><span class="row-title" style="flex: 1">Sari</span><span class="t-sm t-2 num">3 songs</span><button class="icon-btn" style="width: 36px; height: 36px" aria-label="Remove Sari"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 11h-6"></path></svg></button></li>
+<li class="row" style="min-height: 48px"><span class="av lg c-andi">A</span><span class="row-title" style="flex: 1">Remove Andi?</span><button class="btn-plain is-primary" style="height: 32px; min-height: 32px; padding: 0 12px; font-size: 13px">Remove</button><button class="btn-plain" style="height: 32px; min-height: 32px; padding: 0 12px; font-size: 13px" aria-label="Block Andi’s network">Block</button><button class="btn-plain is-ghost" style="height: 32px; min-height: 32px; padding: 0 10px; font-size: 13px">Keep</button></li>
+<li class="row" style="min-height: 48px"><span class="av lg c-dewi">D</span><span class="row-title" style="flex: 1">Dewi</span><span class="t-sm t-2 num">1 song</span><button class="icon-btn" style="width: 36px; height: 36px" aria-label="Remove Dewi"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 11h-6"></path></svg></button></li>
+<li class="row" style="min-height: 48px"><span class="av lg c-putri">P</span><span class="row-title" style="flex: 1">Putri</span><span class="t-sm t-2 num">1 song</span><button class="icon-btn" style="width: 36px; height: 36px" aria-label="Remove Putri"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 11h-6"></path></svg></button></li>
+<li class="row" style="min-height: 48px"><span class="av lg c-yoga">Y</span><span class="row-title" style="flex: 1">Yoga</span><span class="t-sm t-2 num">1 song</span><button class="icon-btn" style="width: 36px; height: 36px" aria-label="Remove Yoga"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 11h-6"></path></svg></button></li>
+</ul>
+<p class="row" style="min-height: 44px; border-top: 1px solid rgb(255 255 255 / 0.09)"><span class="t-sm t-2" style="flex: 1">Blocked: Joko’s network</span><button class="btn-plain is-ghost" style="height: 32px; min-height: 32px; font-size: 13px" aria-label="Unblock Joko’s network">Unblock</button></p>
+</div>
+</section>
+
+<section id="rules" aria-labelledby="rulesh" style="flex: 1 1 320px; min-width: 0">
+<h2 id="rulesh" class="t-title" style="padding: 0 2px 8px">House rules</h2>
+<div class="section" style="padding: 16px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px"><label for="max-adds" class="t-sm" style="font-weight: 550">Songs per guest per minute</label><input id="max-adds" type="number" class="number-field" value="3" min="0" step="1" inputmode="numeric"></div>
+<p class="t-xs t-2">0 = no limit. You’re never limited.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px"><label for="skip-votes" class="t-sm" style="font-weight: 550">Votes needed to skip</label><input id="skip-votes" type="number" class="number-field" value="3" min="0" step="1" inputmode="numeric"></div>
+<p class="t-xs t-2">0 = only you can skip.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px"><span id="ask-label" class="t-sm" style="font-weight: 550">Ask to join</span><button class="switch" role="switch" aria-checked="true" aria-labelledby="ask-label"></button></div>
+<p class="t-xs t-2">New guests wait until you let them in. Turning it off lets everyone waiting in.</p>
+</div>
+<button type="submit" class="btn-plain" style="height: 42px; font-size: 14px">Save rules</button>
+</div>
+</section>
+</div>
+</main>
+</div>
+
+<sc-if value="{{sheetOpen}}" hint-placeholder-val="{{ false }}">
+<div class="glass-overlay" style="position: absolute; inset: 0; z-index: 20"></div>
+<section class="glass-modal glass-animate-in" role="dialog" aria-modal="true" aria-labelledby="invite-title" style="position: absolute; z-index: 21; top: 96px; left: 0; right: 0; width: 440px; max-width: calc(100% - 32px); margin: 0 auto; padding: 24px 28px 26px; display: flex; flex-direction: column; align-items: center; gap: 16px">
+<div style="align-self: stretch; display: flex; align-items: center; justify-content: space-between">
+<h2 id="invite-title" class="t-title">Invite to the jam</h2>
+<button class="btn-plain" style="width: 36px; height: 36px; min-height: 36px; padding: 0" aria-label="Close"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+<div class="qr" style="width: 300px; height: 300px; padding: 18px; border-radius: 24px; box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6)">
+<svg viewBox="0 0 29 29" role="img" aria-label="QR code for https://jam.example.com/join/K7QX" shape-rendering="crispEdges"><path fill="#000" d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM11 0h1v1h-1zM12 0h1v1h-1zM18 0h1v1h-1zM22 0h1v1h-1zM23 0h1v1h-1zM24 0h1v1h-1zM25 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM10 1h1v1h-1zM12 1h1v1h-1zM14 1h1v1h-1zM15 1h1v1h-1zM17 1h1v1h-1zM20 1h1v1h-1zM22 1h1v1h-1zM28 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM14 2h1v1h-1zM18 2h1v1h-1zM22 2h1v1h-1zM24 2h1v1h-1zM25 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM16 3h1v1h-1zM19 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM25 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM17 4h1v1h-1zM20 4h1v1h-1zM22 4h1v1h-1zM24 4h1v1h-1zM25 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM11 5h1v1h-1zM15 5h1v1h-1zM18 5h1v1h-1zM19 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM28 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM23 6h1v1h-1zM24 6h1v1h-1zM25 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM8 7h1v1h-1zM13 7h1v1h-1zM17 7h1v1h-1zM0 8h1v1h-1zM1 8h1v1h-1zM3 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM9 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM18 8h1v1h-1zM19 8h1v1h-1zM21 8h1v1h-1zM22 8h1v1h-1zM23 8h1v1h-1zM25 8h1v1h-1zM26 8h1v1h-1zM28 8h1v1h-1zM1 9h1v1h-1zM3 9h1v1h-1zM5 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM15 9h1v1h-1zM16 9h1v1h-1zM18 9h1v1h-1zM22 9h1v1h-1zM23 9h1v1h-1zM25 9h1v1h-1zM27 9h1v1h-1zM0 10h1v1h-1zM1 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM20 10h1v1h-1zM21 10h1v1h-1zM23 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM27 10h1v1h-1zM28 10h1v1h-1zM0 11h1v1h-1zM1 11h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM7 11h1v1h-1zM8 11h1v1h-1zM9 11h1v1h-1zM11 11h1v1h-1zM14 11h1v1h-1zM15 11h1v1h-1zM17 11h1v1h-1zM18 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM21 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM24 11h1v1h-1zM25 11h1v1h-1zM27 11h1v1h-1zM1 12h1v1h-1zM2 12h1v1h-1zM6 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM13 12h1v1h-1zM16 12h1v1h-1zM18 12h1v1h-1zM19 12h1v1h-1zM22 12h1v1h-1zM24 12h1v1h-1zM25 12h1v1h-1zM2 13h1v1h-1zM4 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM11 13h1v1h-1zM13 13h1v1h-1zM15 13h1v1h-1zM17 13h1v1h-1zM20 13h1v1h-1zM21 13h1v1h-1zM22 13h1v1h-1zM25 13h1v1h-1zM1 14h1v1h-1zM2 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM7 14h1v1h-1zM8 14h1v1h-1zM10 14h1v1h-1zM11 14h1v1h-1zM14 14h1v1h-1zM21 14h1v1h-1zM24 14h1v1h-1zM25 14h1v1h-1zM27 14h1v1h-1zM0 15h1v1h-1zM1 15h1v1h-1zM2 15h1v1h-1zM9 15h1v1h-1zM10 15h1v1h-1zM11 15h1v1h-1zM15 15h1v1h-1zM16 15h1v1h-1zM18 15h1v1h-1zM21 15h1v1h-1zM23 15h1v1h-1zM24 15h1v1h-1zM25 15h1v1h-1zM28 15h1v1h-1zM0 16h1v1h-1zM3 16h1v1h-1zM6 16h1v1h-1zM8 16h1v1h-1zM9 16h1v1h-1zM14 16h1v1h-1zM16 16h1v1h-1zM18 16h1v1h-1zM21 16h1v1h-1zM22 16h1v1h-1zM24 16h1v1h-1zM0 17h1v1h-1zM1 17h1v1h-1zM3 17h1v1h-1zM5 17h1v1h-1zM7 17h1v1h-1zM8 17h1v1h-1zM9 17h1v1h-1zM12 17h1v1h-1zM14 17h1v1h-1zM17 17h1v1h-1zM19 17h1v1h-1zM20 17h1v1h-1zM21 17h1v1h-1zM24 17h1v1h-1zM26 17h1v1h-1zM28 17h1v1h-1zM0 18h1v1h-1zM1 18h1v1h-1zM2 18h1v1h-1zM3 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM7 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM14 18h1v1h-1zM16 18h1v1h-1zM18 18h1v1h-1zM19 18h1v1h-1zM20 18h1v1h-1zM21 18h1v1h-1zM22 18h1v1h-1zM24 18h1v1h-1zM26 18h1v1h-1zM28 18h1v1h-1zM0 19h1v1h-1zM3 19h1v1h-1zM4 19h1v1h-1zM5 19h1v1h-1zM7 19h1v1h-1zM8 19h1v1h-1zM9 19h1v1h-1zM12 19h1v1h-1zM13 19h1v1h-1zM14 19h1v1h-1zM22 19h1v1h-1zM26 19h1v1h-1zM27 19h1v1h-1zM28 19h1v1h-1zM0 20h1v1h-1zM2 20h1v1h-1zM5 20h1v1h-1zM6 20h1v1h-1zM7 20h1v1h-1zM9 20h1v1h-1zM10 20h1v1h-1zM11 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM17 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM23 20h1v1h-1zM24 20h1v1h-1zM25 20h1v1h-1zM27 20h1v1h-1zM28 20h1v1h-1zM9 21h1v1h-1zM10 21h1v1h-1zM11 21h1v1h-1zM13 21h1v1h-1zM15 21h1v1h-1zM16 21h1v1h-1zM18 21h1v1h-1zM19 21h1v1h-1zM20 21h1v1h-1zM24 21h1v1h-1zM25 21h1v1h-1zM28 21h1v1h-1zM0 22h1v1h-1zM1 22h1v1h-1zM2 22h1v1h-1zM3 22h1v1h-1zM4 22h1v1h-1zM5 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM9 22h1v1h-1zM11 22h1v1h-1zM13 22h1v1h-1zM20 22h1v1h-1zM22 22h1v1h-1zM24 22h1v1h-1zM27 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM9 23h1v1h-1zM10 23h1v1h-1zM11 23h1v1h-1zM13 23h1v1h-1zM14 23h1v1h-1zM15 23h1v1h-1zM16 23h1v1h-1zM17 23h1v1h-1zM18 23h1v1h-1zM19 23h1v1h-1zM20 23h1v1h-1zM24 23h1v1h-1zM25 23h1v1h-1zM26 23h1v1h-1zM28 23h1v1h-1zM0 24h1v1h-1zM2 24h1v1h-1zM3 24h1v1h-1zM4 24h1v1h-1zM6 24h1v1h-1zM9 24h1v1h-1zM10 24h1v1h-1zM11 24h1v1h-1zM16 24h1v1h-1zM18 24h1v1h-1zM20 24h1v1h-1zM21 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM28 24h1v1h-1zM0 25h1v1h-1zM2 25h1v1h-1zM3 25h1v1h-1zM4 25h1v1h-1zM6 25h1v1h-1zM8 25h1v1h-1zM12 25h1v1h-1zM16 25h1v1h-1zM17 25h1v1h-1zM20 25h1v1h-1zM21 25h1v1h-1zM22 25h1v1h-1zM23 25h1v1h-1zM25 25h1v1h-1zM27 25h1v1h-1zM0 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM6 26h1v1h-1zM10 26h1v1h-1zM12 26h1v1h-1zM13 26h1v1h-1zM14 26h1v1h-1zM17 26h1v1h-1zM18 26h1v1h-1zM19 26h1v1h-1zM20 26h1v1h-1zM21 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM10 27h1v1h-1zM13 27h1v1h-1zM14 27h1v1h-1zM15 27h1v1h-1zM16 27h1v1h-1zM17 27h1v1h-1zM21 27h1v1h-1zM22 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM27 27h1v1h-1zM28 27h1v1h-1zM0 28h1v1h-1zM1 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM5 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM9 28h1v1h-1zM11 28h1v1h-1zM13 28h1v1h-1zM14 28h1v1h-1zM21 28h1v1h-1zM23 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1z"></path></svg>
+</div>
+<div style="text-align: center">
+<p class="t-sm t-2">Room code</p>
+<p class="mono" translate="no" style="font-size: 44px; line-height: 52px; font-weight: 600; letter-spacing: 0.3em; margin-right: -0.3em">K7QX</p>
+</div>
+<div style="align-self: stretch; display: flex; gap: 8px">
+<div class="field-inset" style="flex: 1; min-width: 0"><input value="jam.example.com/join/K7QX" aria-label="Invite link" readonly style="font-size: 14px"></div>
+<button class="btn-plain is-primary" style="height: 44px; padding: 0 18px; gap: 6px; font-size: 15px"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>Copy</button>
+</div>
+<p class="t-sm t-2 by" style="align-self: stretch; justify-content: center; gap: 10px"><span class="av-stack" aria-hidden="true"><span class="av lg c-rina">R</span><span class="av lg c-bima">B</span><span class="av lg c-sari">S</span><span class="av lg c-dewi">D</span><span class="av lg c-more">+3</span></span>7 in the jam · Ask to join is on</p>
+</section>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"song":{"editor":"enum","options":["senja","laut","kopi"],"default":"senja","section":"Ambient"},"sheet":{"editor":"enum","options":["closed","open"],"default":"closed","section":"Variant"},"$preview":{"width":1280,"height":1490}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const songs = {
+      senja: { title: 'Senja di Kemang', artist: 'Laut Biru', by: 'Rina', byInitial: 'R', byClass: 'c-rina', a1: '#ff6a55', a2: '#c3338e', a3: '#3b2477', dim: 0.5 },
+      laut: { title: 'Pelabuhan Jam Dua', artist: 'Ombak Tenang', by: 'Sari', byInitial: 'S', byClass: 'c-sari', a1: '#2ed3c6', a2: '#1f6fd1', a3: '#0f2a5c', dim: 0.52 },
+      kopi: { title: 'Matahari Plastik', artist: 'Sinar Kecil', by: 'Dewi', byInitial: 'D', byClass: 'c-dewi', a1: '#ffb04a', a2: '#d8612a', a3: '#5a2814', dim: 0.6 }
+    };
+    return { np: songs[this.props.song] || songs.senja, sheetOpen: this.props.sheet === 'open' };
+  }
+}
+</script>
+</body>
+</html>

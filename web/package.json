@@ -1,0 +1,30 @@
+{
+  "name": "web",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "check-types": "npm run check-types --workspaces --if-present",
+    "dev:web": "npm run dev --workspace web --",
+    "env:generate": "varlock codegen --path ./apps/web/",
+    "postinstall": "varlock codegen --path ./apps/web/"
+  },
+  "dependencies": {
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "@web/config": "*",
+    "typescript": "^6.0.3",
+    "varlock": "1.23.0"
+  },
+  "packageManager": "npm@12.2.1",
+  "allowScripts": {
+    "sharp": true
+  }
+}

@@ -1,0 +1,10 @@
+// Static site on Workers assets: `npm run deploy` ships it to nimbrung.dezeto.dev.
+// Read site/README.md before the first deploy: the hostname must be free first.
+{
+  "name": "nimbrung-site",
+  "compatibility_date": "2026-11-14",
+  // Not verified on a first deploy: if wrangler errors on this line, delete it.
+  "workers_dev": false,
+  "assets": { "directory": "./public", "not_found_handling": "404-page" },
+  "routes": [{ "pattern": "nimbrung.dezeto.dev", "custom_domain": true }]
+}

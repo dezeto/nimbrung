@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Menu bar popover (SwiftUI)</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./glass.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+body{margin:0;background:#101a3a}
+.desk{position:absolute;top:64px;width:384px;height:540px;border-radius:22px;overflow:hidden;box-shadow:0 0 0 1px rgb(255 255 255 / 0.12)}
+.desk-label{position:absolute;top:28px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:650;color:#fff}
+.pop-sep{height:1px;margin:8px 4px;background:rgb(255 255 255 / 0.12)}
+.pop-head{display:flex;align-items:center;gap:10px;padding:0 4px 2px}
+.pop-steps{display:flex;flex-direction:column;padding:2px 6px}
+.pop-steps li{display:flex;align-items:center;gap:10px;height:30px;font-size:13px;font-weight:550}
+.pop-steps .st{margin-left:auto;font-size:12px;font-weight:600;color:var(--lg-ink-muted)}
+.pop-steps .ok{color:#6ee38a}
+.sdot{width:18px;height:18px;flex:none;display:grid;place-items:center;border-radius:50%}
+.sdot.is-done{background:var(--nb-ok);color:#06210d}
+.sdot.is-idle{box-shadow:inset 0 0 0 1.5px rgb(235 235 245 / 0.45)}
+.invite{display:flex;gap:12px;align-items:center;padding:6px}
+.legend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 22px}
+.legend li{display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:17px;color:#e6e6ee}
+.legend code{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-ligatures:none;font-size:11px;line-height:16px;color:#ffd0cc;display:block;margin-bottom:2px}
+.legend .pin{position:static;flex:none}
+</style>
+</helmet>
+<div class="nb dark-glass" style="width: 1700px; height: 980px; background: #101a3a; --lg-ambient: #2a2a30">
+<div class="wallpaper" style="filter: brightness(0.62)"></div>
+<svg width="0" height="0" aria-hidden="true" style="position: absolute">
+<defs>
+<linearGradient id="pbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a2342"></stop><stop offset="1" stop-color="#1c1226"></stop></linearGradient>
+<linearGradient id="pjam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6d5e"></stop><stop offset="1" stop-color="#c41e2d"></stop></linearGradient>
+<clipPath id="pclip"><rect x="314" y="344" width="396" height="436" rx="92"></rect></clipPath>
+<g id="appicon"><rect x="100" y="100" width="824" height="824" rx="186" fill="url(#pbg)"></rect><g clip-path="url(#pclip)"><path d="M300 545 C 372 502 444 506 512 545 S 652 586 724 540 V 800 H 300 Z" fill="url(#pjam)"></path></g><rect x="296" y="326" width="432" height="472" rx="110" fill="#ffffff" fill-opacity="0.1" stroke="#ffffff" stroke-opacity="0.55" stroke-width="14"></rect><rect x="360" y="236" width="304" height="100" rx="34" fill="#f2eff6"></rect></g>
+<g id="jar"><rect x="7.5" y="2.5" width="9" height="3" rx="1.2" fill="#fff" stroke="none"></rect><rect x="5" y="6.5" width="14" height="15" rx="3.5"></rect></g>
+</defs>
+</svg>
+
+<!-- 1 · Stopped -->
+<p class="desk-label" style="left: 40px"><span style="width: 8px; height: 8px; border-radius: 50%; background: rgb(235 235 245 / 0.5)"></span>Stopped</p>
+<div class="desk" style="left: 40px">
+<div class="wallpaper"></div>
+<div class="menubar">
+<span class="mb-item is-open" aria-label="Nimbrung, stopped"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="#fff" stroke-width="1.8"><use href="#jar"></use></svg></span>
+<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 20h.01M2 8.82a15 15 0 0 1 20 0M5 12.86a10 10 0 0 1 14 0M8.5 16.43a5 5 0 0 1 7 0"></path></svg>
+<svg viewBox="0 0 28 14" width="26" height="13" aria-hidden="true"><rect x="0.75" y="0.75" width="23" height="12.5" rx="3.5" fill="none" stroke="#fff" stroke-opacity="0.6" stroke-width="1.5"></rect><rect x="3" y="3" width="15" height="8" rx="1.8" fill="#fff"></rect><rect x="25.2" y="4.5" width="2" height="5" rx="1" fill="#fff" fill-opacity="0.6"></rect></svg>
+<span class="num">21:14</span>
+</div>
+<span class="pin" style="left: 40px; top: 46px">1</span>
+<span class="pin" style="left: 40px; top: 108px">2</span>
+<span class="pin" style="left: 40px; top: 210px">5</span>
+<section class="popover" aria-label="Nimbrung" style="top: 38px; right: 12px; width: 320px; padding: 14px 10px 8px">
+<header class="pop-head">
+<svg viewBox="100 100 824 824" width="34" height="34" aria-hidden="true" style="flex: none; border-radius: 8px"><use href="#appicon"></use></svg>
+<div class="row-text">
+<p class="t-sm" style="font-weight: 650">Nimbrung</p>
+<p class="t-xs t-2 trunc">Rina’s rooftop · not running</p>
+</div>
+</header>
+<div style="padding: 12px 4px 4px">
+<button class="btn-plain is-primary" style="width: 100%; height: 44px; gap: 8px; font-size: 15px"><svg class="ico sm fill" viewBox="0 0 24 24" aria-hidden="true" style="stroke: none"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5Z"></path></svg>Start the jam</button>
+<p class="t-xs t-2" style="padding: 8px 2px 0; text-align: center">Opens YouTube Music, the tunnel and the room.</p>
+</div>
+<div class="pop-sep"></div>
+<div class="invite">
+<div class="qr" style="width: 72px; height: 72px; padding: 5px; border-radius: 10px; flex: none; opacity: 0.35">
+<svg viewBox="0 0 29 29" role="img" aria-label="QR code for the invite link (inactive)" shape-rendering="crispEdges"><path fill="#000" d="M0 0h7v1h-7zM9 0h2v1h-2zM14 0h7v1h-7zM22 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h2v1h-2zM13 1h1v1h-1zM15 1h1v1h-1zM17 1h1v1h-1zM22 1h1v1h-1zM28 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h1v1h-1zM10 2h1v1h-1zM12 2h1v1h-1zM14 2h1v1h-1zM16 2h1v1h-1zM20 2h1v1h-1zM22 2h1v1h-1zM24 2h3v1h-3zM28 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h5v1h-5zM17 3h2v1h-2zM20 3h1v1h-1zM22 3h1v1h-1zM24 3h3v1h-3zM28 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM8 4h6v1h-6zM15 4h6v1h-6zM22 4h1v1h-1zM24 4h3v1h-3zM28 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM11 5h1v1h-1zM13 5h5v1h-5zM20 5h1v1h-1zM22 5h1v1h-1zM28 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h7v1h-7zM8 7h1v1h-1zM11 7h1v1h-1zM13 7h1v1h-1zM15 7h1v1h-1zM18 7h1v1h-1zM20 7h1v1h-1zM0 8h1v1h-1zM2 8h5v1h-5zM9 8h2v1h-2zM14 8h2v1h-2zM17 8h1v1h-1zM22 8h5v1h-5zM2 9h2v1h-2zM7 9h1v1h-1zM15 9h2v1h-2zM18 9h3v1h-3zM22 9h3v1h-3zM28 9h1v1h-1zM1 10h3v1h-3zM6 10h7v1h-7zM15 10h2v1h-2zM21 10h1v1h-1zM0 11h2v1h-2zM3 11h3v1h-3zM7 11h1v1h-1zM9 11h1v1h-1zM11 11h1v1h-1zM14 11h1v1h-1zM16 11h1v1h-1zM18 11h2v1h-2zM21 11h2v1h-2zM24 11h2v1h-2zM27 11h1v1h-1zM2 12h2v1h-2zM5 12h2v1h-2zM8 12h2v1h-2zM11 12h2v1h-2zM15 12h1v1h-1zM17 12h1v1h-1zM19 12h2v1h-2zM25 12h2v1h-2zM2 13h4v1h-4zM7 13h1v1h-1zM9 13h1v1h-1zM11 13h6v1h-6zM18 13h3v1h-3zM22 13h3v1h-3zM28 13h1v1h-1zM2 14h2v1h-2zM5 14h4v1h-4zM11 14h1v1h-1zM13 14h4v1h-4zM20 14h1v1h-1zM23 14h4v1h-4zM0 15h2v1h-2zM3 15h1v1h-1zM5 15h1v1h-1zM8 15h2v1h-2zM11 15h1v1h-1zM13 15h1v1h-1zM16 15h1v1h-1zM20 15h1v1h-1zM23 15h1v1h-1zM27 15h1v1h-1zM0 16h1v1h-1zM3 16h1v1h-1zM6 16h1v1h-1zM9 16h1v1h-1zM11 16h1v1h-1zM14 16h1v1h-1zM17 16h1v1h-1zM25 16h2v1h-2zM0 17h2v1h-2zM3 17h2v1h-2zM10 17h1v1h-1zM12 17h1v1h-1zM19 17h6v1h-6zM26 17h1v1h-1zM28 17h1v1h-1zM0 18h1v1h-1zM2 18h1v1h-1zM4 18h1v1h-1zM6 18h4v1h-4zM11 18h1v1h-1zM15 18h1v1h-1zM17 18h1v1h-1zM22 18h3v1h-3zM26 18h1v1h-1zM0 19h1v1h-1zM2 19h1v1h-1zM7 19h1v1h-1zM9 19h1v1h-1zM11 19h2v1h-2zM14 19h1v1h-1zM16 19h1v1h-1zM18 19h1v1h-1zM20 19h3v1h-3zM27 19h1v1h-1zM0 20h1v1h-1zM2 20h6v1h-6zM10 20h1v1h-1zM12 20h1v1h-1zM17 20h2v1h-2zM20 20h5v1h-5zM26 20h3v1h-3zM8 21h2v1h-2zM11 21h4v1h-4zM16 21h3v1h-3zM20 21h1v1h-1zM24 21h5v1h-5zM0 22h7v1h-7zM10 22h8v1h-8zM19 22h2v1h-2zM22 22h1v1h-1zM24 22h3v1h-3zM0 23h1v1h-1zM6 23h1v1h-1zM8 23h6v1h-6zM15 23h1v1h-1zM19 23h2v1h-2zM24 23h1v1h-1zM0 24h1v1h-1zM2 24h3v1h-3zM6 24h1v1h-1zM8 24h2v1h-2zM11 24h2v1h-2zM14 24h1v1h-1zM17 24h1v1h-1zM20 24h5v1h-5zM26 24h1v1h-1zM0 25h1v1h-1zM2 25h3v1h-3zM6 25h1v1h-1zM8 25h1v1h-1zM10 25h1v1h-1zM12 25h2v1h-2zM16 25h3v1h-3zM20 25h1v1h-1zM25 25h4v1h-4zM0 26h1v1h-1zM2 26h3v1h-3zM6 26h1v1h-1zM8 26h2v1h-2zM14 26h14v1h-14zM0 27h1v1h-1zM6 27h1v1h-1zM9 27h3v1h-3zM13 27h2v1h-2zM16 27h1v1h-1zM18 27h1v1h-1zM20 27h1v1h-1zM25 27h1v1h-1zM27 27h1v1h-1zM0 28h7v1h-7zM8 28h1v1h-1zM11 28h3v1h-3zM17 28h1v1h-1zM22 28h2v1h-2zM26 28h1v1h-1z"></path></svg>
+</div>
+<div class="row-text" style="gap: 3px">
+<p class="t-xs t-2">Invite link · works once you’re live</p>
+<p class="t-sm" style="font-weight: 600; word-break: break-all">jam.example.com/join/K7QX</p>
+<button class="btn-plain" style="align-self: flex-start; min-height: 30px; height: 30px; margin-top: 2px; padding: 0 10px; gap: 5px; font-size: 12px"><svg class="ico xs" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>Copy link</button>
+</div>
+</div>
+<div class="pop-sep"></div>
+<button class="menu-row" disabled style="opacity: 0.5">Open host page</button>
+<button class="menu-row" disabled style="opacity: 0.5">Room view</button>
+<div class="pop-sep"></div>
+<button class="menu-row">Quit Nimbrung<span class="key">⌘Q</span></button>
+</section>
+</div>
+
+<!-- 2 · Starting -->
+<p class="desk-label" style="left: 452px"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.2-8.56"></path></svg>Starting</p>
+<div class="desk" style="left: 452px">
+<div class="wallpaper"></div>
+<div class="menubar">
+<span class="mb-item is-open" aria-label="Nimbrung, starting"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="#fff" stroke-width="1.8"><use href="#jar"></use><path d="M5.9 17.2c2-1 4-.9 6.1 0s4.1 1 6.1 0V18a2.6 2.6 0 0 1-2.6 2.6h-7A2.6 2.6 0 0 1 5.9 18z" fill="#fff" stroke="none"></path></svg></span>
+<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 20h.01M2 8.82a15 15 0 0 1 20 0M5 12.86a10 10 0 0 1 14 0M8.5 16.43a5 5 0 0 1 7 0"></path></svg>
+<svg viewBox="0 0 28 14" width="26" height="13" aria-hidden="true"><rect x="0.75" y="0.75" width="23" height="12.5" rx="3.5" fill="none" stroke="#fff" stroke-opacity="0.6" stroke-width="1.5"></rect><rect x="3" y="3" width="15" height="8" rx="1.8" fill="#fff"></rect><rect x="25.2" y="4.5" width="2" height="5" rx="1" fill="#fff" fill-opacity="0.6"></rect></svg>
+<span class="num">21:14</span>
+</div>
+<span class="pin" style="left: 40px; top: 160px">3</span>
+<section class="popover" aria-label="Nimbrung" style="top: 38px; right: 12px; width: 320px; padding: 14px 10px 8px">
+<header class="pop-head">
+<svg viewBox="100 100 824 824" width="34" height="34" aria-hidden="true" style="flex: none; border-radius: 8px"><use href="#appicon"></use></svg>
+<div class="row-text">
+<p class="t-sm" style="font-weight: 650">Nimbrung</p>
+<p class="t-xs t-2 trunc num">Rina’s rooftop · starting, 3 of 4</p>
+</div>
+</header>
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 4px 6px">
+<p role="status" class="t-sm" style="flex: 1; display: flex; align-items: center; gap: 8px; font-weight: 600"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.2-8.56"></path></svg>Connecting the tunnel…</p>
+<button class="btn-plain" style="height: 32px; min-height: 32px; padding: 0 14px; font-size: 13px">Cancel</button>
+</div>
+<ol class="pop-steps" aria-label="Startup steps">
+<li><span class="sdot is-done"><svg class="ico xs" viewBox="0 0 24 24" aria-hidden="true" style="width: 11px; height: 11px; stroke-width: 3.4"><path d="M20 6 9 17l-5-5"></path></svg></span>YouTube Music<span class="st ok">Open</span></li>
+<li><span class="sdot is-done"><svg class="ico xs" viewBox="0 0 24 24" aria-hidden="true" style="width: 11px; height: 11px; stroke-width: 3.4"><path d="M20 6 9 17l-5-5"></path></svg></span>API Server<span class="st ok">On</span></li>
+<li><span class="sdot"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.2-8.56"></path></svg></span>Tunnel<span class="st">Connecting…</span></li>
+<li><span class="sdot is-idle"></span>Room goes live<span class="st">Waiting</span></li>
+</ol>
+<div class="pop-sep"></div>
+<div class="invite">
+<div class="qr" style="width: 72px; height: 72px; padding: 5px; border-radius: 10px; flex: none; opacity: 0.35">
+<svg viewBox="0 0 29 29" role="img" aria-label="QR code for the invite link (inactive)" shape-rendering="crispEdges"><path fill="#000" d="M0 0h7v1h-7zM9 0h2v1h-2zM14 0h7v1h-7zM22 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h2v1h-2zM13 1h1v1h-1zM15 1h1v1h-1zM17 1h1v1h-1zM22 1h1v1h-1zM28 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h1v1h-1zM10 2h1v1h-1zM12 2h1v1h-1zM14 2h1v1h-1zM16 2h1v1h-1zM20 2h1v1h-1zM22 2h1v1h-1zM24 2h3v1h-3zM28 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h5v1h-5zM17 3h2v1h-2zM20 3h1v1h-1zM22 3h1v1h-1zM24 3h3v1h-3zM28 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM8 4h6v1h-6zM15 4h6v1h-6zM22 4h1v1h-1zM24 4h3v1h-3zM28 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM11 5h1v1h-1zM13 5h5v1h-5zM20 5h1v1h-1zM22 5h1v1h-1zM28 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h7v1h-7zM8 7h1v1h-1zM11 7h1v1h-1zM13 7h1v1h-1zM15 7h1v1h-1zM18 7h1v1h-1zM20 7h1v1h-1zM0 8h1v1h-1zM2 8h5v1h-5zM9 8h2v1h-2zM14 8h2v1h-2zM17 8h1v1h-1zM22 8h5v1h-5zM2 9h2v1h-2zM7 9h1v1h-1zM15 9h2v1h-2zM18 9h3v1h-3zM22 9h3v1h-3zM28 9h1v1h-1zM1 10h3v1h-3zM6 10h7v1h-7zM15 10h2v1h-2zM21 10h1v1h-1zM0 11h2v1h-2zM3 11h3v1h-3zM7 11h1v1h-1zM9 11h1v1h-1zM11 11h1v1h-1zM14 11h1v1h-1zM16 11h1v1h-1zM18 11h2v1h-2zM21 11h2v1h-2zM24 11h2v1h-2zM27 11h1v1h-1zM2 12h2v1h-2zM5 12h2v1h-2zM8 12h2v1h-2zM11 12h2v1h-2zM15 12h1v1h-1zM17 12h1v1h-1zM19 12h2v1h-2zM25 12h2v1h-2zM2 13h4v1h-4zM7 13h1v1h-1zM9 13h1v1h-1zM11 13h6v1h-6zM18 13h3v1h-3zM22 13h3v1h-3zM28 13h1v1h-1zM2 14h2v1h-2zM5 14h4v1h-4zM11 14h1v1h-1zM13 14h4v1h-4zM20 14h1v1h-1zM23 14h4v1h-4zM0 15h2v1h-2zM3 15h1v1h-1zM5 15h1v1h-1zM8 15h2v1h-2zM11 15h1v1h-1zM13 15h1v1h-1zM16 15h1v1h-1zM20 15h1v1h-1zM23 15h1v1h-1zM27 15h1v1h-1zM0 16h1v1h-1zM3 16h1v1h-1zM6 16h1v1h-1zM9 16h1v1h-1zM11 16h1v1h-1zM14 16h1v1h-1zM17 16h1v1h-1zM25 16h2v1h-2zM0 17h2v1h-2zM3 17h2v1h-2zM10 17h1v1h-1zM12 17h1v1h-1zM19 17h6v1h-6zM26 17h1v1h-1zM28 17h1v1h-1zM0 18h1v1h-1zM2 18h1v1h-1zM4 18h1v1h-1zM6 18h4v1h-4zM11 18h1v1h-1zM15 18h1v1h-1zM17 18h1v1h-1zM22 18h3v1h-3zM26 18h1v1h-1zM0 19h1v1h-1zM2 19h1v1h-1zM7 19h1v1h-1zM9 19h1v1h-1zM11 19h2v1h-2zM14 19h1v1h-1zM16 19h1v1h-1zM18 19h1v1h-1zM20 19h3v1h-3zM27 19h1v1h-1zM0 20h1v1h-1zM2 20h6v1h-6zM10 20h1v1h-1zM12 20h1v1h-1zM17 20h2v1h-2zM20 20h5v1h-5zM26 20h3v1h-3zM8 21h2v1h-2zM11 21h4v1h-4zM16 21h3v1h-3zM20 21h1v1h-1zM24 21h5v1h-5zM0 22h7v1h-7zM10 22h8v1h-8zM19 22h2v1h-2zM22 22h1v1h-1zM24 22h3v1h-3zM0 23h1v1h-1zM6 23h1v1h-1zM8 23h6v1h-6zM15 23h1v1h-1zM19 23h2v1h-2zM24 23h1v1h-1zM0 24h1v1h-1zM2 24h3v1h-3zM6 24h1v1h-1zM8 24h2v1h-2zM11 24h2v1h-2zM14 24h1v1h-1zM17 24h1v1h-1zM20 24h5v1h-5zM26 24h1v1h-1zM0 25h1v1h-1zM2 25h3v1h-3zM6 25h1v1h-1zM8 25h1v1h-1zM10 25h1v1h-1zM12 25h2v1h-2zM16 25h3v1h-3zM20 25h1v1h-1zM25 25h4v1h-4zM0 26h1v1h-1zM2 26h3v1h-3zM6 26h1v1h-1zM8 26h2v1h-2zM14 26h14v1h-14zM0 27h1v1h-1zM6 27h1v1h-1zM9 27h3v1h-3zM13 27h2v1h-2zM16 27h1v1h-1zM18 27h1v1h-1zM20 27h1v1h-1zM25 27h1v1h-1zM27 27h1v1h-1zM0 28h7v1h-7zM8 28h1v1h-1zM11 28h3v1h-3zM17 28h1v1h-1zM22 28h2v1h-2zM26 28h1v1h-1z"></path></svg>
+</div>
+<div class="row-text" style="gap: 3px">
+<p class="t-xs t-2">Invite link · works once you’re live</p>
+<p class="t-sm" style="font-weight: 600; word-break: break-all">jam.example.com/join/K7QX</p>
+<button class="btn-plain" style="align-self: flex-start; min-height: 30px; height: 30px; margin-top: 2px; padding: 0 10px; gap: 5px; font-size: 12px"><svg class="ico xs" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>Copy link</button>
+</div>
+</div>
+<div class="pop-sep"></div>
+<button class="menu-row">Quit Nimbrung<span class="key">⌘Q</span></button>
+</section>
+</div>
+
+<!-- 3 · Live -->
+<p class="desk-label" style="left: 864px"><span class="live-dot"></span>Live</p>
+<div class="desk" style="left: 864px">
+<div class="wallpaper"></div>
+<div class="menubar">
+<span class="mb-item is-open" aria-label="Nimbrung, live"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="#fff" stroke-width="1.8"><use href="#jar"></use><path d="M5.9 14.2c2-1.3 4-1.2 6.1 0s4.1 1.3 6.1 0V18a2.6 2.6 0 0 1-2.6 2.6h-7A2.6 2.6 0 0 1 5.9 18z" fill="#fff" stroke="none"></path></svg></span>
+<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 20h.01M2 8.82a15 15 0 0 1 20 0M5 12.86a10 10 0 0 1 14 0M8.5 16.43a5 5 0 0 1 7 0"></path></svg>
+<svg viewBox="0 0 28 14" width="26" height="13" aria-hidden="true"><rect x="0.75" y="0.75" width="23" height="12.5" rx="3.5" fill="none" stroke="#fff" stroke-opacity="0.6" stroke-width="1.5"></rect><rect x="3" y="3" width="15" height="8" rx="1.8" fill="#fff"></rect><rect x="25.2" y="4.5" width="2" height="5" rx="1" fill="#fff" fill-opacity="0.6"></rect></svg>
+<span class="num">21:14</span>
+</div>
+<span class="pin" style="left: 190px; top: 5px">8</span>
+<span class="pin" style="left: 40px; top: 160px">4</span>
+<span class="pin" style="left: 40px; top: 380px">6</span>
+<section class="popover" aria-label="Nimbrung" style="top: 38px; right: 12px; width: 320px; padding: 14px 10px 8px">
+<header class="pop-head">
+<svg viewBox="100 100 824 824" width="34" height="34" aria-hidden="true" style="flex: none; border-radius: 8px"><use href="#appicon"></use></svg>
+<div class="row-text">
+<p class="t-sm" style="font-weight: 650">Nimbrung</p>
+<p class="t-xs t-2 trunc num">Rina’s rooftop · live since 21:04</p>
+</div>
+</header>
+<div class="pop-sep"></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 4px 6px">
+<div class="art art-now" style="width: 42px; height: 42px; border-radius: 9px"></div>
+<div class="row-text" style="gap: 1px">
+<p class="t-sm trunc" style="font-weight: 650">Senja di Kemang</p>
+<p class="t-xs t-2 trunc">Laut Biru · added by Rina</p>
+<div class="progress" role="progressbar" aria-label="Song progress" aria-valuemin="0" aria-valuemax="222" aria-valuenow="118" style="height: 3px; margin-top: 5px"><i style="width: 53%"></i></div>
+</div>
+</div>
+<p class="t-sm" style="display: flex; align-items: center; gap: 8px; padding: 8px 6px 2px; font-weight: 600"><span class="live-dot"></span>Live · <span class="num">7 guests in the jam</span></p>
+<div class="invite">
+<div class="qr" style="width: 72px; height: 72px; padding: 5px; border-radius: 10px; flex: none">
+<svg viewBox="0 0 29 29" role="img" aria-label="QR code for https://jam.example.com/join/K7QX" shape-rendering="crispEdges"><path fill="#000" d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM11 0h1v1h-1zM12 0h1v1h-1zM18 0h1v1h-1zM22 0h1v1h-1zM23 0h1v1h-1zM24 0h1v1h-1zM25 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM10 1h1v1h-1zM12 1h1v1h-1zM14 1h1v1h-1zM15 1h1v1h-1zM17 1h1v1h-1zM20 1h1v1h-1zM22 1h1v1h-1zM28 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM14 2h1v1h-1zM18 2h1v1h-1zM22 2h1v1h-1zM24 2h1v1h-1zM25 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM16 3h1v1h-1zM19 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM25 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM17 4h1v1h-1zM20 4h1v1h-1zM22 4h1v1h-1zM24 4h1v1h-1zM25 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM11 5h1v1h-1zM15 5h1v1h-1zM18 5h1v1h-1zM19 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM28 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM23 6h1v1h-1zM24 6h1v1h-1zM25 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM8 7h1v1h-1zM13 7h1v1h-1zM17 7h1v1h-1zM0 8h1v1h-1zM1 8h1v1h-1zM3 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM9 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM18 8h1v1h-1zM19 8h1v1h-1zM21 8h1v1h-1zM22 8h1v1h-1zM23 8h1v1h-1zM25 8h1v1h-1zM26 8h1v1h-1zM28 8h1v1h-1zM1 9h1v1h-1zM3 9h1v1h-1zM5 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM15 9h1v1h-1zM16 9h1v1h-1zM18 9h1v1h-1zM22 9h1v1h-1zM23 9h1v1h-1zM25 9h1v1h-1zM27 9h1v1h-1zM0 10h1v1h-1zM1 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM20 10h1v1h-1zM21 10h1v1h-1zM23 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM27 10h1v1h-1zM28 10h1v1h-1zM0 11h1v1h-1zM1 11h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM7 11h1v1h-1zM8 11h1v1h-1zM9 11h1v1h-1zM11 11h1v1h-1zM14 11h1v1h-1zM15 11h1v1h-1zM17 11h1v1h-1zM18 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM21 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM24 11h1v1h-1zM25 11h1v1h-1zM27 11h1v1h-1zM1 12h1v1h-1zM2 12h1v1h-1zM6 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM13 12h1v1h-1zM16 12h1v1h-1zM18 12h1v1h-1zM19 12h1v1h-1zM22 12h1v1h-1zM24 12h1v1h-1zM25 12h1v1h-1zM2 13h1v1h-1zM4 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM11 13h1v1h-1zM13 13h1v1h-1zM15 13h1v1h-1zM17 13h1v1h-1zM20 13h1v1h-1zM21 13h1v1h-1zM22 13h1v1h-1zM25 13h1v1h-1zM1 14h1v1h-1zM2 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM7 14h1v1h-1zM8 14h1v1h-1zM10 14h1v1h-1zM11 14h1v1h-1zM14 14h1v1h-1zM21 14h1v1h-1zM24 14h1v1h-1zM25 14h1v1h-1zM27 14h1v1h-1zM0 15h1v1h-1zM1 15h1v1h-1zM2 15h1v1h-1zM9 15h1v1h-1zM10 15h1v1h-1zM11 15h1v1h-1zM15 15h1v1h-1zM16 15h1v1h-1zM18 15h1v1h-1zM21 15h1v1h-1zM23 15h1v1h-1zM24 15h1v1h-1zM25 15h1v1h-1zM28 15h1v1h-1zM0 16h1v1h-1zM3 16h1v1h-1zM6 16h1v1h-1zM8 16h1v1h-1zM9 16h1v1h-1zM14 16h1v1h-1zM16 16h1v1h-1zM18 16h1v1h-1zM21 16h1v1h-1zM22 16h1v1h-1zM24 16h1v1h-1zM0 17h1v1h-1zM1 17h1v1h-1zM3 17h1v1h-1zM5 17h1v1h-1zM7 17h1v1h-1zM8 17h1v1h-1zM9 17h1v1h-1zM12 17h1v1h-1zM14 17h1v1h-1zM17 17h1v1h-1zM19 17h1v1h-1zM20 17h1v1h-1zM21 17h1v1h-1zM24 17h1v1h-1zM26 17h1v1h-1zM28 17h1v1h-1zM0 18h1v1h-1zM1 18h1v1h-1zM2 18h1v1h-1zM3 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM7 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM14 18h1v1h-1zM16 18h1v1h-1zM18 18h1v1h-1zM19 18h1v1h-1zM20 18h1v1h-1zM21 18h1v1h-1zM22 18h1v1h-1zM24 18h1v1h-1zM26 18h1v1h-1zM28 18h1v1h-1zM0 19h1v1h-1zM3 19h1v1h-1zM4 19h1v1h-1zM5 19h1v1h-1zM7 19h1v1h-1zM8 19h1v1h-1zM9 19h1v1h-1zM12 19h1v1h-1zM13 19h1v1h-1zM14 19h1v1h-1zM22 19h1v1h-1zM26 19h1v1h-1zM27 19h1v1h-1zM28 19h1v1h-1zM0 20h1v1h-1zM2 20h1v1h-1zM5 20h1v1h-1zM6 20h1v1h-1zM7 20h1v1h-1zM9 20h1v1h-1zM10 20h1v1h-1zM11 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM17 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM23 20h1v1h-1zM24 20h1v1h-1zM25 20h1v1h-1zM27 20h1v1h-1zM28 20h1v1h-1zM9 21h1v1h-1zM10 21h1v1h-1zM11 21h1v1h-1zM13 21h1v1h-1zM15 21h1v1h-1zM16 21h1v1h-1zM18 21h1v1h-1zM19 21h1v1h-1zM20 21h1v1h-1zM24 21h1v1h-1zM25 21h1v1h-1zM28 21h1v1h-1zM0 22h1v1h-1zM1 22h1v1h-1zM2 22h1v1h-1zM3 22h1v1h-1zM4 22h1v1h-1zM5 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM9 22h1v1h-1zM11 22h1v1h-1zM13 22h1v1h-1zM20 22h1v1h-1zM22 22h1v1h-1zM24 22h1v1h-1zM27 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM9 23h1v1h-1zM10 23h1v1h-1zM11 23h1v1h-1zM13 23h1v1h-1zM14 23h1v1h-1zM15 23h1v1h-1zM16 23h1v1h-1zM17 23h1v1h-1zM18 23h1v1h-1zM19 23h1v1h-1zM20 23h1v1h-1zM24 23h1v1h-1zM25 23h1v1h-1zM26 23h1v1h-1zM28 23h1v1h-1zM0 24h1v1h-1zM2 24h1v1h-1zM3 24h1v1h-1zM4 24h1v1h-1zM6 24h1v1h-1zM9 24h1v1h-1zM10 24h1v1h-1zM11 24h1v1h-1zM16 24h1v1h-1zM18 24h1v1h-1zM20 24h1v1h-1zM21 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM28 24h1v1h-1zM0 25h1v1h-1zM2 25h1v1h-1zM3 25h1v1h-1zM4 25h1v1h-1zM6 25h1v1h-1zM8 25h1v1h-1zM12 25h1v1h-1zM16 25h1v1h-1zM17 25h1v1h-1zM20 25h1v1h-1zM21 25h1v1h-1zM22 25h1v1h-1zM23 25h1v1h-1zM25 25h1v1h-1zM27 25h1v1h-1zM0 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM6 26h1v1h-1zM10 26h1v1h-1zM12 26h1v1h-1zM13 26h1v1h-1zM14 26h1v1h-1zM17 26h1v1h-1zM18 26h1v1h-1zM19 26h1v1h-1zM20 26h1v1h-1zM21 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM10 27h1v1h-1zM13 27h1v1h-1zM14 27h1v1h-1zM15 27h1v1h-1zM16 27h1v1h-1zM17 27h1v1h-1zM21 27h1v1h-1zM22 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM27 27h1v1h-1zM28 27h1v1h-1zM0 28h1v1h-1zM1 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM5 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM9 28h1v1h-1zM11 28h1v1h-1zM13 28h1v1h-1zM14 28h1v1h-1zM21 28h1v1h-1zM23 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1z"></path></svg>
+</div>
+<div class="row-text" style="gap: 3px">
+<p class="t-xs t-2">Invite link</p>
+<p class="t-sm" style="font-weight: 600; word-break: break-all">jam.example.com/join/K7QX</p>
+<button class="btn-plain" style="align-self: flex-start; min-height: 30px; height: 30px; margin-top: 2px; padding: 0 10px; gap: 5px; font-size: 12px"><svg class="ico xs" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>Copy link</button>
+</div>
+</div>
+<div class="pop-sep"></div>
+<button class="menu-row is-hover">Open host page<svg class="ico xs t-2" viewBox="0 0 24 24" aria-hidden="true" style="margin-left: auto"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></button>
+<button class="menu-row">Room view<span class="key">⌥R</span></button>
+<div class="pop-sep"></div>
+<button class="menu-row"><svg class="ico xs fill" viewBox="0 0 24 24" aria-hidden="true" style="stroke: none; color: var(--nb-accent)"><rect x="5" y="5" width="14" height="14" rx="2.5"></rect></svg>Stop the jam…</button>
+<button class="menu-row">Quit Nimbrung<span class="key">⌘Q</span></button>
+</section>
+</div>
+
+<!-- 4 · Stop, with guests connected -->
+<p class="desk-label" style="left: 1276px"><span class="live-dot"></span>Stop the jam… with 7 guests</p>
+<div class="desk" style="left: 1276px">
+<div class="wallpaper"></div>
+<div class="menubar">
+<span class="mb-item is-open" aria-label="Nimbrung, live"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="#fff" stroke-width="1.8"><use href="#jar"></use><path d="M5.9 14.2c2-1.3 4-1.2 6.1 0s4.1 1.3 6.1 0V18a2.6 2.6 0 0 1-2.6 2.6h-7A2.6 2.6 0 0 1 5.9 18z" fill="#fff" stroke="none"></path></svg></span>
+<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 20h.01M2 8.82a15 15 0 0 1 20 0M5 12.86a10 10 0 0 1 14 0M8.5 16.43a5 5 0 0 1 7 0"></path></svg>
+<svg viewBox="0 0 28 14" width="26" height="13" aria-hidden="true"><rect x="0.75" y="0.75" width="23" height="12.5" rx="3.5" fill="none" stroke="#fff" stroke-opacity="0.6" stroke-width="1.5"></rect><rect x="3" y="3" width="15" height="8" rx="1.8" fill="#fff"></rect><rect x="25.2" y="4.5" width="2" height="5" rx="1" fill="#fff" fill-opacity="0.6"></rect></svg>
+<span class="num">21:14</span>
+</div>
+<span class="pin" style="left: 40px; top: 190px">7</span>
+<section class="popover" aria-label="Nimbrung" style="top: 38px; right: 12px; width: 320px; height: 452px; overflow: hidden; padding: 14px 10px 8px">
+<header class="pop-head">
+<svg viewBox="100 100 824 824" width="34" height="34" aria-hidden="true" style="flex: none; border-radius: 8px"><use href="#appicon"></use></svg>
+<div class="row-text">
+<p class="t-sm" style="font-weight: 650">Nimbrung</p>
+<p class="t-xs t-2 trunc num">Rina’s rooftop · live since 21:04</p>
+</div>
+</header>
+<div class="pop-sep"></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 4px 6px">
+<div class="art art-now" style="width: 42px; height: 42px; border-radius: 9px"></div>
+<div class="row-text" style="gap: 1px">
+<p class="t-sm trunc" style="font-weight: 650">Senja di Kemang</p>
+<p class="t-xs t-2 trunc">Laut Biru · added by Rina</p>
+</div>
+</div>
+<p class="t-sm" style="display: flex; align-items: center; gap: 8px; padding: 8px 6px 2px; font-weight: 600"><span class="live-dot"></span>Live · <span class="num">7 guests in the jam</span></p>
+<div aria-hidden="true" style="position: absolute; inset: 0; border-radius: inherit; background: rgb(8 8 12 / 0.58)"></div>
+<section role="alertdialog" aria-modal="true" aria-labelledby="stop-t" aria-describedby="stop-d" style="position: absolute; left: 14px; right: 14px; top: 92px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 20px 16px 16px; border-radius: 18px; background: rgb(46 46 54 / 0.97); box-shadow: 0 0 0 1px rgb(0 0 0 / 0.45), inset 0 1px 0 rgb(255 255 255 / 0.14), 0 22px 44px -14px rgb(0 0 0 / 0.75); text-align: center">
+<svg viewBox="100 100 824 824" width="48" height="48" aria-hidden="true" style="border-radius: 11px; margin-bottom: 4px"><use href="#appicon"></use></svg>
+<h3 id="stop-t" class="t-head">Stop the jam?</h3>
+<p id="stop-d" class="t-sm t-2" style="max-width: 230px"><span class="num">7</span> guests will be disconnected.</p>
+<div style="display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 12px">
+<button class="btn-plain is-primary" style="height: 36px; min-height: 36px; font-size: 14px">Stop the jam</button>
+<button class="btn-plain" style="height: 36px; min-height: 36px; font-size: 14px">Keep it going</button>
+</div>
+</section>
+</section>
+</div>
+
+<section aria-labelledby="mbswift" style="position: absolute; left: 40px; top: 652px; width: 1620px; padding: 20px 22px; border-radius: 22px; background: rgb(10 10 14 / 0.8); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12)">
+<h2 id="mbswift" class="t-head" style="margin-bottom: 4px">SwiftUI · the menu-bar panel is the whole launcher</h2>
+<p class="t-sm t-2" style="margin-bottom: 16px">Start, watch and stop the jam here. The panel is the system’s glass, so nothing inside adds glass. A setup window opens only when a step fails (next board).</p>
+<ol class="legend">
+<li><span class="pin">1</span><div><code>MenuBarExtra { JamPanel() } label: { Image(jam.isLive ? "jar.fill" : "jar") } .menuBarExtraStyle(.window)</code>System panel material. No .glassEffect() inside it.</div></li>
+<li><span class="pin">2</span><div><code>Button("Start the jam", systemImage: "play.fill") { jam.start() } .buttonStyle(.borderedProminent) .controlSize(.large) .tint(.nimbrungRed)</code>The one prominent control. .nimbrungRed is #D62B30 in every state: no live tint, no gradient.</div></li>
+<li><span class="pin">3</span><div><code>ForEach(jam.steps) { StepRow(step: $0) }   Button("Cancel") { jam.cancel() } .buttonStyle(.bordered)</code>ProgressView().controlSize(.small) while a step runs, checkmark.circle.fill when it is done.</div></li>
+<li><span class="pin">4</span><div><code>NowPlayingRow()   Label("Live · \(jam.guestCount) guests", systemImage: "dot.radiowaves.left.and.right")</code>A label, not a control. The live dot is the only motion.</div></li>
+<li><span class="pin">5</span><div><code>Button("Copy link", systemImage: "doc.on.doc") .buttonStyle(.bordered) .controlSize(.small)</code>Works while stopped, so the link can go out before the party.</div></li>
+<li><span class="pin">6</span><div><code>Button("Stop the jam…", systemImage: "stop.fill") { if jam.guestCount &gt; 0 { confirmStop = true } else { jam.stop() } }</code>The ellipsis says it asks first. With nobody connected it stops at once.</div></li>
+<li><span class="pin">7</span><div><code>.confirmationDialog("Stop the jam?", isPresented: $confirmStop) { Button("Stop the jam", role: .destructive) { jam.stop() } } message: { Text("\(jam.guestCount) guests will be disconnected.") }</code>Quit (⌘Q) while live asks the same question.</div></li>
+<li><span class="pin">8</span><div><code>Image(jam.isLive ? "jar.fill" : "jar") .renderingMode(.template)</code>Template glyph: the jar fills while starting and stays full while live.</div></li>
+</ol>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1700,"height":980}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

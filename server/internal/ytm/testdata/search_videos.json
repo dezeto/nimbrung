@@ -1,0 +1,99 @@
+{
+ "contents": {
+  "tabbedSearchResultsRenderer": {
+   "tabs": [
+    {
+     "tabRenderer": {
+      "content": {
+       "sectionListRenderer": {
+        "contents": [
+         {
+          "musicShelfRenderer": {
+           "contents": [
+            {
+             "musicResponsiveListItemRenderer": {
+              "playlistItemData": {"videoId": "fJ9rUzIMcZQ"},
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Bohemian Rhapsody (Live At Wembley Stadium / July 1986)",
+                    "navigationEndpoint": {
+                     "watchEndpoint": {"watchEndpointMusicSupportedConfigs": {"watchEndpointMusicConfig": {"musicVideoType": "MUSIC_VIDEO_TYPE_OMV"}}}
+                    }
+                   }
+                  ]
+                 }
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [{"text": "Queen"}, {"text": " • "}, {"text": "2.1B views"}, {"text": " • "}, {"text": "6:00"}]}}
+               }
+              ]
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "playlistItemData": {"videoId": "dthAWAIDkog"},
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "LYKN (WILLIAM) - Bohemian Rhapsody @LYKN REFLEXION CONCERT Day1 - 23 Oct 2026 [4K]",
+                    "navigationEndpoint": {
+                     "watchEndpoint": {"watchEndpointMusicSupportedConfigs": {"watchEndpointMusicConfig": {"musicVideoType": "MUSIC_VIDEO_TYPE_UGC"}}}
+                    }
+                   }
+                  ]
+                 }
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [{"text": "ChocolatezB"}, {"text": " • "}, {"text": "36K views"}, {"text": " • "}, {"text": "6:19"}]}}
+               }
+              ]
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "playlistItemData": {"videoId": "_j4KIDFtpcA"},
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Bohemian Rhapsody",
+                    "navigationEndpoint": {
+                     "watchEndpoint": {
+                      "watchEndpointMusicSupportedConfigs": {"watchEndpointMusicConfig": {"musicVideoType": "MUSIC_VIDEO_TYPE_OFFICIAL_SOURCE_MUSIC"}}
+                     }
+                    }
+                   }
+                  ]
+                 }
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [{"text": "Forestella"}, {"text": " • "}, {"text": "6.1M views"}, {"text": " • "}, {"text": "6:08"}]}}
+               }
+              ]
+             }
+            }
+           ],
+           "continuations": [{"nextContinuationData": {"continuation": "videos-page-2"}}]
+          }
+         }
+        ]
+       }
+      }
+     }
+    }
+   ]
+  }
+ }
+}

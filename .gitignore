@@ -1,0 +1,16 @@
+node_modules/
+dist/
+!server/internal/web/dist/.gitkeep
+server/internal/web/dist/*
+/nimbrung
+.env
+test-results/
+.DS_Store
+.impeccable/
+
+# Notes for the AI coding assistant; local only
+CLAUDE.md
+docs/design/liquid-glass/HANDOFF.md
+
+# Product site: wrangler state
+site/.wrangler/

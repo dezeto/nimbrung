@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Add a song · link</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./glass.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+body{margin:0;background:#0f0f11}
+</style>
+</helmet>
+<div class="nb dark-glass" style="width: 390px; height: 844px">
+<div class="ambient"></div>
+
+<header class="layer" style="display: flex; flex-direction: column; gap: 12px; padding: 8px 16px 12px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 52px">
+<a href="Main.dc.html" class="glass-btn is-capsule glass-rim" style="height: 44px; padding: 0 16px 0 10px; gap: 4px; font-size: 15px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>Queue</a>
+<p role="status" class="t-sm t-2"><span class="num">2</span> adds left this minute</p>
+</div>
+<h1 class="t-large" style="padding-left: 4px">Add a song</h1>
+<div class="glass-field glass-rim">
+<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+<input type="search" name="q" aria-label="Search songs" placeholder="Song, artist, or a line of lyrics" autocomplete="off" enterkeyhint="search">
+</div>
+<div class="chips" role="group" aria-label="Search in">
+<button class="glass-btn is-capsule glass-rim" aria-pressed="true"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.6"><path d="M20 6 9 17l-5-5"></path></svg>Songs</button>
+<button class="glass-btn is-capsule glass-rim" aria-pressed="false">Videos</button>
+<button class="glass-btn is-capsule glass-rim" aria-pressed="false">Playlists</button>
+<button class="glass-btn is-capsule glass-rim" aria-pressed="false">Saved</button>
+</div>
+</header>
+
+<main class="layer" style="padding: 6px 16px 0">
+<section class="section" style="display: flex; flex-direction: column; padding: 4px 16px 16px">
+<p class="t-body" style="display: flex; align-items: center; gap: 10px; min-height: 52px; font-weight: 600"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color: #ff6b63"><path d="M7 7h4v4c0 3-2 5-4 6M15 7h4v4c0 3-2 5-4 6"></path></svg>Only remember a line? Type it.</p>
+<div style="height: 1px; background: rgb(255 255 255 / 0.09); margin: 0 -16px"></div>
+<form style="display: flex; flex-direction: column; gap: 10px; padding-top: 14px">
+<label for="link" class="t-body" style="display: flex; align-items: center; gap: 10px; font-weight: 600"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color: #ff6b63"><path d="M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 1 1 0 10h-2M8 12h8"></path></svg>Got a link?</label>
+<p class="t-sm t-2">Paste a YouTube or YouTube Music link to a song or a whole playlist, or use Share → Nimbrung from the app.</p>
+<div style="display: flex; gap: 8px; margin-top: 2px">
+<div class="field-inset" style="flex: 1; min-width: 0">
+<input id="link" type="url" name="url" value="music.youtube.com/playlist?list=PLr00ftop5ore" spellcheck="false" autocomplete="off" placeholder="https://music.youtube.com/watch?v=…" style="font-size: 14px">
+</div>
+<button type="submit" class="btn-plain is-primary" style="height: 44px; padding: 0 18px; font-size: 15px">Open</button>
+</div>
+<div role="status" style="display: flex; align-items: center; gap: 12px; margin-top: 4px; padding: 10px; border-radius: 16px; background: rgb(0 0 0 / 0.2)">
+<div class="art art-pelangi" style="width: 44px; height: 44px; border-radius: 8px"></div>
+<div class="row-text">
+<p class="row-title" style="font-size: 14px">Rooftop Sore</p>
+<p class="row-sub num">Playlist · Bima · 32 songs</p>
+</div>
+<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color: rgb(235 235 245 / 0.6)"><path d="m9 18 6-6-6-6"></path></svg>
+</div>
+<p class="t-xs t-2">A playlist opens so you can pick which songs to add.</p>
+</form>
+</section>
+</main>
+<div class="edge-bottom"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

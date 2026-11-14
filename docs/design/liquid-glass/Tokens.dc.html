@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>tokens.css</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./glass.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+body{margin:0;background:#0f0f11}
+a{color:#ff6b63}a:hover{color:#ff8f88}
+.code{margin:0;padding:20px 22px;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;line-height:16px;white-space:pre;overflow-x:auto;color:#d9d9e3;tab-size:2}
+.spec{display:flex;flex-direction:column;gap:10px}
+.spec-cap{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;color:#ffd0cc}
+.ratio{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;font-size:13px;line-height:18px}
+.ratio dt{display:flex;align-items:center;gap:8px}
+.ratio dd{margin:0;font-variant-numeric:tabular-nums;font-weight:650;text-align:right}
+</style>
+</helmet>
+<div class="nb dark-glass" style="box-sizing: border-box; width: 1440px; height: 2170px; padding: 48px">
+<header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 24px">
+<div>
+<h1 class="t-large" style="font-size: 40px; line-height: 48px">tokens.css</h1>
+<p class="t-body t-2" style="margin-top: 6px">The canonical token file for the liquid-glass-design skill. Every artboard on this canvas loads it, then glass.css for the patterns.</p>
+</div>
+<p class="t-sm t-2 mono">--lg-bg · blur · border · shadow · radius · duration · ink</p>
+</header>
+
+<section aria-label="Specimens" style="position: relative; height: 600px; border-radius: 32px; overflow: hidden; padding: 32px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px">
+<div class="ambient"></div>
+
+<div class="spec layer">
+<p class="spec-cap">.glass-card</p>
+<div class="glass-card" style="padding: 16px; display: flex; gap: 12px; align-items: center"><div class="art art-senja" style="width: 52px; height: 52px; border-radius: 12px"></div><div class="row-text"><p class="row-title">Senja di Kemang</p><p class="row-sub">Laut Biru</p></div></div>
+<p class="spec-cap">.glass-card.is-lifted (hover)</p>
+<div class="glass-card is-lifted" style="padding: 16px; display: flex; gap: 12px; align-items: center"><div class="art art-lampu" style="width: 52px; height: 52px; border-radius: 12px"></div><div class="row-text"><p class="row-title">Lampu Kota</p><p class="row-sub">Orkes Malam</p></div></div>
+<p class="spec-cap">.glass-toolbar.is-floating</p>
+<div class="glass-toolbar is-floating glass-rim" style="display: flex; gap: 6px; padding: 6px"><span class="btn-plain is-primary" style="flex: 1; height: 44px">Add a song</span><span class="btn-plain" style="width: 44px; height: 44px; padding: 0"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></span></div>
+</div>
+
+<div class="spec layer">
+<p class="spec-cap">.glass-btn · rest / .is-pressed</p>
+<div style="display: flex; gap: 10px"><button class="glass-btn">Rest</button><button class="glass-btn is-pressed">Pressed</button></div>
+<p class="spec-cap">.is-capsule · .is-round · .is-primary</p>
+<div style="display: flex; gap: 10px; align-items: center"><button class="glass-btn is-capsule glass-rim">Vote to skip</button><button class="glass-btn is-round glass-rim" aria-label="Search"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></button></div>
+<button class="glass-btn is-capsule is-primary" style="align-self: flex-start">Join the jam</button>
+<p class="spec-cap">.chips</p>
+<div class="chips"><button class="glass-btn is-capsule glass-rim" aria-pressed="true"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.6"><path d="M20 6 9 17l-5-5"></path></svg>Songs</button><button class="glass-btn is-capsule glass-rim" aria-pressed="false">Videos</button><button class="glass-btn is-capsule glass-rim" aria-pressed="false">Playlists</button></div>
+<p class="spec-cap">.glass-field · .is-focus</p>
+<div class="glass-field glass-rim"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input aria-label="Search" placeholder="Song, artist, or a line…"></div>
+<div class="glass-field glass-rim is-focus"><input aria-label="Your name" value="Bima"></div>
+</div>
+
+<div class="spec layer" style="position: relative">
+<p class="spec-cap">.glass-overlay + .glass-modal</p>
+<div style="position: relative; flex: 1; border-radius: 24px; overflow: hidden; display: grid; place-items: center">
+<div class="art art-neon" style="position: absolute; inset: 0"></div>
+<div class="glass-overlay" style="position: absolute; inset: 0"></div>
+<section class="glass-modal" role="dialog" aria-label="Keyboard shortcuts" style="position: relative; width: 88%; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px">
+<h2 class="t-head">Keyboard shortcuts</h2>
+<dl style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 12px; align-items: center; font-size: 13px">
+<dt class="kbd">⌥P</dt><dd>Play / pause</dd>
+<dt class="kbd">⌥S</dt><dd>Skip</dd>
+<dt class="kbd">⌥M</dt><dd>Mute</dd>
+<dt class="kbd">⌥C</dt><dd>Copy invite link</dd>
+<dt class="kbd">⌥A</dt><dd>Add a song</dd>
+<dt class="kbd">/</dt><dd>Search</dd>
+<dt class="kbd">Esc</dt><dd>Back</dd>
+</dl>
+</section>
+</div>
+</div>
+
+<div class="spec layer">
+<p class="spec-cap">Ink on glass · measured on #26222B</p>
+<div class="glass-card" style="padding: 16px 18px">
+<dl class="ratio">
+<dt><span style="color: var(--lg-ink); font-weight: 650">Aa</span>--lg-ink</dt><dd>14.3:1</dd>
+<dt><span style="color: var(--lg-ink-muted); font-weight: 650">Aa</span>--lg-ink-muted</dt><dd>7.8:1</dd>
+<dt><span style="color: var(--lg-ink-subtle); font-weight: 650">Aa</span>--lg-ink-subtle</dt><dd>5.7:1</dd>
+<dt><span style="color: #ff6b63; font-weight: 650">Aa</span>--nb-accent-text</dt><dd>5.6:1</dd>
+<dt><span style="background: #d62b30; color: #fff; font-weight: 650; padding: 0 4px; border-radius: 4px">Aa</span>on --nb-accent-fill</dt><dd>4.9:1</dd>
+<dt><span style="color: #ff3b3b; font-weight: 650">Aa</span>--nb-accent (icons only)</dt><dd>4.4:1</dd>
+</dl>
+</div>
+<p class="spec-cap" style="margin-top: 6px">Placement</p>
+<ul class="glass-card" style="padding: 14px 18px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 18px">
+<li><b>Glass:</b> bars, toolbars, floating controls, the now-playing card, the sidebar, modals.</li>
+<li><b>Plain:</b> list rows, content sections, anything inside glass (.btn-plain, .field-inset).</li>
+<li><b>Never:</b> glass on an opaque fill, or glass inside glass.</li>
+</ul>
+</div>
+</section>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 32px">
+<div class="section" style="border-radius: 24px; overflow: hidden">
+<pre class="code">/* Liquid Glass tokens (canonical copy for the liquid-glass-design skill).
+   Colours use light-dark(): the OS picks the mode, and .dark-glass /
+   .light-glass force one on a subtree. Blur radii are not colours, so
+   they switch with an explicit override (dark glass blurs more). */
+
+/* ===== Tokens ===== */
+:root {
+  color-scheme: light dark;
+
+  /* Glass backgrounds */
+  --lg-bg-primary: light-dark(rgb(255 255 255 / 0.55), rgb(28 28 34 / 0.5));
+  --lg-bg-toolbar: light-dark(rgb(250 250 252 / 0.5), rgb(22 22 28 / 0.38));
+  /* Controls: a fill of 0.2 or more plus --lg-border-control, so a button's
+     edge reaches 3:1 against whatever is behind it */
+  --lg-bg-interactive: light-dark(rgb(255 255 255 / 0.66), rgb(255 255 255 / 0.2));
+  --lg-bg-pressed: light-dark(rgb(255 255 255 / 0.92), rgb(255 255 255 / 0.32));
+  --lg-bg-elevated: light-dark(rgb(255 255 255 / 0.78), rgb(36 36 44 / 0.72));
+  --lg-bg-scrim: light-dark(rgb(0 0 0 / 0.18), rgb(6 6 8 / 0.46));
+
+  /* Blur and saturation (dark values; light below) */
+  --lg-blur-sm: 10px;
+  --lg-blur-md: 20px;
+  --lg-blur-lg: 32px;
+  --lg-blur-xl: 56px;
+  --lg-saturate: 180%;
+
+  /* Borders */
+  --lg-border-color: light-dark(rgb(255 255 255 / 0.7), rgb(255 255 255 / 0.16));
+  --lg-border-subtle: light-dark(rgb(0 0 0 / 0.08), rgb(255 255 255 / 0.08));
+  --lg-border-control: light-dark(rgb(0 0 0 / 0.5), rgb(255 255 255 / 0.3));
+
+  /* Shadows: offset plus soft blur */
+  --lg-shadow-elevated:
+    0 1px 2px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.2)),
+    0 10px 28px -8px light-dark(rgb(0 0 0 / 0.16), rgb(0 0 0 / 0.45));
+  --lg-shadow-high:
+    0 2px 6px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.24)),
+    0 28px 60px -14px light-dark(rgb(0 0 0 / 0.24), rgb(0 0 0 / 0.62));
+
+  /* Radius (concentric: inner = outer - inset) */
+  --lg-radius-md: 14px;
+  --lg-radius-lg: 24px;
+  --lg-radius-xl: 34px;
+
+  /* Motion */
+  --lg-duration-fast: 180ms;
+  --lg-duration-normal: 420ms;
+  --lg-easing-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /* Ink: text on glass, at least 4.5:1 on the glass it sits on */
+  --lg-ink: light-dark(#1c1c1e, #f5f5f7);
+  --lg-ink-muted: light-dark(rgb(60 60 67 / 0.86), rgb(235 235 245 / 0.74));
+  --lg-ink-subtle: light-dark(rgb(60 60 67 / 0.76), rgb(235 235 245 / 0.6));
+
+  /* Extensions beyond the shared spec */
+  --lg-specular: light-dark(rgb(255 255 255 / 0.8), rgb(255 255 255 / 0.3));
+  --lg-ambient: transparent;        /* the app sets this to the colour under the glass */
+  --lg-tint-strength: 12%;          /* how much of --lg-ambient tints the glass */
+  --lg-radius-full: 999px;
+  --lg-lift: translateY(-2px);      /* hover lift */
+  --lg-press-scale: 0.97;           /* :active */
+  --lg-enter-from: scale(0.95) translateY(8px);
+}
+
+/* A real spring where the browser can draw one */
+@supports (transition-timing-function: linear(0, 1)) {
+  :root {
+    --lg-easing-spring: linear(0, 0.06 2%, 0.24 5%, 0.72 12%, 0.95 16.5%, 1.06 20.5%, 1.1 24%, 1.09 28%, 1.04 33%, 0.99 40%, 0.98 47%, 1 60%, 1);
+  }
+}
+
+/* Light glass blurs less */
+@media (prefers-color-scheme: light) {
+  :root {
+    --lg-blur-sm: 8px;
+    --lg-blur-md: 16px;
+    --lg-blur-lg: 24px;
+    --lg-blur-xl: 40px;
+  }
+}</pre>
+</div>
+<div class="section" style="border-radius: 24px; overflow: hidden">
+<pre class="code">/* Force a mode on a subtree */
+.light-glass {
+  color-scheme: light;
+  --lg-blur-sm: 8px;
+  --lg-blur-md: 16px;
+  --lg-blur-lg: 24px;
+  --lg-blur-xl: 40px;
+}
+.dark-glass {
+  color-scheme: dark;
+  --lg-blur-sm: 10px;
+  --lg-blur-md: 20px;
+  --lg-blur-lg: 32px;
+  --lg-blur-xl: 56px;
+}
+
+/* ===== Animation ===== */
+@keyframes glass-enter {
+  from { opacity: 0; transform: var(--lg-enter-from); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ===== Accessibility ===== */
+
+/* Reduce Motion: opacity only. Nothing moves or scales, and blur is
+   never animated (patterns transition transform, shadow and colour,
+   never backdrop-filter). */
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  .light-glass,
+  .dark-glass {
+    --lg-easing-spring: ease-out;
+    --lg-lift: none;
+    --lg-press-scale: 1;
+    --lg-enter-from: none;
+  }
+}
+
+/* Increase Contrast and Reduce Transparency: solid surfaces, no blur.
+   The spec says prefers-contrast: high; browsers implement "more". */
+@media (prefers-contrast: more), (prefers-contrast: high), (prefers-reduced-transparency: reduce) {
+  :root,
+  .light-glass,
+  .dark-glass {
+    --lg-bg-primary: light-dark(#ffffff, #1c1c1f);
+    --lg-bg-toolbar: light-dark(#f5f5f7, #141417);
+    --lg-bg-interactive: light-dark(#e9e9ee, #2a2a30);
+    --lg-bg-pressed: light-dark(#d8d8de, #3a3a42);
+    --lg-bg-elevated: light-dark(#ffffff, #222228);
+    --lg-bg-scrim: light-dark(rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.82));
+    --lg-blur-sm: 0px;
+    --lg-blur-md: 0px;
+    --lg-blur-lg: 0px;
+    --lg-blur-xl: 0px;
+    --lg-saturate: 100%;
+    --lg-border-color: light-dark(rgb(0 0 0 / 0.5), rgb(255 255 255 / 0.45));
+    --lg-border-subtle: light-dark(rgb(0 0 0 / 0.32), rgb(255 255 255 / 0.3));
+    --lg-border-control: light-dark(rgb(0 0 0 / 0.72), rgb(255 255 255 / 0.62));
+    --lg-ink-muted: light-dark(#3a3a3f, #d1d1d6);
+    --lg-ink-subtle: light-dark(#48484f, #b8b8c0);
+    --lg-specular: transparent;
+    --lg-tint-strength: 0%;
+  }
+}</pre>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2170}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

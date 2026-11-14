@@ -1,0 +1,269 @@
+/* Trimmed from docs/design/liquid-glass/glass.css, 2026-11-14: only the
+   patterns this site uses. The app-layer colours sit on :root (light below,
+   as web/apps/web/src/glass.css does), so the page and the mock follow the
+   OS together. Glass is the floating layer only, never glass inside glass. */
+
+:root {
+  --art-1: #ff6a55;
+  --art-2: #c3338e;
+  --art-3: #3b2477;
+  --lg-ambient: var(--art-1);
+  --ambient-dim: 0.5;
+
+  --nb-ground: #0f0f11;
+  --nb-separator: rgb(255 255 255 / 0.09);
+  --nb-accent: #ff3b3b;        /* hearts, progress, icons (4.4:1: not for text) */
+  --nb-accent-text: #ff6b63;   /* red text: 5.6:1 */
+  --nb-accent-fill: #d62b30;   /* filled buttons: white label 4.9:1 */
+  --nb-on-accent: #ffffff;
+  --nb-sel-ring: rgb(255 255 255 / 0.85);
+  --nb-shade: 15 15 17;
+  --nb-fg: 255 255 255;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --nb-ground: #f3f1f4;
+    --nb-shade: 247 245 248;
+    --nb-fg: 0 0 0;
+    --nb-separator: rgb(0 0 0 / 0.1);
+    --nb-accent: #e0262d;
+    --nb-accent-text: #a00f16;
+    --nb-sel-ring: rgb(0 0 0 / 0.78);
+    --ambient-dim: 0.74;
+  }
+}
+@media (prefers-contrast: more), (prefers-contrast: high), (prefers-reduced-transparency: reduce) {
+  :root { --nb-separator: rgb(var(--nb-fg) / 0.28); }
+}
+
+/* Ambient response: each glass surface mixes in the colour under it */
+.glass-card, .glass-toolbar, .glass-btn {
+  --_tint: color-mix(in oklab, var(--lg-ambient) var(--lg-tint-strength), transparent);
+}
+
+.glass-card {
+  background: linear-gradient(var(--_tint), var(--_tint)), var(--lg-bg-primary);
+  -webkit-backdrop-filter: blur(var(--lg-blur-md)) saturate(var(--lg-saturate));
+  backdrop-filter: blur(var(--lg-blur-md)) saturate(var(--lg-saturate));
+  border: 1px solid var(--lg-border-color);
+  border-radius: var(--lg-radius-lg);
+  box-shadow: inset 0 1px 0 var(--lg-specular), var(--lg-shadow-elevated);
+}
+
+.glass-toolbar {
+  background: linear-gradient(var(--_tint), var(--_tint)), var(--lg-bg-toolbar);
+  -webkit-backdrop-filter: blur(var(--lg-blur-lg)) saturate(var(--lg-saturate));
+  backdrop-filter: blur(var(--lg-blur-lg)) saturate(var(--lg-saturate));
+  border-bottom: 1px solid var(--lg-border-subtle);
+}
+.glass-toolbar.is-floating {
+  border: 1px solid var(--lg-border-color);
+  border-radius: var(--lg-radius-full);
+  box-shadow: inset 0 1px 0 var(--lg-specular), var(--lg-shadow-high);
+}
+
+.glass-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  background: linear-gradient(var(--_tint), var(--_tint)), var(--lg-bg-interactive);
+  -webkit-backdrop-filter: blur(var(--lg-blur-sm)) saturate(var(--lg-saturate));
+  backdrop-filter: blur(var(--lg-blur-sm)) saturate(var(--lg-saturate));
+  border: 1px solid var(--lg-border-control);
+  border-radius: var(--lg-radius-md);
+  box-shadow: inset 0 1px 0 var(--lg-specular);
+  color: var(--lg-ink);
+  font-size: 15px;
+  font-weight: 550;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: transform var(--lg-duration-fast) var(--lg-easing-spring),
+    background-color var(--lg-duration-fast) ease-out;
+}
+.glass-btn:active { transform: scale(var(--lg-press-scale)); background: var(--lg-bg-pressed); }
+.glass-btn.is-capsule { border-radius: var(--lg-radius-full); }
+.glass-btn.is-round { border-radius: 50%; padding: 0; width: 44px; }
+/* Prominent: the one solid red action. Solid, so the label holds 4.9:1 on any backdrop. */
+.glass-btn.is-primary {
+  background: var(--nb-accent-fill);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-color: var(--nb-accent-fill);
+  color: var(--nb-on-accent);
+  font-weight: 650;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2), 0 8px 20px -8px rgb(110 8 12 / 0.55);
+}
+.glass-btn.is-primary:active { background: var(--nb-accent-fill); }
+.glass-btn.is-primary.glass-rim::before { display: none; }
+
+/* Specular rim on floating glass */
+.glass-rim { position: relative; isolation: isolate; }
+.glass-rim::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.1) 28%,
+    rgb(255 255 255 / 0) 55%, rgb(255 255 255 / 0.22));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Lens: a floating round glass control (the dock's round button) */
+.glass-btn.is-lens {
+  width: 60px;
+  height: 60px;
+  background:
+    radial-gradient(90% 70% at 32% 12%, rgb(255 255 255 / 0.24), transparent 60%),
+    linear-gradient(var(--_tint), var(--_tint)), var(--lg-bg-interactive);
+  border-color: light-dark(rgb(255 255 255 / 0.7), rgb(255 255 255 / 0.2));
+  box-shadow: inset 0 1px 0 var(--lg-specular), inset 0 -10px 14px -10px rgb(255 255 255 / 0.35),
+    0 12px 26px -12px rgb(0 0 0 / 0.6);
+}
+
+/* ===== Not glass ===== */
+.btn-plain {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: var(--lg-radius-full);
+  background: var(--lg-bg-interactive);
+  border: 1px solid var(--lg-border-control);
+  color: var(--lg-ink);
+  font-size: 14px;
+  font-weight: 550;
+  white-space: nowrap;
+  transition: transform var(--lg-duration-fast) var(--lg-easing-spring), background-color var(--lg-duration-fast) ease-out;
+}
+.btn-plain:active { transform: scale(var(--lg-press-scale)); background: var(--lg-bg-pressed); }
+.field-inset {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: var(--lg-radius-full);
+  background: rgb(var(--nb-fg) / 0.08);
+  box-shadow: inset 0 0 0 1px var(--lg-border-control);
+  color: var(--lg-ink-subtle);
+}
+
+.t-2 { color: var(--lg-ink-muted); }
+.t-3 { color: var(--lg-ink-subtle); }
+.num { font-variant-numeric: tabular-nums; }
+.trunc { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+svg.ico { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+svg.ico.sm { width: 16px; height: 16px; }
+svg.ico.xs { width: 14px; height: 14px; }
+svg.ico.fill { fill: currentColor; stroke: none; }
+
+/* Ambient backdrop: the artwork, blurred, under a dimming layer */
+.ambient { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: var(--nb-ground); }
+.ambient::before {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  background:
+    radial-gradient(38% 30% at 28% 18%, var(--art-1), transparent 70%),
+    radial-gradient(40% 34% at 78% 26%, var(--art-2), transparent 72%),
+    radial-gradient(55% 45% at 45% 62%, var(--art-3), transparent 75%);
+  filter: blur(48px) saturate(150%);
+  opacity: 0.85;
+}
+.ambient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(var(--nb-shade) / var(--ambient-dim)), rgb(var(--nb-shade) / calc(var(--ambient-dim) + 0.08)) 40%, rgb(var(--nb-shade) / 0.8) 90%);
+}
+@media (prefers-color-scheme: light) { .ambient::before { opacity: 0.75; } }
+.ambient.is-moving::before { animation: ambient-drift 40s ease-in-out infinite alternate; }
+@keyframes ambient-drift {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  50% { transform: translate3d(-6%, 4%, 0) rotate(8deg) scale(1.08); }
+  100% { transform: translate3d(5%, -3%, 0) rotate(-6deg) scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) { .ambient.is-moving::before { animation: none; } }
+
+/* Scroll edge: content fades and blurs under floating glass */
+.edge-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  height: 140px;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  background: linear-gradient(to top, rgb(var(--nb-shade) / 0.6), rgb(var(--nb-shade) / 0));
+  -webkit-mask-image: linear-gradient(to top, #000 40%, transparent);
+  mask-image: linear-gradient(to top, #000 40%, transparent);
+}
+
+/* Rows: plain on the backdrop */
+.list { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.row { position: relative; display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 8px 0; }
+.row + .row::after { content: ""; position: absolute; top: 0; left: 60px; right: 0; height: 1px; background: var(--nb-separator); }
+.thumb { width: 48px; height: 48px; flex: none; border-radius: 10px; }
+.row-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.row-title { margin: 0; font-size: 15px; line-height: 20px; font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row-sub { margin: 0; font-size: 13px; line-height: 18px; color: var(--lg-ink-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row.is-mine { margin: 0 -10px; padding: 8px 10px; border-radius: 18px; background: rgb(var(--nb-fg) / 0.07); box-shadow: inset 0 0 0 1px rgb(var(--nb-fg) / 0.14); }
+.row.is-mine::after, .row.is-mine + .row::after { display: none; }
+.t-mine { color: var(--nb-accent-text); font-weight: 650; }
+.icon-btn { width: 44px; height: 44px; flex: none; display: inline-grid; place-items: center; border-radius: 50%; color: var(--lg-ink-muted); }
+.icon-btn.is-on { color: var(--nb-accent); }
+
+/* Now playing */
+.progress { height: 4px; border-radius: var(--lg-radius-full); background: rgb(var(--nb-fg) / 0.18); overflow: hidden; }
+.progress > i { display: block; height: 100%; border-radius: inherit; background: var(--nb-accent); }
+
+/* Live moments */
+.float-reaction { position: absolute; z-index: 6; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 34px; line-height: 1; pointer-events: none; filter: drop-shadow(0 6px 12px rgb(0 0 0 / 0.35)); }
+.float-reaction > span { font-size: 10px; line-height: 14px; font-weight: 600; padding: 0 6px; border-radius: var(--lg-radius-full); background: var(--lg-bg-elevated); color: var(--lg-ink); }
+.react { width: 44px; height: 44px; flex: none; display: inline-grid; place-items: center; border-radius: 50%; font-size: 22px; line-height: 1; }
+
+/* Two asks that share one control fill (Quieter | Louder) */
+.seg-group { display: inline-flex; align-items: center; flex: none; gap: 2px; padding: 2px; border-radius: var(--lg-radius-full); background: var(--lg-bg-interactive); border: 1px solid var(--lg-border-control); }
+.seg-group > span { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: var(--lg-radius-full); font-size: 13px; font-weight: 600; color: var(--lg-ink-muted); }
+
+/* Stand-in album art (no real artwork) */
+.art { position: relative; overflow: hidden; flex: none; background-color: #2a2a30; }
+.art::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1); }
+.art-senja {
+  --art-1: #ff6a55; --art-2: #c3338e; --art-3: #3b2477;
+  background-image:
+    radial-gradient(60% 55% at 28% 30%, color-mix(in oklab, var(--art-1) 70%, #fff), transparent 62%),
+    radial-gradient(75% 70% at 85% 90%, var(--art-3), transparent 72%),
+    linear-gradient(140deg, var(--art-1) 0%, var(--art-2) 52%, var(--art-3) 100%);
+}
+.art-senja::before {
+  content: "";
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 24%;
+  height: 30%;
+  border-radius: 999px 999px 0 0;
+  background: rgb(255 238 226 / 0.55);
+}
+.art-kopi { background-image: radial-gradient(45% 45% at 50% 46%, #3d1d0c 0 60%, transparent 62%), radial-gradient(70% 60% at 30% 20%, #ffd59a, transparent 65%), linear-gradient(150deg, #f0a24a, #a5531f 70%, #4a220e); }
+.art-lampu { background-image: repeating-linear-gradient(90deg, rgb(255 230 140 / 0.7) 0 2px, transparent 2px 7px), linear-gradient(180deg, #0d1b3d 0%, #1b4e8c 62%, #2ec4b6 100%); background-size: 100% 34%, 100% 100%; background-position: 0 100%, 0 0; background-repeat: no-repeat; }
+.art-neon { background-image: radial-gradient(circle at 50% 50%, transparent 0 27%, #ff4fa3 28% 34%, transparent 35%), radial-gradient(circle at 50% 50%, transparent 0 44%, rgb(120 220 255 / 0.6) 45% 47%, transparent 48%), linear-gradient(135deg, #2a0b52, #8f3dd9); }
+.art-pulang { background-image: linear-gradient(120deg, transparent 0 46%, rgb(255 255 255 / 0.5) 46% 50%, transparent 50%), linear-gradient(160deg, #c8e67a, #3f8a5a 55%, #12261e); }
+
+/* Increase Contrast and Reduce Transparency: solid, no blur (the tokens do the glass) */
+@media (prefers-contrast: more), (prefers-contrast: high), (prefers-reduced-transparency: reduce) {
+  .ambient::before { opacity: 0.3; }
+  .edge-bottom { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Queue</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./glass.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div class="nb {{theme}}" style="width: 390px; height: 844px; --art-1: {{np.a1}}; --art-2: {{np.a2}}; --art-3: {{np.a3}}; --ambient-dim: {{dim}}">
+<div class="ambient is-moving"></div>
+
+<div class="layer" style="position: absolute; left: 0; right: 0; top: 0; padding: 66px 16px 0; transform: translateY({{offset}}px)">
+
+<section aria-label="Now playing" class="glass-card glass-rim" style="display: flex; flex-direction: column; gap: 12px; padding: 14px; border-radius: 28px">
+<div style="display: flex; align-items: center; gap: 14px">
+<div class="art art-now" style="width: 120px; height: 120px; border-radius: 16px; box-shadow: 0 12px 28px -12px rgb(0 0 0 / 0.6)"></div>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<h2 style="font-size: 21px; line-height: 26px; font-weight: 700; letter-spacing: -0.02em; text-wrap: balance">{{np.title}}</h2>
+<p class="t-body t-2 trunc" style="font-weight: 500">{{np.artist}}</p>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; margin: 4px -10px 0 0">
+<p class="t-sm t-2 by">Added by <span class="av {{np.byClass}}">{{np.byInitial}}</span>{{np.by}}</p>
+<button class="icon-btn" aria-pressed="true" aria-label="Save {{np.title}}"><svg class="ico fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+</div>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 10px">
+<span class="t-xs t-2 num" style="width: 34px; font-weight: 600">1:58</span>
+<div class="progress" role="progressbar" aria-label="Song progress" aria-valuemin="0" aria-valuemax="222" aria-valuenow="118" style="flex: 1; height: 6px"><i style="width: 53%"></i></div>
+<span class="t-xs t-2 num" style="width: 34px; font-weight: 600; text-align: right">−1:44</span>
+</div>
+
+<div style="display: flex; gap: 8px">
+<button class="btn-plain" aria-pressed="{{skipPressed}}" style="flex: 1; min-width: 0; height: 50px; padding: 0 16px; gap: 8px; font-size: 15px">
+<sc-if value="{{voted}}" hint-placeholder-val="{{ false }}"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.6"><path d="M20 6 9 17l-5-5"></path></svg></sc-if>
+<sc-if value="{{notVoted}}" hint-placeholder-val="{{ true }}"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4l10 8-10 8z"></path><path d="M19 5v14"></path></svg></sc-if>
+{{skipLabel}} · <span class="num">{{skipCount}}</span>
+</button>
+</div>
+<sc-if value="{{voted}}" hint-placeholder-val="{{ false }}">
+<p role="status" class="t-sm t-2" style="margin-top: -4px; padding: 0 4px">You voted. One more vote skips this song.</p>
+</sc-if>
+</section>
+
+<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px">
+<div role="group" aria-label="React to the song" style="display: flex; margin-left: -4px">
+<button class="react" aria-label="React with fire">🔥</button>
+<button class="react" aria-label="React with love">❤️</button>
+<button class="react" aria-label="React with laughter">😂</button>
+<button class="icon-btn" aria-label="More reactions" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11v1a10 10 0 1 1-9-10"></path><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><path d="M9 9h.01M15 9h.01"></path><path d="M16 5h6M19 2v6"></path></svg></button>
+</div>
+<div class="seg-group" role="group" aria-label="Ask the host about the volume">
+<button aria-pressed="{{quietPressed}}" aria-label="Ask the host for quieter">Quieter</button>
+<button aria-pressed="false" aria-label="Ask the host for louder">Louder</button>
+</div>
+</div>
+
+<button class="chat-peek" aria-expanded="false" aria-label="Open chat, 12 messages. Latest from Sari: this one is a banger">
+<svg class="ico sm t-2" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
+<span class="trunc" style="flex: 1; text-align: left"><b style="font-weight: 650">Sari</b> <span class="t-2">this one is a banger</span></span>
+<span class="peek-burst" aria-hidden="true"><i style="transform: translateY(-5px)">🔥</i><i style="transform: translateY(3px); opacity: 0.75">💃</i><i style="transform: translateY(-2px); opacity: 0.55">🔥</i></span>
+<span class="t-sm t-2 num" style="display: inline-flex; align-items: center; gap: 2px">12<svg class="ico xs" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></span>
+</button>
+
+<section aria-labelledby="upnext" style="margin-top: 14px">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 0 4px">
+<h2 id="upnext" class="t-head">Up next</h2>
+<p class="t-xs t-2 num">6 songs · 22 min</p>
+</div>
+<p class="t-xs t-2" style="padding: 2px 4px 4px">Hold your song to move it or take it out.</p>
+<ul class="list">
+<li class="row">
+<div class="art art-lampu thumb"></div>
+<div class="row-text"><p class="row-title">Lampu Kota</p><p class="row-sub by">Orkes Malam · <span class="av c-sari">S</span>Sari</p></div>
+<span class="t-sm t-2 num" style="padding-right: 4px">5:02</span>
+</li>
+<li class="row is-mine" aria-label="Kopi Pagi by Teman Sebangku. Yours, number 2, in about 7 minutes">
+<div class="art art-kopi thumb"></div>
+<div class="row-text"><p class="row-title">Kopi Pagi</p><p class="row-sub by"><span class="av c-bima">B</span><span class="t-mine">Yours</span> · <span class="num">#2 · about 7 min</span></p></div>
+<span class="t-sm t-2 num">3:15</span>
+<button class="icon-btn" aria-label="Move or take out Kopi Pagi" aria-haspopup="menu" style="margin-right: -8px"><svg class="ico fill" viewBox="0 0 24 24" aria-hidden="true" style="stroke: none"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></button>
+</li>
+<li class="row">
+<div class="art art-neon thumb"></div>
+<div class="row-text"><p class="row-title">Neon Slowdance</p><p class="row-sub by">Kaca Pagi · <span class="av c-putri">P</span>Putri · just added</p></div>
+<span class="t-sm t-2 num" style="padding-right: 4px">3:28</span>
+</li>
+<li class="row">
+<div class="art art-pulang thumb"></div>
+<div class="row-text"><p class="row-title">Jalan Pulang</p><p class="row-sub by">Rumah Kaca · <span class="av c-dewi">D</span>Dewi</p></div>
+<span class="t-sm t-2 num" style="padding-right: 4px">3:51</span>
+</li>
+<li class="row">
+<div class="art art-mono thumb"></div>
+<div class="row-text"><p class="row-title">Tidur Siang</p><p class="row-sub by">Pelangi Malam · <span class="av c-andi">A</span>Andi</p></div>
+<span class="t-sm t-2 num" style="padding-right: 4px">3:05</span>
+</li>
+<li class="row is-mine" aria-label="Kota Senja by Teman Sebangku. Yours, number 6, in about 20 minutes">
+<div class="art art-merah thumb"></div>
+<div class="row-text"><p class="row-title">Kota Senja</p><p class="row-sub by"><span class="av c-bima">B</span><span class="t-mine">Yours</span> · <span class="num">#6 · about 20 min</span></p></div>
+<span class="t-sm t-2 num">3:12</span>
+<button class="icon-btn" aria-label="Move or take out Kota Senja" aria-haspopup="menu" style="margin-right: -8px"><svg class="ico fill" viewBox="0 0 24 24" aria-hidden="true" style="stroke: none"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></button>
+</li>
+</ul>
+</section>
+
+<section aria-labelledby="autoplay" style="margin-top: 22px">
+<h2 id="autoplay" class="t-head" style="display: flex; align-items: center; gap: 8px; padding: 0 4px">Autoplay<svg class="ico t-3" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12c-2-2.67-4-4-6-4a4 4 0 1 0 0 8c2 0 4-1.33 6-4Zm0 0c2 2.67 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.33-6 4Z"></path></svg></h2>
+<p class="t-sm t-2" style="padding: 2px 4px 4px">Keeps the music going after Up next.</p>
+<ul class="list">
+<li class="row">
+<div class="art art-sore thumb"></div>
+<div class="row-text"><p class="row-title">Lagu Sore</p><p class="row-sub">Sinar Kecil</p></div>
+<span class="t-sm t-2 num" style="padding-right: 4px">2:58</span>
+</li>
+<li class="row">
+<div class="art art-hujan thumb"></div>
+<div class="row-text"><p class="row-title">Hujan di Blok M</p><p class="row-sub">Orkes Malam</p></div>
+<span class="t-sm t-2 num" style="padding-right: 4px">3:36</span>
+</li>
+</ul>
+</section>
+</div>
+
+<sc-if value="{{scrolled}}" hint-placeholder-val="{{ false }}">
+<div class="edge-top" style="height: 104px"></div>
+</sc-if>
+
+<header class="layer" style="position: absolute; z-index: 5; left: 0; right: 0; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 60px; padding: 8px 16px 0 20px">
+<div style="min-width: 0">
+<h1 class="t-head trunc">Rina’s rooftop</h1>
+<p class="t-xs t-2">Code <span translate="no" class="mono" style="font-weight: 600">K7QX</span></p>
+</div>
+<button class="glass-btn is-capsule glass-rim" aria-label="7 in the jam. Show guests" style="flex: none; height: 44px; padding: 0 14px 0 9px; gap: 8px; font-size: 14px">
+<span class="av-stack" aria-hidden="true"><span class="av c-rina">R</span><span class="av c-sari">S</span><span class="av c-dewi">D</span><span class="av c-putri">P</span></span><span class="num">7</span>
+</button>
+</header>
+
+<div class="edge-bottom"></div>
+
+<sc-if value="{{scrolled}}" hint-placeholder-val="{{ false }}">
+<div class="accessory glass-toolbar is-floating glass-rim" role="group" aria-label="Now playing">
+<div class="art art-now" style="width: 42px; height: 42px; border-radius: 50%"></div>
+<div class="row-text"><p class="row-title" style="font-size: 14px; line-height: 18px">{{np.title}}</p><p class="row-sub" style="font-size: 12px; line-height: 16px">{{np.artist}}</p></div>
+<button class="btn-plain" aria-pressed="{{skipPressed}}" style="height: 42px; min-height: 42px; gap: 6px; font-size: 13px" aria-label="{{skipLabel}}, {{skipCount}}"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4l10 8-10 8z"></path><path d="M19 5v14"></path></svg><span class="num">{{skipCount}}</span></button>
+</div>
+</sc-if>
+
+<nav aria-label="Song actions" style="position: absolute; z-index: 5; left: 16px; right: 16px; bottom: 22px; display: flex; gap: 10px">
+<a href="Search.dc.html" class="glass-btn is-primary is-capsule" style="flex: 1; height: 60px; gap: 8px; font-size: 17px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.4"><path d="M5 12h14M12 5v14"></path></svg>Add a song</a>
+<a href="Saved.dc.html" class="glass-btn is-round is-lens glass-rim" aria-label="Saved songs"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width: 26px; height: 26px"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"song":{"editor":"enum","options":["senja","laut","kopi"],"default":"senja","section":"Ambient"},"view":{"editor":"enum","options":["top","scrolled"],"default":"top","section":"Variant"},"skip":{"editor":"enum","options":["open","voted"],"default":"open","section":"Variant"},"theme":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Variant"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const songs = {
+      senja: { title: 'Senja di Kemang', artist: 'Laut Biru', by: 'Rina', byInitial: 'R', byClass: 'c-rina', a1: '#ff6a55', a2: '#c3338e', a3: '#3b2477', dim: 0.5 },
+      laut: { title: 'Pelabuhan Jam Dua', artist: 'Ombak Tenang', by: 'Sari', byInitial: 'S', byClass: 'c-sari', a1: '#2ed3c6', a2: '#1f6fd1', a3: '#0f2a5c', dim: 0.52 },
+      kopi: { title: 'Matahari Plastik', artist: 'Sinar Kecil', by: 'Dewi', byInitial: 'D', byClass: 'c-dewi', a1: '#ffb04a', a2: '#d8612a', a3: '#5a2814', dim: 0.6 }
+    };
+    const np = songs[this.props.song] || songs.senja;
+    const scrolled = this.props.view === 'scrolled';
+    const voted = this.props.skip === 'voted';
+    const light = this.props.theme === 'light';
+    return {
+      np: np,
+      theme: light ? 'light-glass' : 'dark-glass',
+      dim: light ? 0.74 : np.dim,
+      scrolled: scrolled,
+      top: !scrolled,
+      offset: scrolled ? -330 : 0,
+      voted: voted,
+      notVoted: !voted,
+      skipPressed: voted ? 'true' : 'false',
+      skipLabel: voted ? 'Voted to skip' : 'Vote to skip',
+      skipCount: voted ? '2 of 3' : '1 of 3',
+      quietPressed: voted ? 'true' : 'false'
+    };
+  }
+}
+</script>
+</body>
+</html>

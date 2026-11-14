@@ -1,0 +1,15 @@
+{
+  "name": "nimbrung-site",
+  "private": true,
+  "description": "The Nimbrung product site, static files on Workers assets",
+  "scripts": {
+    "dev": "wrangler dev --port 8788",
+    "deploy": "wrangler deploy",
+    "shots": "node capture/shoot.mjs",
+    "og": "node capture/og.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0",
+    "wrangler": "^4.152.0"
+  }
+}

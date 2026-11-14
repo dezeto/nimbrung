@@ -1,0 +1,146 @@
+/* from docs/design/liquid-glass/tokens.css, 2026-11-14. Copied as is; edit the source, then copy again. */
+/* Liquid Glass tokens (canonical copy for the liquid-glass-design skill).
+   Colours use light-dark(): the OS picks the mode, and .dark-glass /
+   .light-glass force one on a subtree. Blur radii are not colours, so
+   they switch with an explicit override (dark glass blurs more). */
+
+/* ===== Tokens ===== */
+:root {
+  color-scheme: light dark;
+
+  /* Glass backgrounds */
+  --lg-bg-primary: light-dark(rgb(255 255 255 / 0.55), rgb(28 28 34 / 0.5));
+  --lg-bg-toolbar: light-dark(rgb(250 250 252 / 0.5), rgb(22 22 28 / 0.38));
+  /* Controls: a fill of 0.2 or more plus --lg-border-control, so a button's
+     edge reaches 3:1 against whatever is behind it */
+  --lg-bg-interactive: light-dark(rgb(255 255 255 / 0.66), rgb(255 255 255 / 0.2));
+  --lg-bg-pressed: light-dark(rgb(255 255 255 / 0.92), rgb(255 255 255 / 0.32));
+  --lg-bg-elevated: light-dark(rgb(255 255 255 / 0.78), rgb(36 36 44 / 0.72));
+  --lg-bg-scrim: light-dark(rgb(0 0 0 / 0.18), rgb(6 6 8 / 0.46));
+
+  /* Blur and saturation (dark values; light below) */
+  --lg-blur-sm: 10px;
+  --lg-blur-md: 20px;
+  --lg-blur-lg: 32px;
+  --lg-blur-xl: 56px;
+  --lg-saturate: 180%;
+
+  /* Borders */
+  --lg-border-color: light-dark(rgb(255 255 255 / 0.7), rgb(255 255 255 / 0.16));
+  --lg-border-subtle: light-dark(rgb(0 0 0 / 0.08), rgb(255 255 255 / 0.08));
+  --lg-border-control: light-dark(rgb(0 0 0 / 0.5), rgb(255 255 255 / 0.3));
+
+  /* Shadows: offset plus soft blur */
+  --lg-shadow-elevated:
+    0 1px 2px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.2)),
+    0 10px 28px -8px light-dark(rgb(0 0 0 / 0.16), rgb(0 0 0 / 0.45));
+  --lg-shadow-high:
+    0 2px 6px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.24)),
+    0 28px 60px -14px light-dark(rgb(0 0 0 / 0.24), rgb(0 0 0 / 0.62));
+
+  /* Radius (concentric: inner = outer - inset) */
+  --lg-radius-md: 14px;
+  --lg-radius-lg: 24px;
+  --lg-radius-xl: 34px;
+
+  /* Motion */
+  --lg-duration-fast: 180ms;
+  --lg-duration-normal: 420ms;
+  --lg-easing-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /* Ink: text on glass, at least 4.5:1 on the glass it sits on */
+  --lg-ink: light-dark(#1c1c1e, #f5f5f7);
+  --lg-ink-muted: light-dark(rgb(60 60 67 / 0.86), rgb(235 235 245 / 0.74));
+  --lg-ink-subtle: light-dark(rgb(60 60 67 / 0.76), rgb(235 235 245 / 0.6));
+
+  /* Extensions beyond the shared spec */
+  --lg-specular: light-dark(rgb(255 255 255 / 0.8), rgb(255 255 255 / 0.3));
+  --lg-ambient: transparent;        /* the app sets this to the colour under the glass */
+  --lg-tint-strength: 12%;          /* how much of --lg-ambient tints the glass */
+  --lg-radius-full: 999px;
+  --lg-lift: translateY(-2px);      /* hover lift */
+  --lg-press-scale: 0.97;           /* :active */
+  --lg-enter-from: scale(0.95) translateY(8px);
+}
+
+/* A real spring where the browser can draw one */
+@supports (transition-timing-function: linear(0, 1)) {
+  :root {
+    --lg-easing-spring: linear(0, 0.06 2%, 0.24 5%, 0.72 12%, 0.95 16.5%, 1.06 20.5%, 1.1 24%, 1.09 28%, 1.04 33%, 0.99 40%, 0.98 47%, 1 60%, 1);
+  }
+}
+
+/* Light glass blurs less */
+@media (prefers-color-scheme: light) {
+  :root {
+    --lg-blur-sm: 8px;
+    --lg-blur-md: 16px;
+    --lg-blur-lg: 24px;
+    --lg-blur-xl: 40px;
+  }
+}
+
+/* Force a mode on a subtree */
+.light-glass {
+  color-scheme: light;
+  --lg-blur-sm: 8px;
+  --lg-blur-md: 16px;
+  --lg-blur-lg: 24px;
+  --lg-blur-xl: 40px;
+}
+.dark-glass {
+  color-scheme: dark;
+  --lg-blur-sm: 10px;
+  --lg-blur-md: 20px;
+  --lg-blur-lg: 32px;
+  --lg-blur-xl: 56px;
+}
+
+/* ===== Animation ===== */
+@keyframes glass-enter {
+  from { opacity: 0; transform: var(--lg-enter-from); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ===== Accessibility ===== */
+
+/* Reduce Motion: opacity only. Nothing moves or scales, and blur is
+   never animated (patterns transition transform, shadow and colour,
+   never backdrop-filter). */
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  .light-glass,
+  .dark-glass {
+    --lg-easing-spring: ease-out;
+    --lg-lift: none;
+    --lg-press-scale: 1;
+    --lg-enter-from: none;
+  }
+}
+
+/* Increase Contrast and Reduce Transparency: solid surfaces, no blur.
+   The spec says prefers-contrast: high; browsers implement "more". */
+@media (prefers-contrast: more), (prefers-contrast: high), (prefers-reduced-transparency: reduce) {
+  :root,
+  .light-glass,
+  .dark-glass {
+    --lg-bg-primary: light-dark(#ffffff, #1c1c1f);
+    --lg-bg-toolbar: light-dark(#f5f5f7, #141417);
+    --lg-bg-interactive: light-dark(#e9e9ee, #2a2a30);
+    --lg-bg-pressed: light-dark(#d8d8de, #3a3a42);
+    --lg-bg-elevated: light-dark(#ffffff, #222228);
+    --lg-bg-scrim: light-dark(rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.82));
+    --lg-blur-sm: 0px;
+    --lg-blur-md: 0px;
+    --lg-blur-lg: 0px;
+    --lg-blur-xl: 0px;
+    --lg-saturate: 100%;
+    --lg-border-color: light-dark(rgb(0 0 0 / 0.5), rgb(255 255 255 / 0.45));
+    --lg-border-subtle: light-dark(rgb(0 0 0 / 0.32), rgb(255 255 255 / 0.3));
+    --lg-border-control: light-dark(rgb(0 0 0 / 0.72), rgb(255 255 255 / 0.62));
+    --lg-ink-muted: light-dark(#3a3a3f, #d1d1d6);
+    --lg-ink-subtle: light-dark(#48484f, #b8b8c0);
+    --lg-specular: transparent;
+    --lg-tint-strength: 0%;
+  }
+}

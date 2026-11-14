@@ -1,0 +1,117 @@
+@import "@web/ui/globals.css";
+@import "./glass.css";
+
+/* Nimbrung look: #0F0F11 ground, #1A1A1E surfaces, red accent. The OS picks
+   dark or the light "bright room" (glass.css follows the same media query). */
+:root {
+  --background: #f3f1f4;
+  --primary: #d62b30; /* white label 4.9:1 */
+  --primary-foreground: #ffffff;
+}
+
+.dark {
+  --background: #0f0f11;
+  --card: #1a1a1e;
+  --popover: #1a1a1e;
+  --secondary: #1a1a1e;
+  --muted: #1a1a1e;
+  --primary: #d62b30; /* white label 4.9:1; #ff3b3b is for icons only (4.4:1) */
+  --primary-foreground: #ffffff;
+  color-scheme: dark; /* native scrollbars, the search ✕ and number spinners */
+}
+
+html {
+  /* No double-tap zoom when someone taps reactions quickly. */
+  touch-action: manipulation;
+  /* Keyboard focus never lands under the guest page's fixed "Add a song" bar. */
+  scroll-padding-bottom: 7rem;
+}
+
+/* Mnemonic letters ("S̲kip") show only while Option/Alt is held; useShortcuts
+   sets data-mnemonics on <html>. */
+:root[data-mnemonics] .mnemonic-key {
+  text-decoration-line: underline;
+  text-underline-offset: 4px;
+}
+
+/* Inter comes from Google Fonts (index.html), whose family name is "Inter". */
+@theme inline {
+  --font-sans: "Inter", sans-serif;
+}
+
+/* Live moments over the screen and the now-playing card
+   (components/live-stage.tsx). Each animation ends invisible and lasts as
+   long as the timer that removes it (hooks/use-live.ts). Distances are in
+   container units so the moments fit whatever shape their layer has. */
+.live-stage {
+  container-type: size;
+}
+
+.live-float {
+  animation: live-float 2.5s ease-out forwards;
+}
+
+.live-slide {
+  animation: live-slide 7s linear forwards;
+}
+
+.live-fade {
+  animation: live-fade 3s ease-in-out forwards;
+}
+
+@keyframes live-float {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+  12% {
+    opacity: 1;
+    scale: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    translate: var(--drift, 0.75rem) -85cqh;
+  }
+}
+
+@keyframes live-slide {
+  from {
+    translate: 100cqw 0;
+  }
+  to {
+    translate: -100% 0;
+  }
+}
+
+@keyframes live-fade {
+  from {
+    opacity: 0;
+  }
+  10%,
+  80% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Nothing moves for people who asked for less motion: moments fade in place. */
+@media (prefers-reduced-motion: reduce) {
+  .live-float,
+  .live-slide {
+    animation-name: live-fade;
+  }
+  .live-slide {
+    left: 0.5rem;
+    max-width: calc(100% - 1rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Thin, quiet scrollbars that sit on the glass instead of a grey gutter */
+* { scrollbar-width: thin; scrollbar-color: rgb(var(--nb-fg) / 0.25) transparent; }

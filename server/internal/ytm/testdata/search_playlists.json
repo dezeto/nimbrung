@@ -1,0 +1,199 @@
+{
+ "contents": {
+  "tabbedSearchResultsRenderer": {
+   "tabs": [
+    {
+     "tabRenderer": {
+      "content": {
+       "sectionListRenderer": {
+        "contents": [
+         {
+          "musicShelfRenderer": {
+           "contents": [
+            {
+             "musicResponsiveListItemRenderer": {
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Nhạc Lofi Gây Nghiện Hay Nhất 2021 | Lofi Chill 2021"
+                   }
+                  ]
+                 }
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Tiệm Nhạc Lofi"
+                   },
+                   {
+                    "text": " • "
+                   },
+                   {
+                    "text": "22K views"
+                   }
+                  ]
+                 }
+                }
+               }
+              ],
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://i.ytimg.com/vi/rIhXRRlvD9E/hq720.jpg?sqp=-oaymwEKCNUGEN8DIABIWg&rs=AMzJL3ltS3flE091dbxrOysSEfXUU95AEw",
+                   "width": 853
+                  }
+                 ]
+                }
+               }
+              },
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "VLPLRhpz_QE8rmYXE_sC2YjcP_hll-vIy1Xy",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Anime Lo-fi"
+                   }
+                  ]
+                 }
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Kijugo"
+                   },
+                   {
+                    "text": " • "
+                   },
+                   {
+                    "text": "11M views"
+                   }
+                  ]
+                 }
+                }
+               }
+              ],
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://yt3.googleusercontent.com/YPrbHMbnyRqT4aUOEBDaJg3ddzzCjISyhxlS0NlvAMV9wwNk8q-_cnejxb_0KdV9cBO-UqjoaFQ=s1200",
+                   "width": 1200
+                  }
+                 ]
+                }
+               }
+              },
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "VLPLl578ZPbYIlFcSxuka8Km37VgbUYUWI5p",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Nhạc Lofi Chill Tiktok - Bụi Chill"
+                   }
+                  ]
+                 }
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Bụi Chill"
+                   },
+                   {
+                    "text": " • "
+                   },
+                   {
+                    "text": "322K views"
+                   }
+                  ]
+                 }
+                }
+               }
+              ],
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://i.ytimg.com/vi/Z2oN7nVtclQ/hq720.jpg?sqp=-oaymwEKCNUGEN8DIABIWg&rs=AMzJL3kdD5RGWpKny5ehZRRrEJWP_knJ4g",
+                   "width": 853
+                  }
+                 ]
+                }
+               }
+              },
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "VLPLtPxndKI0wYK47ly9SHKbf9fttP_PFzt3",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                 }
+                }
+               }
+              }
+             }
+            }
+           ],
+           "continuations": [
+            {
+             "nextContinuationData": {
+              "continuation": "playlists-page-2"
+             }
+            }
+           ]
+          }
+         }
+        ]
+       }
+      }
+     }
+    }
+   ]
+  }
+ }
+}

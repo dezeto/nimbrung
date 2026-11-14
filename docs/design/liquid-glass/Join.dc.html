@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Join</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./glass.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+body{margin:0;background:#0f0f11}
+a{color:#ff6b63}a:hover{color:#ff8f88}
+</style>
+</helmet>
+<div class="nb dark-glass" style="width: 390px; height: 844px; --art-1: #ff4b3e; --art-2: #8e2de2; --art-3: #1e3a8a; --ambient-dim: 0.5">
+<div class="ambient"></div>
+<main class="layer" style="height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 40px; padding: 0 20px 48px">
+<header style="display: flex; flex-direction: column; gap: 22px">
+<svg viewBox="100 100 824 824" width="64" height="64" aria-hidden="true" style="border-radius: 14px; box-shadow: 0 12px 28px -10px rgb(0 0 0 / 0.6)">
+<defs>
+<linearGradient id="jbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a2342"></stop><stop offset="1" stop-color="#1c1226"></stop></linearGradient>
+<radialGradient id="jglow" cx="0.5" cy="0.66" r="0.45"><stop offset="0" stop-color="#ff3b3b" stop-opacity="0.55"></stop><stop offset="1" stop-color="#ff3b3b" stop-opacity="0"></stop></radialGradient>
+<linearGradient id="jjam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6d5e"></stop><stop offset="0.5" stop-color="#ff3b3b"></stop><stop offset="1" stop-color="#b8182b"></stop></linearGradient>
+<linearGradient id="jlid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity="0.95"></stop><stop offset="1" stop-color="#d9d4e4" stop-opacity="0.8"></stop></linearGradient>
+<clipPath id="jclip"><rect x="314" y="344" width="396" height="436" rx="92"></rect></clipPath>
+</defs>
+<rect x="100" y="100" width="824" height="824" rx="186" fill="url(#jbg)"></rect>
+<rect x="100" y="100" width="824" height="824" rx="186" fill="url(#jglow)"></rect>
+<g clip-path="url(#jclip)">
+<path d="M300 505 C 380 462 450 470 512 498 S 650 540 724 492 V 800 H 300 Z" fill="#ff8a7a" opacity="0.5"></path>
+<path d="M300 545 C 372 502 444 506 512 545 S 652 586 724 540 V 800 H 300 Z" fill="url(#jjam)"></path>
+</g>
+<rect x="296" y="326" width="432" height="472" rx="110" fill="#ffffff" fill-opacity="0.1" stroke="#ffffff" stroke-opacity="0.55" stroke-width="10"></rect>
+<rect x="336" y="396" width="26" height="300" rx="13" fill="#ffffff" fill-opacity="0.45"></rect>
+<rect x="360" y="236" width="304" height="100" rx="34" fill="url(#jlid)"></rect>
+</svg>
+<h1 style="display: flex; flex-direction: column; gap: 4px">
+<span class="t-head t-2" style="font-weight: 500">You’re invited to</span>
+<span class="t-large" style="font-size: 36px; line-height: 42px; text-wrap: balance">Rina’s rooftop</span>
+</h1>
+</header>
+
+<form style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label class="field-label" for="code">Room code</label>
+<div class="glass-field glass-rim" style="height: 54px">
+<input id="code" name="code" class="mono" value="K7QX" autocomplete="off" spellcheck="false" translate="no" style="font-size: 20px; font-weight: 600; letter-spacing: 0.32em">
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label class="field-label" for="name">Your name</label>
+<div class="glass-field glass-rim is-focus" style="height: 54px">
+<input id="name" name="name" value="Bima" placeholder="e.g. Rina…" autocomplete="nickname" spellcheck="false" style="font-size: 17px">
+</div>
+</div>
+<button type="submit" class="glass-btn is-primary is-capsule" style="height: 54px; font-size: 16px; margin-top: 8px">Join the jam</button>
+</form>
+
+<p class="t-sm t-2" style="text-align: center">No account, no app. Just pick songs.</p>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

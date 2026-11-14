@@ -1,0 +1,87 @@
+{
+ "contents": {
+  "tabbedSearchResultsRenderer": {
+   "tabs": [
+    {
+     "tabRenderer": {
+      "content": {
+       "sectionListRenderer": {
+        "contents": [
+         {
+          "itemSectionRenderer": {
+           "contents": [
+            {
+             "showingResultsForRenderer": {
+              "showingResultsFor": {"runs": [{"text": "Showing results for"}]},
+              "correctedQuery": {"runs": [{"text": "bohemian", "italics": true}, {"text": " "}, {"text": "rhapsody", "italics": true}]}
+             }
+            }
+           ]
+          }
+         },
+         {
+          "musicShelfRenderer": {
+           "contents": [
+            {
+             "musicResponsiveListItemRenderer": {
+              "playlistItemData": {"videoId": "BSTsnWoslP4"},
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Bohemian Rhapsody",
+                    "navigationEndpoint": {
+                     "watchEndpoint": {"watchEndpointMusicSupportedConfigs": {"watchEndpointMusicConfig": {"musicVideoType": "MUSIC_VIDEO_TYPE_ATV"}}}
+                    }
+                   }
+                  ]
+                 }
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [{"text": "Queen"}, {"text": " • "}, {"text": "A Night At The Opera"}, {"text": " • "}, {"text": "5:55"}]}}
+               }
+              ]
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "playlistItemData": {"videoId": "SjERDqnbmiA"},
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Bohemian Rhapsody",
+                    "navigationEndpoint": {
+                     "watchEndpoint": {"watchEndpointMusicSupportedConfigs": {"watchEndpointMusicConfig": {"musicVideoType": "MUSIC_VIDEO_TYPE_ATV"}}}
+                    }
+                   }
+                  ]
+                 }
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {"runs": [{"text": "Marc Martel"}, {"text": " • "}, {"text": "Thunderbolt and Lightning"}, {"text": " • "}, {"text": "5:58"}]}
+                }
+               }
+              ]
+             }
+            }
+           ],
+           "continuations": [{"nextContinuationData": {"continuation": "typo-page-2"}}]
+          }
+         }
+        ]
+       }
+      }
+     }
+    }
+   ]
+  }
+ }
+}

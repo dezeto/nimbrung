@@ -1,0 +1,91 @@
+{
+ "continuationContents": {
+  "musicShelfContinuation": {
+   "contents": [
+    {
+     "musicResponsiveListItemRenderer": {
+      "playlistItemData": {"videoId": "001WSZT0NG4"},
+      "flexColumns": [
+       {
+        "musicResponsiveListItemFlexColumnRenderer": {
+         "text": {
+          "runs": [
+           {
+            "text": "Bohemian Rhapsody (Live)",
+            "navigationEndpoint": {"watchEndpoint": {"watchEndpointMusicSupportedConfigs": {"watchEndpointMusicConfig": {"musicVideoType": "MUSIC_VIDEO_TYPE_ATV"}}}}
+           }
+          ]
+         }
+        }
+       },
+       {
+        "musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [{"text": "God Save the Queen"}, {"text": " • "}, {"text": "Bohemian Rhapsody (Live)"}, {"text": " • "}, {"text": "5:36"}]}}
+       }
+      ]
+     }
+    },
+    {
+     "musicResponsiveListItemRenderer": {
+      "playlistItemData": {"videoId": "_Xsu44ppnFQ"},
+      "flexColumns": [
+       {
+        "musicResponsiveListItemFlexColumnRenderer": {
+         "text": {
+          "runs": [
+           {
+            "text": "Bohemian Rhapsody x Walk It Talk It",
+            "navigationEndpoint": {"watchEndpoint": {"watchEndpointMusicSupportedConfigs": {"watchEndpointMusicConfig": {"musicVideoType": "MUSIC_VIDEO_TYPE_ATV"}}}}
+           }
+          ]
+         }
+        }
+       },
+       {
+        "musicResponsiveListItemFlexColumnRenderer": {
+         "text": {
+          "runs": [
+           {"text": "nimphia"},
+           {"text": " & "},
+           {"text": "klyron"},
+           {"text": " • "},
+           {"text": "Bohemian Rhapsody x Walk It Talk It"},
+           {"text": " • "},
+           {"text": "1:54"}
+          ]
+         }
+        }
+       }
+      ]
+     }
+    },
+    {
+     "musicResponsiveListItemRenderer": {
+      "playlistItemData": {"videoId": "Qd8DtYYloE8"},
+      "flexColumns": [
+       {
+        "musicResponsiveListItemFlexColumnRenderer": {
+         "text": {
+          "runs": [
+           {
+            "text": "Bohemian Rhapsody (Piano Arrangement)",
+            "navigationEndpoint": {"watchEndpoint": {"watchEndpointMusicSupportedConfigs": {"watchEndpointMusicConfig": {"musicVideoType": "MUSIC_VIDEO_TYPE_ATV"}}}}
+           }
+          ]
+         }
+        }
+       },
+       {
+        "musicResponsiveListItemFlexColumnRenderer": {
+         "text": {
+          "runs": [{"text": "Costantino Carrara"}, {"text": " • "}, {"text": "Bohemian Rhapsody (Piano Arrangement)"}, {"text": " • "}, {"text": "5:44"}]
+         }
+        }
+       }
+      ]
+     }
+    }
+   ],
+   "continuations": [{"nextContinuationData": {"continuation": "songs-page-3"}}]
+  }
+ }
+}

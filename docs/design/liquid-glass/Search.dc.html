@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Add a song</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./glass.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+body{margin:0;background:#0f0f11}
+</style>
+</helmet>
+<div class="nb dark-glass" style="width: 390px; height: 844px">
+<div class="ambient"></div>
+
+<main class="layer" style="position: absolute; left: 16px; right: 16px; top: 244px">
+<ul class="list" aria-label="Songs">
+<li class="row">
+<div class="art art-senja thumb"></div>
+<div class="row-text"><p class="row-title">Senja di Kemang</p><p class="row-sub num">Laut Biru · 3:42</p></div>
+<button class="icon-btn" aria-pressed="true" aria-label="Save Senja di Kemang"><svg class="ico fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+<span class="status t-accent" style="width: 82px; justify-content: flex-end"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg>Playing</span>
+</li>
+<li class="row">
+<div class="art art-pelangi thumb"></div>
+<div class="row-text"><p class="row-title">Senja Terakhir</p><p class="row-sub num">Pelangi Malam · 4:05</p></div>
+<button class="icon-btn" aria-pressed="false" aria-label="Save Senja Terakhir"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+<button class="btn-plain" style="width: 82px; height: 44px" aria-label="Add Senja Terakhir"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"></path></svg>Add</button>
+</li>
+<li class="row">
+<div class="art art-merah thumb"></div>
+<div class="row-text"><p class="row-title">Sampai Senja Nanti</p><p class="row-sub num">Rumah Kaca · 3:31</p></div>
+<button class="icon-btn" aria-pressed="false" aria-label="Save Sampai Senja Nanti"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+<span class="status t-2" style="width: 82px; justify-content: flex-end"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Queued</span>
+</li>
+<li class="row">
+<div class="art art-hujan thumb"></div>
+<div class="row-text"><p class="row-title">Senja &amp; Kamu</p><p class="row-sub num">Kaca Pagi · 2:58</p></div>
+<button class="icon-btn" aria-pressed="true" aria-label="Save Senja &amp; Kamu"><svg class="ico fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+<button class="btn-plain is-busy" aria-disabled="true" style="width: 82px; height: 44px; padding: 0 8px; gap: 5px" aria-label="Adding Senja &amp; Kamu"><svg class="ico xs" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.2-8.56"></path></svg>Adding</button>
+</li>
+<li class="row">
+<div class="art art-laut thumb"></div>
+<div class="row-text"><p class="row-title">Langit Senja (Akustik)</p><p class="row-sub num">Nadia Sore · 3:47</p></div>
+<button class="icon-btn" aria-pressed="false" aria-label="Save Langit Senja (Akustik)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+<button class="btn-plain" style="width: 82px; height: 44px" aria-label="Add Langit Senja (Akustik)"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"></path></svg>Add</button>
+</li>
+<li class="row">
+<div class="art art-kopi thumb"></div>
+<div class="row-text"><p class="row-title">Senja Merah Jambu</p><p class="row-sub num">Orkes Malam · 4:20</p></div>
+<button class="icon-btn" aria-pressed="false" aria-label="Save Senja Merah Jambu"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+<button class="btn-plain" style="width: 82px; height: 44px" aria-label="Add Senja Merah Jambu"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"></path></svg>Add</button>
+</li>
+<li class="row">
+<div class="art art-lampu thumb"></div>
+<div class="row-text"><p class="row-title">Kota Senja</p><p class="row-sub num">Teman Sebangku · 3:12</p></div>
+<button class="icon-btn" aria-pressed="false" aria-label="Save Kota Senja"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+<button class="btn-plain" style="width: 82px; height: 44px" aria-label="Add Kota Senja"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"></path></svg>Add</button>
+</li>
+<li class="row">
+<div class="art art-pulang thumb"></div>
+<div class="row-text"><p class="row-title">Senja Pulang Kampung</p><p class="row-sub num">Rumah Kaca · 3:58</p></div>
+<button class="icon-btn" aria-pressed="false" aria-label="Save Senja Pulang Kampung"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+<button class="btn-plain" style="width: 82px; height: 44px" aria-label="Add Senja Pulang Kampung"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"></path></svg>Add</button>
+</li>
+</ul>
+</main>
+
+<div class="edge-top" style="height: 240px"></div>
+<header class="layer" style="position: absolute; z-index: 5; left: 0; right: 0; top: 0; display: flex; flex-direction: column; gap: 12px; padding: 8px 16px 12px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 52px">
+<a href="Main.dc.html" class="glass-btn is-capsule glass-rim" style="height: 44px; padding: 0 16px 0 10px; gap: 4px; font-size: 15px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>Queue</a>
+<p role="status" class="t-sm t-2"><span class="num">2</span> adds left this minute</p>
+</div>
+<h1 class="t-large" style="padding-left: 4px">Add a song</h1>
+<div class="glass-field glass-rim">
+<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+<input type="search" name="q" value="senja" aria-label="Search songs" placeholder="Song, artist, or a line of lyrics" autocomplete="off" enterkeyhint="search">
+<button class="icon-btn" aria-label="Clear search" style="margin-right: -12px"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+<div class="chips" role="group" aria-label="Search in">
+<button class="glass-btn is-capsule glass-rim" aria-pressed="true"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.6"><path d="M20 6 9 17l-5-5"></path></svg>Songs</button>
+<button class="glass-btn is-capsule glass-rim" aria-pressed="false">Videos</button>
+<button class="glass-btn is-capsule glass-rim" aria-pressed="false">Playlists</button>
+<button class="glass-btn is-capsule glass-rim" aria-pressed="false">Saved</button>
+</div>
+</header>
+<div class="edge-bottom"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Add a song · Saved, empty</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./glass.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+body{margin:0;background:#0f0f11}
+</style>
+</helmet>
+<div class="nb dark-glass" style="width: 390px; height: 844px">
+<div class="ambient"></div>
+
+<main class="layer" style="position: absolute; left: 28px; right: 28px; top: 244px; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding-bottom: 120px; text-align: center">
+<div style="width: 76px; height: 76px; display: grid; place-items: center; margin-bottom: 4px; border-radius: 50%; background: rgb(255 255 255 / 0.08); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.16); color: var(--nb-accent)">
+<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width: 34px; height: 34px; stroke-width: 1.75"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
+</div>
+<h2 class="t-title">Nothing saved yet</h2>
+<p class="t-body t-2" style="max-width: 290px; text-wrap: pretty">Tap the heart on a song to keep it here. The list stays on this phone, for the next jam too.</p>
+<a href="Search.dc.html" class="glass-btn is-capsule is-primary" style="height: 50px; margin-top: 8px; padding: 0 24px; gap: 8px; font-size: 16px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>Search songs</a>
+</main>
+
+<header class="layer" style="position: absolute; z-index: 5; left: 0; right: 0; top: 0; display: flex; flex-direction: column; gap: 12px; padding: 8px 16px 12px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 52px">
+<a href="Main.dc.html" class="glass-btn is-capsule glass-rim" style="height: 44px; padding: 0 16px 0 10px; gap: 4px; font-size: 15px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>Queue</a>
+<p role="status" class="t-sm t-2"><span class="num">3</span> adds left this minute</p>
+</div>
+<h1 class="t-large" style="padding-left: 4px">Add a song</h1>
+<div class="glass-field glass-rim">
+<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+<input type="search" name="q" aria-label="Search your saved songs" placeholder="Search your saved songs" autocomplete="off" enterkeyhint="search">
+</div>
+<div class="chips" role="group" aria-label="Search in">
+<button class="glass-btn is-capsule glass-rim" aria-pressed="false">Songs</button>
+<button class="glass-btn is-capsule glass-rim" aria-pressed="false">Videos</button>
+<button class="glass-btn is-capsule glass-rim" aria-pressed="false">Playlists</button>
+<button class="glass-btn is-capsule glass-rim" aria-pressed="true"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.6"><path d="M20 6 9 17l-5-5"></path></svg>Saved</button>
+</div>
+</header>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

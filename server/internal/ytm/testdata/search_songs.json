@@ -1,0 +1,111 @@
+{
+ "contents": {
+  "tabbedSearchResultsRenderer": {
+   "tabs": [
+    {
+     "tabRenderer": {
+      "content": {
+       "sectionListRenderer": {
+        "contents": [
+         {
+          "musicShelfRenderer": {
+           "contents": [
+            {
+             "musicResponsiveListItemRenderer": {
+              "playlistItemData": {"videoId": "BSTsnWoslP4"},
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Bohemian Rhapsody",
+                    "navigationEndpoint": {
+                     "watchEndpoint": {"watchEndpointMusicSupportedConfigs": {"watchEndpointMusicConfig": {"musicVideoType": "MUSIC_VIDEO_TYPE_ATV"}}}
+                    }
+                   }
+                  ]
+                 }
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [{"text": "Queen"}, {"text": " • "}, {"text": "A Night At The Opera"}, {"text": " • "}, {"text": "5:55"}]}}
+               }
+              ]
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "playlistItemData": {"videoId": "SjERDqnbmiA"},
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Bohemian Rhapsody",
+                    "navigationEndpoint": {
+                     "watchEndpoint": {"watchEndpointMusicSupportedConfigs": {"watchEndpointMusicConfig": {"musicVideoType": "MUSIC_VIDEO_TYPE_ATV"}}}
+                    }
+                   }
+                  ]
+                 }
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {"runs": [{"text": "Marc Martel"}, {"text": " • "}, {"text": "Thunderbolt and Lightning"}, {"text": " • "}, {"text": "5:58"}]}
+                }
+               }
+              ]
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "playlistItemData": {"videoId": "_Xsu44ppnFQ"},
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Bohemian Rhapsody x Walk It Talk It",
+                    "navigationEndpoint": {
+                     "watchEndpoint": {"watchEndpointMusicSupportedConfigs": {"watchEndpointMusicConfig": {"musicVideoType": "MUSIC_VIDEO_TYPE_ATV"}}}
+                    }
+                   }
+                  ]
+                 }
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {"text": "nimphia"},
+                   {"text": " & "},
+                   {"text": "klyron"},
+                   {"text": " • "},
+                   {"text": "Bohemian Rhapsody x Walk It Talk It"},
+                   {"text": " • "},
+                   {"text": "1:54"}
+                  ]
+                 }
+                }
+               }
+              ]
+             }
+            }
+           ],
+           "continuations": [{"nextContinuationData": {"continuation": "songs-page-2"}}]
+          }
+         }
+        ]
+       }
+      }
+     }
+    }
+   ]
+  }
+ }
+}

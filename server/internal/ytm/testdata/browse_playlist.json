@@ -1,0 +1,263 @@
+{
+ "contents": {
+  "twoColumnBrowseResultsRenderer": {
+   "tabs": [
+    {
+     "tabRenderer": {
+      "content": {
+       "sectionListRenderer": {
+        "contents": [
+         {
+          "musicResponsiveHeaderRenderer": {
+           "title": {
+            "runs": [
+             {
+              "text": "Anime Lo-fi"
+             }
+            ]
+           }
+          }
+         }
+        ]
+       }
+      }
+     }
+    }
+   ],
+   "secondaryContents": {
+    "sectionListRenderer": {
+     "contents": [
+      {
+       "musicPlaylistShelfRenderer": {
+        "contents": [
+         {
+          "musicResponsiveListItemRenderer": {
+           "flexColumns": [
+            {
+             "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+               "runs": [
+                {
+                 "text": "River but is it okay if it's lofi?",
+                 "navigationEndpoint": {
+                  "watchEndpoint": {
+                   "watchEndpointMusicSupportedConfigs": {
+                    "watchEndpointMusicConfig": {
+                     "musicVideoType": "MUSIC_VIDEO_TYPE_OMV"
+                    }
+                   }
+                  }
+                 }
+                }
+               ]
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+               "runs": [
+                {
+                 "text": "Kijugo"
+                }
+               ]
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+               "runs": []
+              }
+             }
+            }
+           ],
+           "fixedColumns": [
+            {
+             "musicResponsiveListItemFixedColumnRenderer": {
+              "text": {
+               "runs": [
+                {
+                 "text": "3:05"
+                }
+               ]
+              }
+             }
+            }
+           ],
+           "thumbnail": {
+            "musicThumbnailRenderer": {
+             "thumbnail": {
+              "thumbnails": [
+               {
+                "url": "https://i.ytimg.com/vi/uk_wKYFLO0I/hqdefault.jpg?sqp=-oaymwEWCJADEOEBIAQqCggAEOADGC0guwJIWg&rs=AMzJL3mFA2yJ7n2Qmue1K0f_b9yETyIwiQ",
+                "width": 400
+               }
+              ]
+             }
+            }
+           },
+           "playlistItemData": {
+            "videoId": "uk_wKYFLO0I"
+           }
+          }
+         },
+         {
+          "musicResponsiveListItemRenderer": {
+           "flexColumns": [
+            {
+             "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+               "runs": [
+                {
+                 "text": "Bloody Stream but is it okay if it's lofi?",
+                 "navigationEndpoint": {
+                  "watchEndpoint": {
+                   "watchEndpointMusicSupportedConfigs": {
+                    "watchEndpointMusicConfig": {
+                     "musicVideoType": "MUSIC_VIDEO_TYPE_OMV"
+                    }
+                   }
+                  }
+                 }
+                }
+               ]
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+               "runs": [
+                {
+                 "text": "Kijugo"
+                }
+               ]
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+               "runs": []
+              }
+             }
+            }
+           ],
+           "fixedColumns": [
+            {
+             "musicResponsiveListItemFixedColumnRenderer": {
+              "text": {
+               "runs": [
+                {
+                 "text": "3:34"
+                }
+               ]
+              }
+             }
+            }
+           ],
+           "thumbnail": {
+            "musicThumbnailRenderer": {
+             "thumbnail": {
+              "thumbnails": [
+               {
+                "url": "https://i.ytimg.com/vi/pqdgpIlwlVo/hqdefault.jpg?sqp=-oaymwEWCJADEOEBIAQqCggAEOADGC0guwJIWg&rs=AMzJL3n3UY_4TNYET4txkTiBfOZgAGxMFA",
+                "width": 400
+               }
+              ]
+             }
+            }
+           },
+           "playlistItemData": {
+            "videoId": "pqdgpIlwlVo"
+           }
+          }
+         },
+         {
+          "musicResponsiveListItemRenderer": {
+           "flexColumns": [
+            {
+             "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+               "runs": [
+                {
+                 "text": "Idol but is it okay if it's lofi?",
+                 "navigationEndpoint": {
+                  "watchEndpoint": {
+                   "watchEndpointMusicSupportedConfigs": {
+                    "watchEndpointMusicConfig": {
+                     "musicVideoType": "MUSIC_VIDEO_TYPE_OFFICIAL_SOURCE_MUSIC"
+                    }
+                   }
+                  }
+                 }
+                }
+               ]
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+               "runs": [
+                {
+                 "text": "Kijugo"
+                },
+                {
+                 "text": " & "
+                },
+                {
+                 "text": "Venvn"
+                }
+               ]
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+               "runs": []
+              }
+             }
+            }
+           ],
+           "fixedColumns": [
+            {
+             "musicResponsiveListItemFixedColumnRenderer": {
+              "text": {
+               "runs": [
+                {
+                 "text": "1:44"
+                }
+               ]
+              }
+             }
+            }
+           ],
+           "thumbnail": {
+            "musicThumbnailRenderer": {
+             "thumbnail": {
+              "thumbnails": [
+               {
+                "url": "https://i.ytimg.com/vi/R9W-qJsTgsI/hqdefault.jpg?sqp=-oaymwEWCJADEOEBIAQqCggAEOADGC0guwJIWg&rs=AMzJL3m5P5o7fKzZnVoYraxm-o-epelB6w",
+                "width": 400
+               }
+              ]
+             }
+            }
+           },
+           "playlistItemData": {
+            "videoId": "R9W-qJsTgsI"
+           }
+          }
+         }
+        ]
+       }
+      }
+     ]
+    }
+   }
+  }
+ }
+}

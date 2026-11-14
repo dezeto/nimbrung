@@ -1,0 +1,193 @@
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-10-29T23:59:00Z"
+  },
+  "title": "Nimbrung Liquid Glass",
+  "launch": {
+    "view": "canvas"
+  },
+  "pages": [],
+  "boards": {
+    "Join.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Join",
+      "radius": 48
+    },
+    "Main.dc.html": {
+      "x": 470,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Queue",
+      "radius": 48
+    },
+    "QueueList.dc.html": {
+      "x": 940,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Queue \u00b7 scrolled to Up next",
+      "radius": 48
+    },
+    "QueueFooter.dc.html": {
+      "x": 1410,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Queue \u00b7 voted to skip",
+      "radius": 48
+    },
+    "QueueLight.dc.html": {
+      "x": 1880,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Queue \u00b7 bright room (light)",
+      "radius": 48
+    },
+    "Search.dc.html": {
+      "x": 2350,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Add a song",
+      "radius": 48
+    },
+    "SearchLink.dc.html": {
+      "x": 2820,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Add a song \u00b7 link",
+      "radius": 48
+    },
+    "Saved.dc.html": {
+      "x": 3290,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Add a song \u00b7 Saved chip",
+      "radius": 48
+    },
+    "SavedEmpty.dc.html": {
+      "x": 3760,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Add a song \u00b7 Saved, empty",
+      "radius": 48
+    },
+    "Host.dc.html": {
+      "x": 0,
+      "y": 1300,
+      "w": 1280,
+      "h": 1490,
+      "title": "Host page",
+      "expand": "fill"
+    },
+    "HostInvite.dc.html": {
+      "x": 1360,
+      "y": 1300,
+      "w": 1280,
+      "h": 860,
+      "title": "Host \u00b7 invite sheet"
+    },
+    "HostRoom.dc.html": {
+      "x": 2720,
+      "y": 1300,
+      "w": 1440,
+      "h": 900,
+      "title": "Room view \u00b7 full screen, readable at 4 m"
+    },
+    "MenuBar.dc.html": {
+      "x": 0,
+      "y": 3220,
+      "w": 1700,
+      "h": 980,
+      "title": "Menu-bar launcher (SwiftUI)"
+    },
+    "Launcher.dc.html": {
+      "x": 1780,
+      "y": 3220,
+      "w": 1640,
+      "h": 1000,
+      "title": "Setup window \u00b7 only when a step fails (SwiftUI)"
+    },
+    "Icon.dc.html": {
+      "x": 0,
+      "y": 4640,
+      "w": 1280,
+      "h": 920,
+      "title": "App icon"
+    },
+    "Tokens.dc.html": {
+      "x": 1360,
+      "y": 4640,
+      "w": 1440,
+      "h": 2170,
+      "title": "tokens.css"
+    },
+    "SongColors.dc.html": {
+      "x": 4230,
+      "y": 0,
+      "w": 1250,
+      "h": 900,
+      "title": "Queue \u00b7 background follows the song"
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Join.dc.html",
+    "QueueList.dc.html",
+    "QueueFooter.dc.html",
+    "QueueLight.dc.html",
+    "SongColors.dc.html",
+    "Search.dc.html",
+    "SearchLink.dc.html",
+    "Saved.dc.html",
+    "SavedEmpty.dc.html",
+    "Host.dc.html",
+    "HostInvite.dc.html",
+    "HostRoom.dc.html",
+    "MenuBar.dc.html",
+    "Launcher.dc.html",
+    "Icon.dc.html",
+    "Tokens.dc.html"
+  ],
+  "notes": {
+    "rowGuest": {
+      "x": 0,
+      "y": -300,
+      "text": "Guest phone \u00b7 390 px",
+      "kind": "title1",
+      "maxW": 5480
+    },
+    "rowMac": {
+      "x": 0,
+      "y": 1000,
+      "text": "Laptop \u00b7 host page and room view",
+      "kind": "title1",
+      "maxW": 4160
+    },
+    "rowLauncher": {
+      "x": 0,
+      "y": 2920,
+      "text": "Mac \u00b7 menu-bar launcher",
+      "kind": "title1",
+      "maxW": 3420
+    },
+    "rowIcon": {
+      "x": 0,
+      "y": 4340,
+      "text": "App icon and tokens.css",
+      "kind": "title1",
+      "maxW": 2800
+    }
+  },
+  "designSystems": []
+}

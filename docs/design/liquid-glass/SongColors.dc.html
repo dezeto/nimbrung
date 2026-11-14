@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Queue · background follows the song</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./glass.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+body{margin:0;background:#0f0f11}
+.cap{margin:0 0 16px;font:600 15px/20px Inter,system-ui,sans-serif;color:#d6d6dc}
+.cap span{color:#9a9aa3;font-weight:500}
+</style>
+</helmet>
+<div style="width: 1250px; height: 900px; display: flex; gap: 40px">
+<div><p class="cap">Song 1 <span>· coral artwork</span></p><dc-import name="Main" view="top" theme="dark" song="senja" hint-size="390px,844px"></dc-import></div>
+<div><p class="cap">Song 2 <span>· sea-blue artwork</span></p><dc-import name="Main" view="top" theme="dark" song="laut" hint-size="390px,844px"></dc-import></div>
+<div><p class="cap">Song 3 <span>· bright orange artwork, dimmed more</span></p><dc-import name="Main" view="top" theme="dark" song="kopi" hint-size="390px,844px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1250,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

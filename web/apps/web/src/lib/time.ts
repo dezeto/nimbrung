@@ -1,0 +1,5 @@
+/** 225 → "3:45". Songs over an hour are rare enough to show as "75:00". */
+export function formatDuration(seconds: number) {
+  const s = Math.max(0, Math.floor(seconds));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
