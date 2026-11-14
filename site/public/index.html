@@ -439,17 +439,17 @@
     <h2 id="needs-title">What you need</h2>
     <ul class="plain-list">
       <!-- src: macos/Info.plist:11 LSMinimumSystemVersion 14.0; Makefile:27 -apple-macos14; README.md "### Requirements" ("macOS, Windows or Linux laptop") and "### Run it" (./nimbrung from a terminal) -->
-      <li><b>A Mac with macOS 14 or later</b>, for the menu-bar app. The server alone also runs on Windows and Linux, started from a terminal.</li>
+      <li><b>A Mac with macOS 14 or later</b>, Apple Silicon or Intel, for the menu-bar app. The server alone also runs on Windows and Linux, started from a terminal.</li>
       <!-- src: README.md "### Requirements" ("YouTube Music desktop app … (pear-desktop …), logged in"); README.md "## Not affiliated" ("the third-party pear-desktop app") -->
       <li><b>The YouTube Music desktop app</b> (pear&#8209;desktop), signed in. It’s an open-source app by other developers.</li>
-      <!-- src: README.md "## Quick start on macOS" ("Xcode's command line tools (for `swiftc`), Go 1.24+ and Node.js with npm"); README.md "### Requirements" ("only to build") -->
-      <li><b>Go 1.24+ and Node.js with npm</b>, to build. Xcode command line tools, for the Mac app.</li>
+      <!-- src: Makefile "dist" target (universal app with nimbrung and scripts/jam.sh in Contents/Resources, ad-hoc signed, zipped); README.md "## Send the app to a friend" (Open Anyway in System Settings, once) -->
+      <li><b>Nothing to build.</b> The Mac app comes as one file with the server inside. Ask Adrian for it. It isn’t notarised by Apple, so the first time you open it you allow it once in System Settings.</li>
       <!-- src: macos/Setup.swift "/opt/homebrew/bin:" PATH for brew (l.120), "Homebrew isn’t installed" (l.165) -->
-      <li><b>Homebrew</b>, if you want the setup window to install things for you.</li>
+      <li><b>Homebrew.</b> The setup window uses it to install YouTube Music and the sharing tool.</li>
       <!-- src: README.md "### Friends outside the house" and "### The launcher by hand (macOS)"; macos/Setup.swift "Connect your free ngrok account" (l.839) -->
       <li><b>For friends outside your Wi-Fi</b> (optional): a free ngrok account, or a domain on Cloudflare.</li>
     </ul>
-    <!-- AFTER PUBLIC: add the build steps here (src: README.md "## Quick start on macOS")
+    <!-- AFTER PUBLIC: add "To build it yourself: Go 1.24+, Node.js with npm and Xcode command line tools" and the build steps here (src: README.md "## Quick start on macOS")
     <pre class="build"><code>cd web &amp;&amp; npm install &amp;&amp; cd ..
 make build
 make app</code></pre>
