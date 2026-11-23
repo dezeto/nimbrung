@@ -3,6 +3,18 @@
 // and swaps the device's screen; the last step turns the phone into the TV.
 document.documentElement.classList.add("js");
 
+// The captures come in four colour sets (the playing song's cover tints the app);
+// the HTML names indigo, and each visit gets one at random.
+// ponytail: the hero's indigo shots are already fetching by now, so a non-indigo
+// visit downloads them twice; pick the set in a Worker if that ever matters.
+const set = ["indigo", "rose", "ocean", "aurora"][Math.floor(Math.random() * 4)];
+if (set !== "indigo") {
+  for (const el of document.querySelectorAll('[src*="-v5-indigo"], [srcset*="-v5-indigo"]')) {
+    if (el.srcset) el.srcset = el.srcset.replaceAll("-v5-indigo", `-v5-${set}`);
+    if (el.getAttribute("src")) el.src = el.getAttribute("src").replaceAll("-v5-indigo", `-v5-${set}`);
+  }
+}
+
 const device = document.querySelector(".story-device");
 const steps = [...document.querySelectorAll(".story-steps > li")];
 // The device's screens and the blurred glow behind it, both keyed by data-step

@@ -35,7 +35,7 @@ Every picture is a capture of the real app on a demo jam: `capture/shoot.mjs`
 1× and `@2x`. The page uses `queue-dark`/`queue-light` (hero), `join`,
 `search`, `lyrics` and `room-queue` (story). The others (`host`, `recap`,
 `room-lyrics`) aren't on the page now; `/img/*` is cached as immutable, so give
-a changed capture a new version (`-v5` next) when it changes.
+a changed capture a new version (`-v6` next; each set is `-v5-<theme>`, see `THEMES` in capture/demo-stub.py) when it changes.
 
 ## OG image and touch icon
 

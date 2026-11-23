@@ -7,7 +7,7 @@
 //     -state-file "" -max-adds 0 -skip-votes 3 -poll 250ms -token-file <scratch>/token.json
 // then: node site/capture/shoot.mjs           (seeds the jam, shoots everything; run once per fresh server)
 //       node site/capture/shoot.mjs --shots   (only shoots, on a jam that is already seeded)
-// Env: BASE (default http://127.0.0.1:8191), STUB (http://127.0.0.1:26971), OUT (scratch dir for the PNGs),
+// Env: THEME (indigo, rose, ocean, aurora; same as the stub's) names the set, BASE (default http://127.0.0.1:8191), STUB (http://127.0.0.1:26971), OUT (scratch dir for the PNGs),
 //      ONLY=name,name to shoot a few. Needs cwebp (/opt/homebrew/bin/cwebp) and the web workspace's playwright-core.
 import { execFileSync } from "node:child_process";
 import { mkdirSync, statSync } from "node:fs";
@@ -24,6 +24,7 @@ const OUT = process.env.OUT ?? join(tmpdir(), "nimbrung-site-shots");
 const IMG = join(here, "../public/img");
 const HOST_KEY = "demo-host-key-7d2e9b";
 const ONLY = process.env.ONLY?.split(",");
+const THEME = process.env.THEME ?? "indigo";   // must match the stub's THEME
 mkdirSync(OUT, { recursive: true });
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -55,7 +56,7 @@ const phone = (scheme = "dark", state) =>
 const laptop = () => browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, colorScheme: "dark" });
 const wanted = (name) => !ONLY || ONLY.includes(name);
 
-/** PNG -> name-v4.webp (1x, downscaled, <= max1x KB) and name-v4@2x.webp (<= 300 KB), lowering the quality as needed. */
+/** PNG -> name-v5-THEME.webp (1x, downscaled, <= max1x KB) and name-v5-THEME@2x.webp (<= 300 KB), lowering the quality as needed. */
 function encode(name, w1, max1x = 120) {
   const png = join(OUT, name + ".png");
   const run = (out, resize, max) => {
@@ -66,8 +67,8 @@ function encode(name, w1, max1x = 120) {
     }
     return { q: 30, kb: statSync(out).size / 1024 };
   };
-  const a = run(join(IMG, `${name}-v4.webp`), w1, max1x);
-  const b = run(join(IMG, `${name}-v4@2x.webp`), 0, 300);
+  const a = run(join(IMG, `${name}-v5-${THEME}.webp`), w1, max1x);
+  const b = run(join(IMG, `${name}-v5-${THEME}@2x.webp`), 0, 300);
   console.log(`${name}: 1x q${a.q} ${a.kb.toFixed(0)} KB, 2x q${b.q} ${b.kb.toFixed(0)} KB`);
 }
 

@@ -2,7 +2,7 @@
 # Grown from web/apps/web/e2e/ytm-stub.py. Songs are invented except the first four (see SONGS); lyrics are invented.
 # Artwork is generated here (gradients), nothing is fetched.
 # usage: python3 stub.py PORT
-import json, math, random, struct, sys, time, zlib
+import json, math, os, random, struct, sys, time, zlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 
@@ -88,12 +88,20 @@ def png(w, h, rows):
 
 ART = {}
 # Hand-picked colours for the covers that fill the backdrop in the shots (the app blurs and dims the
-# playing song's art behind every page); seeded ones can land on muddy browns there.
-# index -> (top-left, bottom-right, glow, disc) as RGB
-PALETTES = {
-    0: ((92, 76, 255), (22, 18, 74), (255, 120, 196), (255, 214, 236)),    # Future: city night, pink glow
-    24: ((36, 176, 214), (16, 30, 96), (150, 236, 255), (226, 250, 255)),  # Senja di Kemang by Laut Biru: sea
+# playing song's art behind every page); seeded ones can land on muddy browns there. One set of
+# shots per theme (THEME env, default indigo); the site picks a set at random.
+# index -> (top-left, bottom-right, glow, disc) as RGB; 0 is Future, 24 the lyrics song.
+THEMES = {
+    "indigo": {0: ((92, 76, 255), (22, 18, 74), (255, 120, 196), (255, 214, 236)),
+               24: ((36, 176, 214), (16, 30, 96), (150, 236, 255), (226, 250, 255))},
+    "rose": {0: ((255, 64, 136), (72, 14, 74), (255, 168, 120), (255, 228, 222)),
+             24: ((150, 92, 255), (34, 16, 86), (255, 150, 220), (240, 226, 255))},
+    "ocean": {0: ((24, 150, 255), (8, 28, 92), (120, 255, 226), (220, 248, 255)),
+              24: ((40, 214, 170), (8, 48, 74), (180, 255, 210), (226, 255, 244))},
+    "aurora": {0: ((30, 200, 150), (14, 36, 96), (200, 255, 130), (232, 255, 236)),
+               24: ((255, 84, 120), (60, 18, 90), (255, 190, 140), (255, 232, 226))},
 }
+PALETTES = THEMES[os.environ.get("THEME", "indigo")]
 
 
 def art(vid):
