@@ -33,7 +33,7 @@ Every picture is a capture of the real app on a demo jam: `capture/shoot.mjs`
 1× and `@2x`. The page uses `queue-dark`/`queue-light` (hero), `join`,
 `search`, `lyrics` and `room-queue` (story). The others (`host`, `recap`,
 `room-lyrics`) aren't on the page now; `/img/*` is cached as immutable, so give
-a changed capture a new version (`-v2`) once the site is live.
+a changed capture a new version (`-v3` next) when it changes.
 
 ## OG image and touch icon
 
