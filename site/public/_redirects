@@ -1,0 +1,3 @@
+# Short links (Cloudflare Workers static assets). 302: the targets are other sites and may move.
+/pear      https://github.com/pear-devs/pear-desktop/releases/latest       302
+/download  https://github.com/dezeto/nimbrung/releases/latest/download/Nimbrung.zip  302

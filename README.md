@@ -102,7 +102,9 @@ has lyrics, they show there instead, with a switch back to the queue.
 
 [**Download Nimbrung.zip**](https://github.com/dezeto/nimbrung/releases/latest/download/Nimbrung.zip)
 (macOS 14 or later, Apple Silicon or Intel). Nothing to build: the app carries
-the server inside. It isn't notarised by Apple yet, so the first open takes one
+the server inside. You need [Homebrew](https://brew.sh) and a YouTube Music
+account; the setup window installs the YouTube Music desktop app
+([pear-desktop](https://github.com/pear-devs/pear-desktop)) for you. It isn't notarised by Apple yet, so the first open takes one
 extra step; see [Send the app to a friend](#send-the-app-to-a-friend), steps 1–4.
 
 ## Quick start on macOS

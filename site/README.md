@@ -5,20 +5,22 @@ file, served by Workers static assets. No build step. Only `public/` is deployed
 
 ## Edit
 
-Four parts, styled after t3.codes: the hero (the host page on the laptop and
-the guest queue on a phone, with guests' faces floating round the title), the
-story (four steps; the device pins while they scroll, each step swaps its
-screen, and the last turns the phone into the TV), "fork it" (a terminal and a
-checklist), and the closing call. Everything else lives in the repo README.
+Three parts: the hero (the host page on the laptop and the guest queue on a
+phone, with reactions rising behind the title), the story (four steps; the
+device pins while they scroll, each step swaps its screen, and the last turns
+the phone into the TV), and the closing call. Everything else lives in the repo README.
 
 - Copy: `public/index.html`. Every claim has a `src:` comment beside it. Change
   a claim only after checking the file it cites.
-- Look: `public/site.css` alone: flat black (white in light mode), hairlines
+- Look: `public/site.css` alone: the app's flat ground (dark, or bright-room light), hairlines
   between sections, red for the one filled action. `public/tokens.css` and
   `public/glass.css` are only for `404.html` now.
 - The story's scrolling: `public/site.js`. Without it every step reads in full
   and the device shows the join screen. Under Reduce Motion the device snaps
   to the TV instead of growing.
+- Short links in `public/_redirects`: `/pear` (pear-desktop's latest release)
+  and `/download` (the latest Nimbrung.zip), for places that can't hold a link,
+  like the GitHub description.
 - The CSP in `public/_headers` allows no inline styles or scripts: no `style=""`
   attributes, no `<script>` bodies.
 
