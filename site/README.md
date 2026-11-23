@@ -5,50 +5,35 @@ file, served by Workers static assets. No build step. Only `public/` is deployed
 
 ## Edit
 
-- Copy and sections: `public/index.html`. Every claim has a `src:` comment
-  beside it. Change a claim only after checking the file it cites.
-- Look: `public/site.css` (layout and type), `public/glass.css` (a trimmed copy
-  of `docs/design/liquid-glass/glass.css`), `public/tokens.css` (copied as is
-  from `docs/design/liquid-glass/tokens.css`; edit the source, then copy again).
-- The two moving parts (reactions over the hero art, the QR turning into the
-  join screen): `public/site.js`. The page works without it.
+Three parts: the hero (a real capture of the guest queue), the story (four
+steps; the device pins while they scroll, each step swaps its screen, and the
+last turns the phone into the TV), and the closing band. Everything else lives
+in the repo README.
+
+- Copy: `public/index.html`. Every claim has a `src:` comment beside it. Change
+  a claim only after checking the file it cites.
+- Look: `public/site.css` (layout, type, the story), `public/glass.css` (a
+  trimmed copy of `docs/design/liquid-glass/glass.css`), `public/tokens.css`
+  (copied as is from `docs/design/liquid-glass/tokens.css`; edit the source,
+  then copy again).
+- The story's scrolling: `public/site.js`. Without it every step reads in full
+  and the device shows the join screen. Under Reduce Motion the device snaps
+  to the TV instead of growing.
 - The CSP in `public/_headers` allows no inline styles or scripts: no `style=""`
   attributes, no `<script>` bodies.
-- The QR in `index.html` encodes `https://nimbrung.dezeto.dev/`. It was made
-  with the `qrcode` package in `web/node_modules`, one `<rect>` per module,
-  grouped in six rings from the centre so the reveal can stagger them.
 
 Check locally with `npm install && npm run dev` (wrangler, port 8788), or any
 static server pointed at `public/` (that one won't apply `_headers` or serve
 `404.html` for misses).
 
-## Captures still to add
+## Screenshots
 
-Put each file in `public/img/`. Every capture has a 1× file and a `@2x` file
-(DPR 2, WebP q≈80). The markup is already in `index.html` with these names,
-sizes and alt texts. While a file is missing, `site.js` hides its figure (and
-an empty row of figures); without JS the frame stays as a plain panel in the
-ground colour. Check each alt text in `index.html` against the real capture.
-
-| File (1×, then `@2x`) | Capture | 1× size (CSS px) | Where |
-|---|---|---|---|
-| `queue-dark-v1.webp`, `queue-dark-v1@2x.webp` | 1. `/` guest queue, dark | 390×844 | Guests, phone row |
-| `queue-light-v1.webp`, `queue-light-v1@2x.webp` | 2. `/` guest queue, light | 390×844 | Guests, phone row (light visitors) |
-| `join-v1.webp`, `join-v1@2x.webp` | 3. `/join/SORE` | 390×844 | Guests, phone row |
-| `search-v1.webp`, `search-v1@2x.webp` | 4. `/search` | 390×844 | Guests, phone row |
-| `lyrics-v1.webp`, `lyrics-v1@2x.webp` | 5. Lyrics sheet open | 390×844 | Guests, phone row |
-| `recap-v1.webp`, `recap-v1@2x.webp` | 6. `/recap`, full page | 390 wide; captured 390×872, as the markup says | Recap. The frame shows the top 390×844; if the capture's height isn't 1100, change `height="1100"` on its `<img>` |
-| `host-v1.webp`, `host-v1@2x.webp` | 7. `/host?key=…` | 1440×900 | Host |
-| `room-queue-v1.webp`, `room-queue-v1@2x.webp` | 8. `/room`, queue mode | 1440×900 | Room view, and the hero's TV frame from 1024px wide |
-| `room-lyrics-v1.webp`, `room-lyrics-v1@2x.webp` | 9. `/room`, lyrics mode | 1440×900 | Room view |
-| `setup-sharing-v1.webp`, `setup-sharing-v1@2x.webp` | 10. Setup window, "How guests reach you" | 780×560 | Mac |
-| `menubar-v1.webp`, `menubar-v1@2x.webp` | 12. Menu-bar panel | markup says 340×460 | Mac. Change `width`/`height` on its `<img>` to the real crop |
-
-Capture 11 (setup window, Player control) has no place on the page; the plan's
-Mac section shows only the Sharing step and the panel.
-
-Budgets (plan §6): each below-fold image ≤ 120 KB, the hero room image ≤ 140 KB,
-whole page ≤ 900 KB. Run the plan's scrub list on every file before it goes in.
+Every picture is a capture of the real app on a demo jam: `capture/shoot.mjs`
+(its header says how to start the demo) writes them to `public/img/` as WebP,
+1× and `@2x`. The page uses `queue-dark`/`queue-light` (hero), `join`,
+`search`, `lyrics` and `room-queue` (story). The others (`host`, `recap`,
+`room-lyrics`) aren't on the page now; `/img/*` is cached as immutable, so give
+a changed capture a new version (`-v2`) once the site is live.
 
 ## OG image and touch icon
 

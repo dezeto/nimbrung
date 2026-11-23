@@ -28,9 +28,9 @@
 <script type="module" src="/site.js"></script>
 </head>
 <body>
-<!-- Every factual claim has a "src:" comment beside it, checked against the tree on 2026-11-14.
-     README.md is cited by a quoted phrase (grep for it) because its line numbers move. Line numbers
-     elsewhere were right on 2026-11-14 but files were being edited that day: grep the quoted string. -->
+<!-- Every factual claim has a "src:" comment beside it. README.md is cited by a quoted phrase
+     (grep for it) because its line numbers move. Every picture is a capture of the real app
+     (site/capture/shoot.mjs, on a demo jam). -->
 <svg class="sr-only" aria-hidden="true" focusable="false">
   <defs>
     <linearGradient id="jar-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a2342"/><stop offset="1" stop-color="#1c1226"/></linearGradient>
@@ -56,432 +56,71 @@
 
 <main id="main">
 
-<!-- ===== Hero ===== -->
+<!-- ===== 1. Hero ===== -->
 <section class="hero" aria-labelledby="hero-title">
-  <div class="ambient is-moving hero-ambient" aria-hidden="true"></div>
-  <div class="wrap hero-grid">
-    <div class="hero-copy">
-      <!-- src: README.md intro "A self-hosted jam for YouTube Music." -->
-      <p class="eyebrow">A self-hosted jam for YouTube Music</p>
-      <h1 id="hero-title">Everyone picks the music.</h1>
-      <!-- src: README.md intro "One laptop plays through the speaker. Everyone else adds songs from their phone. No account, no app.";
-           README.md "## How it works" step 2 "Guests scan the QR code";
-           web/apps/web/src/routes/join.$code.tsx:80 ("Pick your face"), :113-115 (name field), :149 ("Join the jam") -->
-      <p class="lead">Nimbrung turns a laptop and a speaker into a queue the whole room can add to. Guests scan a QR code and add songs from their phones. No account, no app.</p>
-      <!-- src: README.md "(Indonesian): to join in on something already going." -->
-      <p class="name-line"><i lang="id">Nimbrung</i> (Indonesian): to join in on something already going.</p>
-      <div class="actions">
-        <a class="glass-btn is-primary is-capsule btn-lg" href="https://github.com/dezeto/nimbrung#readme">Get it on GitHub</a>
-        <a class="text-link" href="#how">How it works <span aria-hidden="true">↓</span></a>
+  <div class="wrap hero-copy">
+    <h1 id="hero-title">Everyone picks the music.</h1>
+    <!-- src: README.md intro "One laptop plays through the speaker. Everyone else adds songs from their phone. No account, no app.";
+         README.md "## How it works" step 2 "Guests scan the QR code" -->
+    <p class="lead">Turn a laptop and a speaker into a queue the whole room adds to. Guests scan a QR code and add songs from their phones. No account, no app.</p>
+    <a class="glass-btn is-primary is-capsule btn-lg" href="https://github.com/dezeto/nimbrung#readme">Get it on GitHub</a>
+    <!-- src: LICENSE (MIT) -->
+    <p class="status">Open source, MIT licence.</p>
+  </div>
+  <figure class="device hero-phone">
+    <picture>
+      <source media="(prefers-color-scheme: light)" srcset="img/queue-light-v1.webp 390w, img/queue-light-v1@2x.webp 780w" sizes="min(320px, 76vw)">
+      <img src="img/queue-dark-v1.webp" srcset="img/queue-dark-v1.webp 390w, img/queue-dark-v1@2x.webp 780w" sizes="min(320px, 76vw)" width="390" height="844" fetchpriority="high" decoding="async" alt="A guest’s phone in the jam: the song playing and who added it, emoji reactions floating up, a chat line, and Up next with each song’s guest.">
+    </picture>
+  </figure>
+</section>
+
+<!-- ===== 2. The story: the device pins, each step swaps its screen, the last turns it into the TV.
+     Without JS every step reads in full and the device shows the join screen. ===== -->
+<section id="how" class="story" aria-labelledby="how-title">
+  <h2 id="how-title" class="sr-only">How it works</h2>
+  <div class="wrap story-grid">
+    <div class="story-stage">
+      <div class="device story-device">
+        <img class="is-on" data-step="0" src="img/join-v1.webp" srcset="img/join-v1.webp 390w, img/join-v1@2x.webp 780w" sizes="300px" width="390" height="844" loading="lazy" decoding="async" alt="The join screen: You’re invited to Rina’s rooftop, twelve faces with the taken ones greyed out, a name field and Join the jam.">
+        <img data-step="1" src="img/search-v1.webp" srcset="img/search-v1.webp 390w, img/search-v1@2x.webp 780w" sizes="300px" width="390" height="844" loading="lazy" decoding="async" alt="Search on a phone: Songs, Videos and Playlists, results with Add, one already marked Queued.">
+        <img data-step="2" src="img/lyrics-v1.webp" srcset="img/lyrics-v1.webp 390w, img/lyrics-v1@2x.webp 780w" sizes="300px" width="390" height="844" loading="lazy" decoding="async" alt="The lyrics on a phone, the line being sung highlighted.">
+        <img data-step="3" src="img/room-queue-v1.webp" srcset="img/room-queue-v1.webp 1440w, img/room-queue-v1@2x.webp 2880w" sizes="(min-width: 1024px) 640px, 100vw" width="1440" height="900" loading="lazy" decoding="async" alt="The room view on a TV: the artwork, the song and who added it, the next three songs, reactions, and the QR code to join.">
       </div>
-      <p class="status">Open source, MIT licence.</p>
     </div>
-
-    <div class="hero-visual">
-      <!-- Wide screens only: the room view on a TV (capture 8). Phones get a 1px stand-in, so they download nothing. -->
-      <figure class="tv shot" aria-hidden="true">
-        <div class="shot-frame g-lampu">
-          <picture>
-            <source media="(min-width: 1024px)" srcset="img/room-queue-v1.webp 1440w, img/room-queue-v1@2x.webp 2880w" sizes="(min-width: 1280px) 548px, 43vw">
-            <img class="shot-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="1440" height="900" alt="" fetchpriority="high" decoding="async">
-          </picture>
-        </div>
-      </figure>
-
-      <!-- The guest Queue screen, in HTML (layout from web/apps/web/src/routes/index.tsx, faces from server/internal/room/avatar.go:5) -->
-      <figure class="phone" aria-labelledby="mock-desc">
-        <figcaption id="mock-desc" class="sr-only">A guest’s phone in the jam Rina’s rooftop: Senja di Kemang by Laut Biru is playing, added by Rina. Under it are the reactions, a vote to skip, Quieter and Louder, a chat line, and Up next with Bima’s own song second.</figcaption>
-        <div class="mock">
-          <div class="ambient is-moving" aria-hidden="true"></div>
-          <div aria-hidden="true">
-            <div class="mock-head">
-              <div class="mock-room"><b>Rina’s rooftop</b><span class="code-tag">SORE</span></div>
-              <div class="mock-meta">
-                <svg class="ico sm" viewBox="0 0 24 24"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6Z"/></svg>
-                <span class="num"><svg class="ico sm" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>7</span>
-                <svg class="ico sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-              </div>
-            </div>
-            <div class="mock-np">
-              <div class="art art-senja mock-art"></div>
-              <div class="mock-title">
-                <div>
-                  <p class="song">Senja di Kemang</p>
-                  <p class="artist">Laut Biru</p>
-                  <p class="by">Added by 🦊 Rina</p>
-                </div>
-                <span class="icon-btn"><svg class="ico" viewBox="0 0 24 24"><path d="m11 7.6-6 8.2a1 1 0 0 0 .1 1.3l.8.8a1 1 0 0 0 1.3.1L15.1 12"/><path d="M16.5 21.2c-1-.7-2.1-1.2-3.5-1.2-2.1 0-3.9 2.4-6 2-2.1-.4-2.8-3.4-1.5-4.5"/><circle cx="16" cy="7" r="5"/></svg></span>
-                <span class="icon-btn is-on"><svg class="ico fill" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
-              </div>
-              <div class="mock-progress">
-                <div class="progress"><i></i></div>
-                <div class="mock-times num"><span>1:58</span><span>3:42</span></div>
-              </div>
-            </div>
-          </div>
-          <div class="mock-live">
-            <!-- src: web/apps/web/src/components/reaction-bar.tsx:4-11 (the six reactions and their labels) -->
-            <div class="mock-reacts" role="group" aria-label="React to the song (try it)">
-              <button type="button" class="react" data-r="🔥" aria-label="Fire">🔥</button>
-              <button type="button" class="react" data-r="❤️" aria-label="Love it">❤️</button>
-              <button type="button" class="react" data-r="😂" aria-label="Haha">😂</button>
-              <button type="button" class="react" data-r="👏" aria-label="Applause">👏</button>
-              <button type="button" class="react" data-r="💃" aria-label="Dance">💃</button>
-              <button type="button" class="react" data-r="🎉" aria-label="Party">🎉</button>
-            </div>
-            <div aria-hidden="true">
-              <div class="mock-row">
-                <span class="btn-plain skip-pill num"><svg class="ico sm" viewBox="0 0 24 24"><path d="M5 4l10 8-10 8z"/><path d="M19 5v14"/></svg>1/3</span>
-                <span class="seg-group"><span>Quieter</span><span>Louder</span></span>
-              </div>
-              <p class="mock-chat"><span class="trunc"><b>🐸 Sari</b> <span class="t-2">this one is a banger</span></span><span class="t-2 num">12</span><svg class="ico xs t-2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></p>
-            </div>
-          </div>
-          <div class="mock-next" aria-hidden="true">
-            <div class="mock-next-head"><b>Up next</b><span class="num">5 songs · 18 min</span></div>
-            <ul class="list">
-              <li class="row"><div class="art art-lampu thumb"></div><div class="row-text"><p class="row-title">Lampu Kota</p><p class="row-sub">Orkes Malam · 🐸 Sari</p></div><span class="mock-dur num">5:02</span></li>
-              <li class="row is-mine"><div class="art art-kopi thumb"></div><div class="row-text"><p class="row-title">Kopi Pagi</p><p class="row-sub"><span class="t-mine">Yours</span> · <span class="num">#2 · about 7 min</span></p></div><span class="mock-dur num">3:15</span><span class="icon-btn"><svg class="ico" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span></li>
-              <li class="row"><div class="art art-neon thumb"></div><div class="row-text"><p class="row-title">Neon Slowdance</p><p class="row-sub">Kaca Pagi · 🐙 Putri</p></div><span class="mock-dur num">3:28</span></li>
-              <li class="row"><div class="art art-pulang thumb"></div><div class="row-text"><p class="row-title">Jalan Pulang</p><p class="row-sub">Rumah Kaca · 🦄 Dewi</p></div><span class="mock-dur num">3:51</span></li>
-            </ul>
-          </div>
-          <div class="mock-dock" aria-hidden="true">
-            <div class="edge-bottom"></div>
-            <div class="mock-dock-row">
-              <span class="glass-btn is-primary is-capsule"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></svg>Add a song</span>
-              <span class="glass-btn is-round is-lens glass-rim"><svg class="ico" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span>
-            </div>
-          </div>
-          <div class="mock-stage" aria-hidden="true">
-            <span class="float-reaction still still-1">🔥<span>Yoga</span></span>
-            <span class="float-reaction still still-2">❤️<span>Dewi</span></span>
-            <span class="float-reaction still still-3">💃<span>Andi</span></span>
-          </div>
-        </div>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<!-- ===== How it works ===== -->
-<section id="how" class="section" aria-labelledby="how-title">
-  <div class="wrap">
-    <h2 id="how-title">How it works</h2>
-    <div class="how-grid">
-      <ol class="steps">
-        <li>
-          <h3>Plug in the laptop.</h3>
-          <!-- src: README.md "## How it works" ("A laptop plugged into the speaker runs the YouTube Music desktop app and Nimbrung");
-               server/internal/room/room.go Move/Shuffle read r.player.Queue (the app's queue is the source); web/apps/web/src/routes/index.tsx (the queue page) -->
-          <p>A laptop runs the YouTube Music desktop app and Nimbrung, and plays through the speaker. Nimbrung puts the app’s queue on a web page.</p>
-        </li>
-        <li>
-          <h3>Guests scan the QR code.</h3>
-          <!-- src: web/apps/web/src/routes/join.$code.tsx:80 ("Pick your face"), :113-115 (nickname field);
-               macos/Setup.swift choice(.wifi, "Wi-Fi", "Same network") / choice(.ngrok, "ngrok", "Free link") / choice(.cloudflare, "Domain", "Cloudflare") (l.794-796) and "Guests join on this Wi-Fi." (l.801);
-               README.md "### Friends outside the house" -->
-          <p>They type a nickname, pick a face, and they’re in. On the same Wi-Fi that’s all. Friends somewhere else join through ngrok or your own domain on Cloudflare.</p>
-        </li>
-        <li>
-          <h3>Everyone adds songs.</h3>
-          <!-- src: README.md "## How it works" ("Picks play in the order they were added, ahead of autoplay. When Up next runs out, autoplay keeps the music going.");
-               server/internal/room/room.go moveBehindGuestSongs -->
-          <p>Songs play in the order they were added, ahead of autoplay. When the list runs out, YouTube Music’s autoplay keeps going.</p>
-        </li>
-      </ol>
-
-      <!-- Moment 2: the QR turns into the join screen. Without JS, or with Reduce Motion, both show side by side. -->
-      <figure class="moment" aria-labelledby="moment-cap">
-        <div class="moment-stage">
-          <div class="ambient" aria-hidden="true"></div>
-          <div class="qr-tile">
-<svg class="qr-svg" viewBox="0 0 31 31" role="img" aria-label="QR code for https://nimbrung.dezeto.dev/" shape-rendering="crispEdges"><g class="qr-ring qr-r0"><rect x="13" y="13" width="1" height="1"/><rect x="15" y="13" width="1" height="1"/><rect x="16" y="13" width="1" height="1"/><rect x="15" y="14" width="1" height="1"/><rect x="17" y="14" width="1" height="1"/><rect x="14" y="15" width="1" height="1"/><rect x="16" y="15" width="1" height="1"/><rect x="17" y="15" width="1" height="1"/><rect x="15" y="16" width="1" height="1"/><rect x="17" y="16" width="1" height="1"/><rect x="13" y="17" width="1" height="1"/><rect x="15" y="17" width="1" height="1"/><rect x="16" y="17" width="1" height="1"/><rect x="17" y="17" width="1" height="1"/></g><g class="qr-ring qr-r1"><rect x="11" y="11" width="1" height="1"/><rect x="12" y="11" width="1" height="1"/><rect x="14" y="11" width="1" height="1"/><rect x="17" y="11" width="1" height="1"/><rect x="18" y="11" width="1" height="1"/><rect x="19" y="11" width="1" height="1"/><rect x="17" y="12" width="1" height="1"/><rect x="11" y="13" width="1" height="1"/><rect x="18" y="13" width="1" height="1"/><rect x="11" y="14" width="1" height="1"/><rect x="18" y="14" width="1" height="1"/><rect x="11" y="15" width="1" height="1"/><rect x="12" y="15" width="1" height="1"/><rect x="19" y="15" width="1" height="1"/><rect x="12" y="17" width="1" height="1"/><rect x="19" y="17" width="1" height="1"/><rect x="11" y="18" width="1" height="1"/><rect x="13" y="18" width="1" height="1"/><rect x="15" y="18" width="1" height="1"/><rect x="17" y="18" width="1" height="1"/><rect x="19" y="18" width="1" height="1"/><rect x="12" y="19" width="1" height="1"/><rect x="14" y="19" width="1" height="1"/><rect x="15" y="19" width="1" height="1"/><rect x="16" y="19" width="1" height="1"/><rect x="17" y="19" width="1" height="1"/><rect x="18" y="19" width="1" height="1"/></g><g class="qr-ring qr-r2"><rect x="9" y="8" width="1" height="1"/><rect x="10" y="8" width="1" height="1"/><rect x="13" y="8" width="1" height="1"/><rect x="16" y="8" width="1" height="1"/><rect x="17" y="8" width="1" height="1"/><rect x="18" y="8" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="10" y="9" width="1" height="1"/><rect x="14" y="9" width="1" height="1"/><rect x="16" y="9" width="1" height="1"/><rect x="18" y="9" width="1" height="1"/><rect x="19" y="9" width="1" height="1"/><rect x="20" y="9" width="1" height="1"/><rect x="12" y="10" width="1" height="1"/><rect x="13" y="10" width="1" height="1"/><rect x="14" y="10" width="1" height="1"/><rect x="15" y="10" width="1" height="1"/><rect x="16" y="10" width="1" height="1"/><rect x="19" y="10" width="1" height="1"/><rect x="20" y="10" width="1" height="1"/><rect x="21" y="10" width="1" height="1"/><rect x="10" y="11" width="1" height="1"/><rect x="21" y="11" width="1" height="1"/><rect x="20" y="13" width="1" height="1"/><rect x="21" y="13" width="1" height="1"/><rect x="8" y="14" width="1" height="1"/><rect x="20" y="14" width="1" height="1"/><rect x="22" y="14" width="1" height="1"/><rect x="9" y="15" width="1" height="1"/><rect x="20" y="15" width="1" height="1"/><rect x="21" y="15" width="1" height="1"/><rect x="22" y="15" width="1" height="1"/><rect x="8" y="16" width="1" height="1"/><rect x="21" y="16" width="1" height="1"/><rect x="8" y="17" width="1" height="1"/><rect x="9" y="17" width="1" height="1"/><rect x="21" y="17" width="1" height="1"/><rect x="22" y="17" width="1" height="1"/><rect x="8" y="18" width="1" height="1"/><rect x="10" y="18" width="1" height="1"/><rect x="21" y="18" width="1" height="1"/><rect x="8" y="19" width="1" height="1"/><rect x="12" y="20" width="1" height="1"/><rect x="13" y="20" width="1" height="1"/><rect x="14" y="20" width="1" height="1"/><rect x="15" y="20" width="1" height="1"/><rect x="18" y="20" width="1" height="1"/><rect x="8" y="21" width="1" height="1"/><rect x="10" y="21" width="1" height="1"/><rect x="12" y="21" width="1" height="1"/><rect x="14" y="21" width="1" height="1"/><rect x="15" y="21" width="1" height="1"/><rect x="17" y="21" width="1" height="1"/><rect x="18" y="21" width="1" height="1"/><rect x="20" y="21" width="1" height="1"/><rect x="21" y="21" width="1" height="1"/><rect x="22" y="21" width="1" height="1"/><rect x="9" y="22" width="1" height="1"/><rect x="10" y="22" width="1" height="1"/><rect x="13" y="22" width="1" height="1"/><rect x="16" y="22" width="1" height="1"/><rect x="17" y="22" width="1" height="1"/><rect x="18" y="22" width="1" height="1"/><rect x="19" y="22" width="1" height="1"/><rect x="21" y="22" width="1" height="1"/></g><g class="qr-ring qr-r3"><rect x="7" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/><rect x="11" y="6" width="1" height="1"/><rect x="12" y="6" width="1" height="1"/><rect x="13" y="6" width="1" height="1"/><rect x="14" y="6" width="1" height="1"/><rect x="16" y="6" width="1" height="1"/><rect x="17" y="6" width="1" height="1"/><rect x="18" y="6" width="1" height="1"/><rect x="19" y="6" width="1" height="1"/><rect x="20" y="6" width="1" height="1"/><rect x="21" y="6" width="1" height="1"/><rect x="23" y="6" width="1" height="1"/><rect x="6" y="7" width="1" height="1"/><rect x="7" y="7" width="1" height="1"/><rect x="9" y="7" width="1" height="1"/><rect x="11" y="7" width="1" height="1"/><rect x="13" y="7" width="1" height="1"/><rect x="15" y="7" width="1" height="1"/><rect x="17" y="7" width="1" height="1"/><rect x="19" y="7" width="1" height="1"/><rect x="21" y="7" width="1" height="1"/><rect x="23" y="7" width="1" height="1"/><rect x="24" y="7" width="1" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="7" y="9" width="1" height="1"/><rect x="23" y="9" width="1" height="1"/><rect x="23" y="10" width="1" height="1"/><rect x="24" y="10" width="1" height="1"/><rect x="7" y="11" width="1" height="1"/><rect x="24" y="11" width="1" height="1"/><rect x="7" y="13" width="1" height="1"/><rect x="6" y="14" width="1" height="1"/><rect x="23" y="14" width="1" height="1"/><rect x="6" y="15" width="1" height="1"/><rect x="7" y="15" width="1" height="1"/><rect x="23" y="15" width="1" height="1"/><rect x="24" y="15" width="1" height="1"/><rect x="6" y="16" width="1" height="1"/><rect x="24" y="16" width="1" height="1"/><rect x="6" y="17" width="1" height="1"/><rect x="7" y="17" width="1" height="1"/><rect x="24" y="17" width="1" height="1"/><rect x="24" y="18" width="1" height="1"/><rect x="6" y="19" width="1" height="1"/><rect x="7" y="19" width="1" height="1"/><rect x="23" y="19" width="1" height="1"/><rect x="24" y="19" width="1" height="1"/><rect x="23" y="20" width="1" height="1"/><rect x="24" y="20" width="1" height="1"/><rect x="7" y="21" width="1" height="1"/><rect x="23" y="21" width="1" height="1"/><rect x="24" y="21" width="1" height="1"/><rect x="6" y="23" width="1" height="1"/><rect x="7" y="23" width="1" height="1"/><rect x="9" y="23" width="1" height="1"/><rect x="11" y="23" width="1" height="1"/><rect x="15" y="23" width="1" height="1"/><rect x="16" y="23" width="1" height="1"/><rect x="19" y="23" width="1" height="1"/><rect x="20" y="23" width="1" height="1"/><rect x="21" y="23" width="1" height="1"/><rect x="23" y="23" width="1" height="1"/><rect x="7" y="24" width="1" height="1"/><rect x="9" y="24" width="1" height="1"/><rect x="10" y="24" width="1" height="1"/><rect x="12" y="24" width="1" height="1"/><rect x="14" y="24" width="1" height="1"/><rect x="15" y="24" width="1" height="1"/><rect x="16" y="24" width="1" height="1"/><rect x="19" y="24" width="1" height="1"/><rect x="21" y="24" width="1" height="1"/></g><g class="qr-ring qr-r4"><rect x="4" y="4" width="1" height="1"/><rect x="5" y="4" width="1" height="1"/><rect x="7" y="4" width="1" height="1"/><rect x="9" y="4" width="1" height="1"/><rect x="11" y="4" width="1" height="1"/><rect x="13" y="4" width="1" height="1"/><rect x="15" y="4" width="1" height="1"/><rect x="16" y="4" width="1" height="1"/><rect x="18" y="4" width="1" height="1"/><rect x="19" y="4" width="1" height="1"/><rect x="21" y="4" width="1" height="1"/><rect x="23" y="4" width="1" height="1"/><rect x="25" y="4" width="1" height="1"/><rect x="26" y="4" width="1" height="1"/><rect x="4" y="5" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="7" y="5" width="1" height="1"/><rect x="10" y="5" width="1" height="1"/><rect x="15" y="5" width="1" height="1"/><rect x="17" y="5" width="1" height="1"/><rect x="20" y="5" width="1" height="1"/><rect x="23" y="5" width="1" height="1"/><rect x="25" y="5" width="1" height="1"/><rect x="26" y="5" width="1" height="1"/><rect x="4" y="7" width="1" height="1"/><rect x="5" y="7" width="1" height="1"/><rect x="25" y="7" width="1" height="1"/><rect x="26" y="7" width="1" height="1"/><rect x="4" y="9" width="1" height="1"/><rect x="26" y="9" width="1" height="1"/><rect x="5" y="10" width="1" height="1"/><rect x="25" y="10" width="1" height="1"/><rect x="5" y="11" width="1" height="1"/><rect x="25" y="11" width="1" height="1"/><rect x="5" y="12" width="1" height="1"/><rect x="4" y="13" width="1" height="1"/><rect x="5" y="13" width="1" height="1"/><rect x="26" y="13" width="1" height="1"/><rect x="4" y="15" width="1" height="1"/><rect x="4" y="16" width="1" height="1"/><rect x="5" y="16" width="1" height="1"/><rect x="4" y="17" width="1" height="1"/><rect x="5" y="17" width="1" height="1"/><rect x="25" y="17" width="1" height="1"/><rect x="26" y="17" width="1" height="1"/><rect x="5" y="18" width="1" height="1"/><rect x="26" y="18" width="1" height="1"/><rect x="4" y="19" width="1" height="1"/><rect x="5" y="19" width="1" height="1"/><rect x="25" y="19" width="1" height="1"/><rect x="5" y="20" width="1" height="1"/><rect x="25" y="20" width="1" height="1"/><rect x="25" y="21" width="1" height="1"/><rect x="26" y="21" width="1" height="1"/><rect x="25" y="22" width="1" height="1"/><rect x="26" y="22" width="1" height="1"/><rect x="4" y="23" width="1" height="1"/><rect x="5" y="23" width="1" height="1"/><rect x="25" y="23" width="1" height="1"/><rect x="26" y="23" width="1" height="1"/><rect x="25" y="24" width="1" height="1"/><rect x="26" y="24" width="1" height="1"/><rect x="4" y="25" width="1" height="1"/><rect x="5" y="25" width="1" height="1"/><rect x="7" y="25" width="1" height="1"/><rect x="10" y="25" width="1" height="1"/><rect x="13" y="25" width="1" height="1"/><rect x="17" y="25" width="1" height="1"/><rect x="19" y="25" width="1" height="1"/><rect x="21" y="25" width="1" height="1"/><rect x="22" y="25" width="1" height="1"/><rect x="23" y="25" width="1" height="1"/><rect x="24" y="25" width="1" height="1"/><rect x="25" y="25" width="1" height="1"/><rect x="4" y="26" width="1" height="1"/><rect x="5" y="26" width="1" height="1"/><rect x="7" y="26" width="1" height="1"/><rect x="9" y="26" width="1" height="1"/><rect x="14" y="26" width="1" height="1"/><rect x="22" y="26" width="1" height="1"/><rect x="24" y="26" width="1" height="1"/><rect x="25" y="26" width="1" height="1"/><rect x="26" y="26" width="1" height="1"/></g><g class="qr-ring qr-r5"><rect x="1" y="1" width="1" height="1"/><rect x="2" y="1" width="1" height="1"/><rect x="3" y="1" width="1" height="1"/><rect x="4" y="1" width="1" height="1"/><rect x="5" y="1" width="1" height="1"/><rect x="6" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/><rect x="9" y="1" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="14" y="1" width="1" height="1"/><rect x="15" y="1" width="1" height="1"/><rect x="16" y="1" width="1" height="1"/><rect x="18" y="1" width="1" height="1"/><rect x="19" y="1" width="1" height="1"/><rect x="20" y="1" width="1" height="1"/><rect x="21" y="1" width="1" height="1"/><rect x="23" y="1" width="1" height="1"/><rect x="24" y="1" width="1" height="1"/><rect x="25" y="1" width="1" height="1"/><rect x="26" y="1" width="1" height="1"/><rect x="27" y="1" width="1" height="1"/><rect x="28" y="1" width="1" height="1"/><rect x="29" y="1" width="1" height="1"/><rect x="1" y="2" width="1" height="1"/><rect x="7" y="2" width="1" height="1"/><rect x="9" y="2" width="1" height="1"/><rect x="10" y="2" width="1" height="1"/><rect x="11" y="2" width="1" height="1"/><rect x="14" y="2" width="1" height="1"/><rect x="17" y="2" width="1" height="1"/><rect x="19" y="2" width="1" height="1"/><rect x="21" y="2" width="1" height="1"/><rect x="23" y="2" width="1" height="1"/><rect x="29" y="2" width="1" height="1"/><rect x="1" y="3" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/><rect x="4" y="3" width="1" height="1"/><rect x="5" y="3" width="1" height="1"/><rect x="7" y="3" width="1" height="1"/><rect x="10" y="3" width="1" height="1"/><rect x="13" y="3" width="1" height="1"/><rect x="17" y="3" width="1" height="1"/><rect x="19" y="3" width="1" height="1"/><rect x="20" y="3" width="1" height="1"/><rect x="21" y="3" width="1" height="1"/><rect x="23" y="3" width="1" height="1"/><rect x="25" y="3" width="1" height="1"/><rect x="26" y="3" width="1" height="1"/><rect x="27" y="3" width="1" height="1"/><rect x="29" y="3" width="1" height="1"/><rect x="1" y="4" width="1" height="1"/><rect x="3" y="4" width="1" height="1"/><rect x="27" y="4" width="1" height="1"/><rect x="29" y="4" width="1" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="3" y="5" width="1" height="1"/><rect x="27" y="5" width="1" height="1"/><rect x="29" y="5" width="1" height="1"/><rect x="1" y="6" width="1" height="1"/><rect x="29" y="6" width="1" height="1"/><rect x="1" y="7" width="1" height="1"/><rect x="2" y="7" width="1" height="1"/><rect x="3" y="7" width="1" height="1"/><rect x="27" y="7" width="1" height="1"/><rect x="28" y="7" width="1" height="1"/><rect x="29" y="7" width="1" height="1"/><rect x="1" y="9" width="1" height="1"/><rect x="3" y="9" width="1" height="1"/><rect x="28" y="9" width="1" height="1"/><rect x="29" y="9" width="1" height="1"/><rect x="29" y="10" width="1" height="1"/><rect x="3" y="11" width="1" height="1"/><rect x="27" y="11" width="1" height="1"/><rect x="28" y="11" width="1" height="1"/><rect x="2" y="12" width="1" height="1"/><rect x="3" y="12" width="1" height="1"/><rect x="29" y="12" width="1" height="1"/><rect x="2" y="13" width="1" height="1"/><rect x="27" y="13" width="1" height="1"/><rect x="1" y="14" width="1" height="1"/><rect x="3" y="14" width="1" height="1"/><rect x="27" y="14" width="1" height="1"/><rect x="28" y="14" width="1" height="1"/><rect x="29" y="14" width="1" height="1"/><rect x="1" y="15" width="1" height="1"/><rect x="2" y="15" width="1" height="1"/><rect x="27" y="15" width="1" height="1"/><rect x="28" y="15" width="1" height="1"/><rect x="29" y="15" width="1" height="1"/><rect x="1" y="16" width="1" height="1"/><rect x="3" y="16" width="1" height="1"/><rect x="28" y="16" width="1" height="1"/><rect x="2" y="17" width="1" height="1"/><rect x="3" y="17" width="1" height="1"/><rect x="28" y="17" width="1" height="1"/><rect x="3" y="18" width="1" height="1"/><rect x="27" y="18" width="1" height="1"/><rect x="28" y="18" width="1" height="1"/><rect x="1" y="19" width="1" height="1"/><rect x="3" y="19" width="1" height="1"/><rect x="27" y="19" width="1" height="1"/><rect x="3" y="20" width="1" height="1"/><rect x="27" y="20" width="1" height="1"/><rect x="2" y="21" width="1" height="1"/><rect x="27" y="21" width="1" height="1"/><rect x="27" y="22" width="1" height="1"/><rect x="28" y="22" width="1" height="1"/><rect x="29" y="22" width="1" height="1"/><rect x="1" y="23" width="1" height="1"/><rect x="2" y="23" width="1" height="1"/><rect x="3" y="23" width="1" height="1"/><rect x="28" y="23" width="1" height="1"/><rect x="1" y="24" width="1" height="1"/><rect x="29" y="24" width="1" height="1"/><rect x="1" y="25" width="1" height="1"/><rect x="3" y="25" width="1" height="1"/><rect x="27" y="25" width="1" height="1"/><rect x="29" y="25" width="1" height="1"/><rect x="1" y="26" width="1" height="1"/><rect x="3" y="26" width="1" height="1"/><rect x="28" y="26" width="1" height="1"/><rect x="1" y="27" width="1" height="1"/><rect x="3" y="27" width="1" height="1"/><rect x="4" y="27" width="1" height="1"/><rect x="5" y="27" width="1" height="1"/><rect x="7" y="27" width="1" height="1"/><rect x="9" y="27" width="1" height="1"/><rect x="10" y="27" width="1" height="1"/><rect x="15" y="27" width="1" height="1"/><rect x="18" y="27" width="1" height="1"/><rect x="19" y="27" width="1" height="1"/><rect x="21" y="27" width="1" height="1"/><rect x="24" y="27" width="1" height="1"/><rect x="27" y="27" width="1" height="1"/><rect x="29" y="27" width="1" height="1"/><rect x="1" y="28" width="1" height="1"/><rect x="7" y="28" width="1" height="1"/><rect x="11" y="28" width="1" height="1"/><rect x="13" y="28" width="1" height="1"/><rect x="16" y="28" width="1" height="1"/><rect x="18" y="28" width="1" height="1"/><rect x="19" y="28" width="1" height="1"/><rect x="21" y="28" width="1" height="1"/><rect x="26" y="28" width="1" height="1"/><rect x="28" y="28" width="1" height="1"/><rect x="1" y="29" width="1" height="1"/><rect x="2" y="29" width="1" height="1"/><rect x="3" y="29" width="1" height="1"/><rect x="4" y="29" width="1" height="1"/><rect x="5" y="29" width="1" height="1"/><rect x="6" y="29" width="1" height="1"/><rect x="7" y="29" width="1" height="1"/><rect x="9" y="29" width="1" height="1"/><rect x="10" y="29" width="1" height="1"/><rect x="13" y="29" width="1" height="1"/><rect x="14" y="29" width="1" height="1"/><rect x="18" y="29" width="1" height="1"/><rect x="19" y="29" width="1" height="1"/><rect x="21" y="29" width="1" height="1"/><rect x="22" y="29" width="1" height="1"/><rect x="23" y="29" width="1" height="1"/><rect x="25" y="29" width="1" height="1"/><rect x="28" y="29" width="1" height="1"/></g></svg>
-          </div>
-          <div class="join-card glass-card glass-rim" aria-hidden="true">
-            <!-- The join screen's words: web/apps/web/src/routes/join.$code.tsx:65, 80, 114, 149 -->
-            <div>
-              <p class="invited">You’re invited to</p>
-              <p class="room-name">Rina’s rooftop</p>
-            </div>
-            <p class="legend">Pick your face</p>
-            <div class="faces">
-              <span class="taken">🦊</span><span class="picked">🐼</span><span class="taken">🐸</span><span class="taken">🦄</span><span>🐙</span><span>🌵</span>
-              <span>👽</span><span>🐯</span><span>🍄</span><span>🎧</span><span>🌈</span><span>🐧</span>
-            </div>
-            <span class="field-inset">Bima</span>
-            <span class="glass-btn is-primary is-capsule">Join the jam</span>
-            <p class="code-line">Code <b>SORE</b></p>
-          </div>
-        </div>
-        <figcaption id="moment-cap">Scan to open this page on your phone. <span class="sr-only">Beside the code, the join screen a guest sees: You’re invited to Rina’s rooftop, pick your face, type a name, Join the jam.</span></figcaption>
-        <button type="button" class="btn-plain qr-again">Show the QR code</button>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<!-- ===== For guests ===== -->
-<section id="guests" class="section" aria-labelledby="guests-title">
-  <div class="wrap">
-    <div class="section-head">
-      <h2 id="guests-title">From any phone in the room</h2>
-      <p class="lead">Guests open a web page. This is what they can do.</p>
-    </div>
-    <ul class="rows two">
-      <li class="row"><span class="tile" aria-hidden="true">🔍</span><div class="row-text"><h3>Add songs</h3>
-        <!-- src: README.md "**Search** songs, videos or playlists (pick songs from one), even by a line from the lyrics" -->
-        <p>Search songs, videos and playlists. A line from the lyrics works too.</p></div></li>
-      <li class="row"><span class="tile" aria-hidden="true">🔗</span><div class="row-text"><h3>Bring a playlist</h3>
-        <!-- src: README.md "**Share a link** from the YouTube Music app (Share → Nimbrung) or paste one. A playlist link opens the playlist to pick songs from";
-             web/apps/web/vite.config.ts:40 share_target -->
-        <p>Share a link from the YouTube Music app, or paste one. A playlist opens so you can pick songs from it.</p></div></li>
-      <li class="row"><span class="tile" aria-hidden="true">↕️</span><div class="row-text"><h3>Change the order</h3>
-        <!-- src: README.md "**Reorder** Up next with ↑/↓ … remove their own songs, or **shuffle** Up next";
-             server/internal/room/room.go Move ("Any guest may reorder") and Shuffle ("Any guest may") -->
-        <p>Move songs up or down in Up next, take your own out, or shuffle it.</p></div></li>
-      <li class="row"><span class="tile" aria-hidden="true">⏭️</span><div class="row-text"><h3>Vote to skip</h3>
-        <!-- src: README.md "the song skips when enough guests vote"; server/internal/room/state.go:45 DefaultRules SkipVotesNeeded: 3; README.md flag table "-skip-votes" -->
-        <p>A song skips when enough people vote. Three, unless the host changes it.</p></div></li>
-      <li class="row"><span class="tile" aria-hidden="true">🔊</span><div class="row-text"><h3>Louder or quieter</h3>
-        <!-- src: README.md "guests can't touch the volume, but the host sees \"2 want it louder\""; web/apps/web/src/components/volume-control.tsx:17 -->
-        <p>Guests can’t touch the volume. They can ask, and the host sees how many did.</p></div></li>
-      <li class="row"><span class="tile" aria-hidden="true">🔥</span><div class="row-text"><h3>React and chat</h3>
-        <!-- src: web/apps/web/src/components/reaction-bar.tsx:4-11 (six reactions); README.md "emoji float over the song on every screen, and one-line comments slide by" -->
-        <p>Six reactions float over the song on every screen. One-line comments slide by.</p></div></li>
-      <li class="row"><span class="tile" aria-hidden="true">🎤</span><div class="row-text"><h3>Sing along</h3>
-        <!-- src: server/internal/lyrics/lyrics.go:1-2 ("LRCLIB … most songs come with timed lines, so screens can follow along"); README.md "**Read the lyrics**" -->
-        <p>Lyrics come from LRCLIB and follow the song line by line when they’re timed.</p></div></li>
-      <li class="row"><span class="tile" aria-hidden="true">❤️</span><div class="row-text"><h3>Keep what you hear</h3>
-        <!-- src: README.md "**Save songs** with the heart … The list stays on their phone for the next jam"; web/apps/web/src/hooks/use-saved.ts:5-6 -->
-        <p>Tap the heart to save a song. The list stays on your phone for the next jam.</p></div></li>
-      <li class="row"><span class="tile" aria-hidden="true">🦊</span><div class="row-text"><h3>Pick a face</h3>
-        <!-- src: server/internal/room/avatar.go:5 (twelve faces); web/apps/web/src/routes/join.$code.tsx:101 ("Two people can’t have the same one.") -->
-        <p>Each guest picks one of twelve faces. Two people can’t have the same one.</p></div></li>
-      <li class="row"><span class="tile" aria-hidden="true">🌗</span><div class="row-text"><h3>Light or dark</h3>
-        <!-- src: web/apps/web/src/glass.css:169 (@media prefers-color-scheme: light, "Bright room") -->
-        <p>Dark for a dim room, light for a bright one. It follows the phone’s setting.</p></div></li>
-    </ul>
-
-    <!-- Phone captures 1/2, 3, 4, 5. Missing files keep the frame (see site/README.md). -->
-    <div class="phones">
-      <figure class="shot shot-phone">
-        <div class="shot-frame">
-          <picture>
-            <source media="(prefers-color-scheme: light)" srcset="img/queue-light-v1.webp 390w, img/queue-light-v1@2x.webp 780w" sizes="(min-width: 1024px) 260px, min(64vw, 250px)">
-            <img class="shot-img" src="img/queue-dark-v1.webp" srcset="img/queue-dark-v1.webp 390w, img/queue-dark-v1@2x.webp 780w" sizes="(min-width: 1024px) 260px, min(64vw, 250px)" width="390" height="844" loading="lazy" decoding="async" alt="A guest’s phone: Senja di Kemang is playing, Bima’s own song is second in Up next, and a comment floats over the artwork.">
-          </picture>
-        </div>
-        <figcaption>The queue. Your own songs say Yours.</figcaption>
-      </figure>
-      <figure class="shot shot-phone">
-        <div class="shot-frame g-neon">
-          <img class="shot-img" src="img/join-v1.webp" srcset="img/join-v1.webp 390w, img/join-v1@2x.webp 780w" sizes="(min-width: 1024px) 260px, min(64vw, 250px)" width="390" height="844" loading="lazy" decoding="async" alt="The join screen: You’re invited to Rina’s rooftop, twelve faces with three already taken, a name field and Join the jam.">
-        </div>
-        <figcaption>Joining: a name and a face.</figcaption>
-      </figure>
-      <figure class="shot shot-phone">
-        <div class="shot-frame g-lampu">
-          <img class="shot-img" src="img/search-v1.webp" srcset="img/search-v1.webp 390w, img/search-v1@2x.webp 780w" sizes="(min-width: 1024px) 260px, min(64vw, 250px)" width="390" height="844" loading="lazy" decoding="async" alt="Search on a phone: the Songs chip picked, six results, one already marked Queued.">
-        </div>
-        <figcaption>Search, with Add on every row.</figcaption>
-      </figure>
-      <figure class="shot shot-phone">
-        <div class="shot-frame g-pulang">
-          <img class="shot-img" src="img/lyrics-v1.webp" srcset="img/lyrics-v1.webp 390w, img/lyrics-v1@2x.webp 780w" sizes="(min-width: 1024px) 260px, min(64vw, 250px)" width="390" height="844" loading="lazy" decoding="async" alt="The lyrics sheet on a phone, with the line being sung highlighted.">
-        </div>
-        <figcaption>Lyrics that follow the song.</figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<!-- ===== Room view ===== -->
-<section id="room" class="section" aria-labelledby="room-title">
-  <div class="wrap">
-    <div class="section-head">
-      <h2 id="room-title">Put it on the TV</h2>
-      <!-- src: web/apps/web/src/routes/room.tsx:21-24 ("what's playing, what's next, and the QR to join … Needs no guest"; the QR shows on the host's computer or a browser that joined),
-           :29 NEXT_SHOWN = 3, :55 LiveStage (reactions), :83 "Added by", :41-42 and :101 (lyrics when the song has them);
-           reworded from the plan: dropped "it shows only what any guest can see", the room.tsx comment no longer says it after today's change;
-           web/apps/web/src/components/lyrics-lines.tsx:13-14 (timed lines follow the song), :96 (plain lyrics) -->
-      <p class="lead">Open the room view on a TV or a second screen. It shows the song, who added it, the next three songs, reactions as they happen, and the QR code to join. When a song has lyrics, they show there too, line by line when they’re timed. It needs no login.</p>
-    </div>
-    <div class="room-shots">
-      <figure class="shot">
-        <div class="shot-frame g-lampu">
-          <img class="shot-img" src="img/room-queue-v1.webp" srcset="img/room-queue-v1.webp 1440w, img/room-queue-v1@2x.webp 2880w" sizes="(min-width: 1024px) 728px, calc(100vw - 40px)" width="1440" height="900" loading="lazy" decoding="async" alt="The room view on a TV: Senja di Kemang with its artwork, who added it, the next three songs, reactions floating up, a comment, and the QR code to join.">
-        </div>
-        <figcaption>The room view, queue side.</figcaption>
-      </figure>
-      <figure class="shot">
-        <div class="shot-frame g-neon">
-          <img class="shot-img" src="img/room-lyrics-v1.webp" srcset="img/room-lyrics-v1.webp 1440w, img/room-lyrics-v1@2x.webp 2880w" sizes="(min-width: 1024px) 352px, calc(100vw - 40px)" width="1440" height="900" loading="lazy" decoding="async" alt="The room view showing lyrics, the line being sung large.">
-        </div>
-        <figcaption>The same screen, karaoke side.</figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<!-- ===== Recap ===== -->
-<section id="recap" class="section" aria-labelledby="recap-title">
-  <div class="wrap split">
-    <div class="section-head">
-      <h2 id="recap-title">The night, in one screen</h2>
-      <!-- src: web/apps/web/src/routes/recap.tsx:77-79 (of music, songs played, reactions), :82-92 (Most loved song), :101 (Top DJ),
-           :133-145 (Open as playlist; more than 50 songs splits into several links, :14), :147-148 (Copy song list) -->
-      <p class="lead">The recap shows how long the music played, how many songs and reactions there were, the most loved song and the top DJ. Everything that played opens as a YouTube playlist, or copies as a list.</p>
-    </div>
-    <figure class="shot shot-phone recap-shot">
-      <div class="shot-frame g-kopi">
-        <img class="shot-img" src="img/recap-v1.webp" srcset="img/recap-v1.webp 390w, img/recap-v1@2x.webp 780w" sizes="300px" width="390" height="872" loading="lazy" decoding="async" alt="The recap on a phone: minutes of music, songs played and reactions, the most loved song, the top DJ, and the list of everything that played.">
-      </div>
-    </figure>
-  </div>
-</section>
-
-<!-- ===== Host ===== -->
-<section id="host" class="section" aria-labelledby="host-title">
-  <div class="wrap">
-    <div class="section-head">
-      <h2 id="host-title">For the host</h2>
-      <!-- src: README.md "Open the **Host** link on the laptop"; README.md flag table "-host-key … Secret in the Host link" -->
-      <p class="lead">The host page runs on the laptop, behind a secret link.</p>
-    </div>
-    <ul class="rows two">
-      <li class="row"><span class="tile" aria-hidden="true">⏯️</span><div class="row-text"><h3>Play, pause, skip, volume</h3>
-        <!-- src: README.md "## What the host can do" ("Play/pause, skip, volume and mute"); server/internal/room/room.go VoteSkip ("The host's vote always skips immediately") -->
-        <p>The host’s skip happens right away.</p></div></li>
-      <li class="row"><span class="tile" aria-hidden="true">🚪</span><div class="row-text"><h3>Remove any song or guest</h3>
-        <!-- src: README.md "Remove any song or guest, or block their network from joining again"; server/internal/room/block.go:17 Block -->
-        <p>Or block their network from joining again.</p></div></li>
-      <li class="row"><span class="tile" aria-hidden="true">📋</span><div class="row-text"><h3>House rules</h3>
-        <!-- src: README.md "House rules: adds per minute, votes to skip, and ask to join (new guests wait until you let them in)"; server/internal/room/state.go:45 MaxAddsPerMinute: 3 -->
-        <p>Songs per guest per minute (3 to start), votes to skip, and ask to join: new guests wait until you let them in.</p></div></li>
-      <li class="row"><span class="tile" aria-hidden="true">📱</span><div class="row-text"><h3>The QR code and invite link</h3>
-        <!-- src: README.md "The QR code and the join link."; web/apps/web/src/routes/host.tsx:126-137 copyInvite -->
-        <p>Ready to show, or to send.</p></div></li>
-      <li class="row"><span class="tile" aria-hidden="true">⌨️</span><div class="row-text"><h3>Keyboard</h3>
-        <!-- src: README.md "## Keyboard shortcuts (laptop)" ("Hold **Option/Alt** to see which letter each button uses … `?` lists everything"); web/apps/web/src/hooks/use-shortcuts.ts:19-20 -->
-        <p>Hold Option to see each button’s letter. <kbd>?</kbd> lists them all.</p></div></li>
-    </ul>
-    <figure class="shot host-shot">
-      <div class="shot-frame g-neon">
-        <img class="shot-img" src="img/host-v1.webp" srcset="img/host-v1.webp 1440w, img/host-v1@2x.webp 2880w" sizes="(min-width: 1180px) 1120px, calc(100vw - 40px)" width="1440" height="900" loading="lazy" decoding="async" alt="The host page on a laptop: the QR code for jam.example.com, who is in the jam, the queue, and 2 want it louder next to the volume.">
-      </div>
-      <figcaption>The host page.</figcaption>
-    </figure>
-  </div>
-</section>
-
-<!-- ===== Mac app ===== -->
-<section id="mac" class="section" aria-labelledby="mac-title">
-  <div class="wrap">
-    <div class="section-head">
-      <h2 id="mac-title">A jar in the menu bar</h2>
-      <!-- src: README.md "**Start the jam** starts YouTube Music … the tunnel and Nimbrung, ticks each step off, and opens the host page once guests can reach it. The panel also copies the invite link … the room view for a TV (⌥R), and stops the jam, asking first if anyone is in it";
-           macos/Nimbrung.swift:81-84 (steps), :255 ("Opens YouTube Music, the tunnel and the room."), :272-280 (Open host page, Room view ⌥R, Stop the jam… asks when guestCount > 0), :293-310 (Stop the jam?);
-           scripts/jam.sh "Opens the host page once guests could reach it" (l.86) -->
-      <p class="lead">On a Mac, Nimbrung lives in the menu bar. <b>Start the jam</b> opens YouTube Music, the tunnel and Nimbrung, ticks off each step, and opens the host page once guests can reach it. From the same panel you can copy the invite link, open the room view (⌥R), or stop the jam. It asks first if anyone is still in.</p>
-    </div>
-
-    <div class="h3-block">
-      <h3>Set up in one window</h3>
-      <!-- src: macos/Setup.swift header comment "Every button runs the real command" (l.1-4), func runs: Text("Runs …") (l.687-688) -->
-      <p>The first time, a setup window walks you through it. Every button runs a real command, and the window shows which one.</p>
-    </div>
-    <ol class="setup-steps">
-      <!-- src: macos/Setup.swift heading("YouTube Music"): runs("brew install --cask pear-devs/pear/pear-desktop") (l.742), Toggle("I’m signed in") (l.750). Reworded from the plan: the window asks you to sign in, it does not check -->
-      <li><b>YouTube Music:</b> installs it with Homebrew and asks you to sign in.</li>
-      <!-- src: macos/Setup.swift heading("Player control"): "Turn on its API Server" (l.764), "Click Allow in YouTube Music" (l.775) -->
-      <li><b>Player control:</b> turns on the app’s API Server, then you click Allow once.</li>
-      <!-- src: macos/Setup.swift heading("How guests reach you"), step title "Sharing" in titles: choice(.wifi …), choice(.ngrok … "Free link"), choice(.cloudflare, "Domain", "Cloudflare") (l.792-796) -->
-      <li><b>Sharing:</b> Wi-Fi only, a free ngrok link, or your own domain on Cloudflare.</li>
-      <!-- src: macos/Setup.swift heading("Your jam"): "Room name", "Join code" (l.916-925) -->
-      <li><b>Your jam:</b> room name and join code.</li>
-      <!-- src: macos/Setup.swift heading("Test run"), qrImage(jam.inviteURL), "Your jam is live" (l.962-977) -->
-      <li><b>Test run:</b> starts a real jam and shows its QR code.</li>
+    <ol class="story-steps">
+      <li data-step="0">
+        <h3>Scan. Pick a face. You’re in.</h3>
+        <!-- src: web/apps/web/src/routes/join.$code.tsx ("Pick your face", the name field); server/internal/room/avatar.go (twelve faces) -->
+        <p>A nickname and one of twelve faces. No account, no app.</p>
+      </li>
+      <li data-step="1">
+        <h3>Find any song.</h3>
+        <!-- src: README.md "**Search** songs, videos or playlists (pick songs from one), even by a line from the lyrics";
+             README.md "**Share a link** from the YouTube Music app (Share → Nimbrung) or paste one" -->
+        <p>Search songs, videos and playlists, even by a line from the lyrics. Or share a link from YouTube Music.</p>
+      </li>
+      <li data-step="2">
+        <h3>Sing along.</h3>
+        <!-- src: README.md "When [LRCLIB](https://lrclib.net) has timed lyrics, the lines follow the song." -->
+        <p>When a song has timed lyrics, they follow it line by line.</p>
+      </li>
+      <li data-step="3">
+        <h3>Put it on the TV.</h3>
+        <!-- src: README.md "At `/room`, the room view for a TV: big artwork, the song playing, the next three songs, reactions and chat as they happen, and the join QR" -->
+        <p>The song, what’s next, reactions and the QR code to join, big enough to read across the room.</p>
+      </li>
     </ol>
-
-    <div class="mac-shots">
-      <figure class="shot setup-shot">
-        <div class="shot-frame g-lampu">
-          <img class="shot-img" src="img/setup-sharing-v1.webp" srcset="img/setup-sharing-v1.webp 780w, img/setup-sharing-v1@2x.webp 1560w" sizes="(min-width: 1024px) 728px, calc(100vw - 40px)" width="780" height="560" loading="lazy" decoding="async" alt="The setup window on How guests reach you: Wi-Fi, ngrok and Domain, with Domain picked and jam.example.com typed in.">
-        </div>
-        <figcaption>The setup window, Sharing step.</figcaption>
-      </figure>
-      <figure class="shot menubar-shot">
-        <div class="shot-frame g-kopi">
-          <img class="shot-img" src="img/menubar-v1.webp" srcset="img/menubar-v1.webp 340w, img/menubar-v1@2x.webp 680w" sizes="340px" width="340" height="460" loading="lazy" decoding="async" alt="The Nimbrung panel under the jar in the menu bar, for Rina’s rooftop, with Start the jam, the invite link, Open host page and Room view.">
-        </div>
-        <figcaption>The menu-bar panel.</figcaption>
-      </figure>
-    </div>
   </div>
 </section>
 
-<!-- ===== What you need ===== -->
-<section id="needs" class="section" aria-labelledby="needs-title">
-  <div class="wrap">
-    <h2 id="needs-title">What you need</h2>
-    <ul class="plain-list">
-      <!-- src: macos/Info.plist:11 LSMinimumSystemVersion 14.0; Makefile:27 -apple-macos14; README.md "### Requirements" ("macOS, Windows or Linux laptop") and "### Run it" (./nimbrung from a terminal) -->
-      <li><b>A Mac with macOS 14 or later</b>, Apple Silicon or Intel, for the menu-bar app. The server alone also runs on Windows and Linux, started from a terminal.</li>
-      <!-- src: README.md "### Requirements" ("YouTube Music desktop app … (pear-desktop …), logged in"); README.md "## Not affiliated" ("the third-party pear-desktop app") -->
-      <li><b>The YouTube Music desktop app</b> (pear&#8209;desktop), signed in. It’s an open-source app by other developers.</li>
-      <!-- src: Makefile "dist" target (universal app with nimbrung and scripts/jam.sh in Contents/Resources, ad-hoc signed, zipped); README.md "## Send the app to a friend" (Open Anyway in System Settings, once) -->
-      <li><b>Nothing to build.</b> The Mac app comes as one file with the server inside. It isn’t notarised by Apple, so the first time you open it you allow it once in System Settings.</li>
-      <!-- src: macos/Setup.swift "/opt/homebrew/bin:" PATH for brew (l.120), "Homebrew isn’t installed" (l.165) -->
-      <li><b>Homebrew.</b> The setup window uses it to install YouTube Music and the sharing tool.</li>
-      <!-- src: README.md "### Friends outside the house" and "### The launcher by hand (macOS)"; macos/Setup.swift "Connect your free ngrok account" (l.839) -->
-      <li><b>For friends outside your Wi-Fi</b> (optional): a free ngrok account, or a domain on Cloudflare.</li>
-    </ul>
-    <!-- src: README.md "## Quick start on macOS" -->
-    <p class="build-note">To build it yourself: Go 1.24+, Node.js with npm and Xcode command line tools.</p>
-    <pre class="build"><code>git clone https://github.com/dezeto/nimbrung.git &amp;&amp; cd nimbrung
-cd web &amp;&amp; npm install &amp;&amp; cd ..
-make build
-make app</code></pre>
-  </div>
-</section>
-
-<!-- ===== Privacy ===== -->
-<section id="privacy" class="section" aria-labelledby="privacy-title">
-  <div class="wrap">
-    <h2 id="privacy-title">It stays on your laptop</h2>
-    <ul class="plain-list">
-      <!-- src: server/internal/api/server.go:8 ("No accounts, no JWTs"); web/apps/web/src/routes/join.$code.tsx:80, 113-115;
-           grep -riE "analytics|gtag|plausible|posthog|sentry|mixpanel" web/apps/web/src web/apps/web/index.html found nothing (2026-11-14) -->
-      <li><b>No accounts, no analytics.</b> Guests give a nickname and pick a face.</li>
-      <!-- src: server/internal/api/server.go:28 guestCookie, :230-239 SetCookie MaxAge 12h (the only cookie the server sets; helpers.go:29 clears it) -->
-      <li><b>One cookie.</b> It keeps a guest in the jam for 12 hours.</li>
-      <!-- src: server/internal/room/persist.go:14-37 (saved: code, guests with session and IP, owners, kicked, blocked, history; "Chat, votes and nudges … start fresh");
-           server/internal/room/state.go:48-57 (Guest name, avatar); server/internal/room/recap.go:12-19 (Played with reactions), :30 historyLength = 500;
-           server/cmd/nimbrung/main.go:48 -state-file ("" = don't save) -->
-      <li><b>What the laptop saves.</b> The jam is saved to a file so a restart doesn’t lose it: guest names and faces, their sessions and IP addresses, who added which song, who was removed or blocked, and the last 500 songs with how many reactions each got. Chat, votes and volume asks aren’t saved. Start with <code>-state-file ""</code> and the jam isn’t saved at all.</li>
-      <!-- src: web/apps/web/src/hooks/use-saved.ts:5-9 (localStorage nimbrung.saved); web/apps/web/src/routes/search.tsx:18-19 (nimbrung.recent) -->
-      <li><b>What stays on the guest’s phone.</b> Saved songs and recent searches live in that phone’s browser.</li>
-      <!-- src: server/internal/ytm/client.go Search, Queue (through the app's API Server); server/internal/ytm/playlist.go:5-7 and autoplay.go:14-21 (asked anonymously);
-           server/cmd/nimbrung/main.go:47 -lyrics; web/apps/web/src/routes/join.$code.tsx:56 (artwork <img src={np.thumb}>), server/internal/api/accent.go:18-20 (the laptop reads art from ytimg/googleusercontent for colours);
-           web/apps/web/index.html:8-12 (Inter from Google Fonts) -->
-      <li><b>What leaves the laptop.</b> Search and the queue go through the YouTube Music app. Playlists, and the songs autoplay will pick, are read from YouTube without signing in. Lyrics come from LRCLIB (turn that off with <code>-lyrics ""</code>). Artwork loads from YouTube’s image servers, and guests’ phones load the Inter font from Google Fonts. With a tunnel, ngrok or Cloudflare carries the traffic.</li>
-      <!-- src: this site's _headers CSP (default-src 'self'), no Set-Cookie anywhere in site/ -->
-      <li><b>This website</b> sets no cookies and loads nothing from other sites.</li>
-    </ul>
-  </div>
-</section>
-
-<!-- ===== Closing band ===== -->
+<!-- ===== 3. Get it ===== -->
 <section class="closing" aria-labelledby="closing-title">
   <div class="wrap band">
     <svg class="jar" aria-hidden="true"><use href="#jar"/></svg>
     <h2 id="closing-title">Host the next one.</h2>
-    <p>It’s on GitHub, with the setup steps in the README.</p>
-    <div class="actions">
-      <a class="glass-btn is-primary is-capsule btn-lg" href="https://github.com/dezeto/nimbrung#readme">Get it on GitHub</a>
-      <a class="text-link band-link" href="https://github.com/dezeto/nimbrung#quick-start-on-macos">Read the setup steps</a>
-    </div>
+    <p>Free and open source. What you need and how to set it up are in the README.</p>
+    <a class="glass-btn is-primary is-capsule btn-lg" href="https://github.com/dezeto/nimbrung#readme">Get it on GitHub</a>
   </div>
 </section>
 
@@ -491,7 +130,8 @@ make app</code></pre>
   <div class="wrap">
     <!-- src: README.md "## Not affiliated" -->
     <p>Nimbrung is not affiliated with, endorsed by, or sponsored by YouTube or Google. YouTube Music is a trademark of Google LLC. Nimbrung works with pear&#8209;desktop, which is made by other developers.</p>
-    <p>Made by <a href="https://dezeto.dev">Adrian / dezeto</a>. Inter is used under the <a href="/fonts/OFL.txt">SIL Open Font License</a>.</p>
+    <!-- src: README.md "(Indonesian): to join in on something already going." -->
+    <p><i lang="id">Nimbrung</i> (Indonesian): to join in on something already going. Made by <a href="https://dezeto.dev">Adrian / dezeto</a>. Inter is used under the <a href="/fonts/OFL.txt">SIL Open Font License</a>.</p>
     <p><a href="https://github.com/dezeto/nimbrung/blob/master/LICENSE">MIT licence</a> · <a href="https://github.com/dezeto/nimbrung">Source on GitHub</a></p>
   </div>
 </footer>
