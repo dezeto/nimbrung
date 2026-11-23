@@ -218,9 +218,11 @@ func (s *Server) handleJoin(w http.ResponseWriter, r *http.Request) {
 	}
 	// The host key is enough: the host page opened anywhere but the host's
 	// computer isn't told the code until it has joined.
-	if !isHost && !strings.EqualFold(strings.TrimSpace(in.Code), s.room.Code()) {
-		writeErr(w, http.StatusNotFound, "wrong room code")
-		return
+	if !isHost {
+		if err := s.room.CheckCode(in.Code, clientIP(r)); err != nil {
+			s.writeRoomErr(w, err)
+			return
+		}
 	}
 	g, err := s.room.Join(in.Name, in.Avatar, clientIP(r), isHost)
 	if err != nil {
@@ -606,7 +608,7 @@ func (s *Server) handleUnblock(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) writeRoomErr(w http.ResponseWriter, err error) {
 	switch {
-	case errors.Is(err, room.ErrNotFound):
+	case errors.Is(err, room.ErrNotFound), errors.Is(err, room.ErrWrongCode):
 		writeErr(w, http.StatusNotFound, err.Error())
 	case errors.Is(err, room.ErrNotOwner), errors.Is(err, room.ErrNotHost), errors.Is(err, room.ErrBlocked),
 		errors.Is(err, room.ErrWaiting):
@@ -616,7 +618,8 @@ func (s *Server) writeRoomErr(w http.ResponseWriter, err error) {
 	case errors.Is(err, room.ErrBadReaction), errors.Is(err, room.ErrBadComment), errors.Is(err, room.ErrKickSelf),
 		errors.Is(err, room.ErrBadNudge), errors.Is(err, room.ErrCantBlock):
 		writeErr(w, http.StatusBadRequest, err.Error())
-	case errors.Is(err, room.ErrRateLimited), errors.Is(err, room.ErrTooFast), errors.Is(err, room.ErrManyJoins):
+	case errors.Is(err, room.ErrRateLimited), errors.Is(err, room.ErrTooFast), errors.Is(err, room.ErrManyJoins),
+		errors.Is(err, room.ErrManyGuesses):
 		writeErr(w, http.StatusTooManyRequests, err.Error())
 	case errors.Is(err, room.ErrUnknownUser):
 		writeErr(w, http.StatusUnauthorized, err.Error())

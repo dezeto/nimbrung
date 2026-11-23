@@ -436,3 +436,20 @@ func TestVolumeIsTheHostsAndNudgesAreEveryones(t *testing.T) {
 		}
 	}
 }
+
+func TestWrongCodesFromOneNetworkLockItOut(t *testing.T) {
+	s := newTestServer()
+	for i := range 10 {
+		if rec := call(s, http.MethodPost, "/api/join", `{"code":"NOPE","name":"Guesser"}`); rec.Code != http.StatusNotFound {
+			t.Fatalf("wrong code %d: status %d, want %d", i+1, rec.Code, http.StatusNotFound)
+		}
+	}
+	// Even the right code now, or the guesser just keeps going until it lands.
+	if rec := call(s, http.MethodPost, "/api/join", `{"code":"TEST","name":"Guesser"}`); rec.Code != http.StatusTooManyRequests {
+		t.Errorf("right code after 10 wrong ones: status %d, want %d", rec.Code, http.StatusTooManyRequests)
+	}
+	// The host key still gets in: guessing codes must not lock the host out.
+	if rec := call(s, http.MethodPost, "/api/join", `{"name":"Host","hostKey":"secret"}`); rec.Code != http.StatusOK {
+		t.Errorf("host after 10 wrong codes: status %d, want %d", rec.Code, http.StatusOK)
+	}
+}

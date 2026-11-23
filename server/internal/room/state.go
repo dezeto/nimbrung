@@ -32,6 +32,8 @@ var (
 	ErrWaiting     = errors.New("waiting for the host to let you in")
 	ErrAvatarTaken = errors.New("someone here already has that face. Pick another")
 	ErrManyJoins   = errors.New("lots of people just joined from this network. Try again in a few minutes")
+	ErrWrongCode   = errors.New("wrong room code")
+	ErrManyGuesses = errors.New("too many wrong codes from this network. Try again in a few minutes")
 )
 
 // Rules are the host-configurable house rules.

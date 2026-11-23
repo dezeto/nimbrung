@@ -40,6 +40,7 @@ type Room struct {
 	blocked   []Blocked         // networks the host blocked, oldest first; see Block
 	limiter   *limiter
 	joins     *limiter // per IP; see Join
+	guesses   *limiter // wrong join codes per IP; see CheckCode
 	state     State    // last snapshot, rebuilt by Refresh
 	subs      map[chan State]struct{}
 	live      liveShow // reactions and comments; see live.go
@@ -69,6 +70,7 @@ func New(code, name string, player ytm.Player, rules Rules, log *slog.Logger) *R
 		nudges:    map[string]nudge{},
 		limiter:   newLimiter(rules.MaxAddsPerMinute, time.Minute),
 		joins:     newLimiter(joinsPerNetwork, joinWindow),
+		guesses:   newLimiter(codeGuessesPerNetwork, joinWindow),
 		subs:      map[chan State]struct{}{},
 		live:      newLiveShow(),
 	}
@@ -78,6 +80,32 @@ func New(code, name string, player ytm.Player, rules Rules, log *slog.Logger) *R
 
 // Code returns the join code.
 func (r *Room) Code() string { return r.code }
+
+// codeGuessesPerNetwork wrong codes per joinWindow from one IP. A 4-character
+// code is under a million guesses, which the public link would let anyone
+// run through in minutes. Guests scan the QR, so a typed wrong code is rare.
+const codeGuessesPerNetwork = 10
+
+// CheckCode reports whether code is the join code, counting a wrong one
+// against ip ("" if unknown, never counted, like Join). Past the limit the
+// network gets ErrManyGuesses even for the right code, or the guesser would
+// just keep going until one lands.
+// ponytail: per IP, so a guesser with many addresses still gets through;
+// start with a longer -code if the public link is shared widely.
+func (r *Room) CheckCode(code, ip string) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if ip != "" && r.guesses.remaining(ip, r.now()) == 0 {
+		return ErrManyGuesses
+	}
+	if strings.EqualFold(strings.TrimSpace(code), r.code) {
+		return nil
+	}
+	if ip != "" {
+		r.guesses.allow(ip, r.now())
+	}
+	return ErrWrongCode
+}
 
 // --- membership ---------------------------------------------------------
 
