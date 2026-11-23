@@ -43,6 +43,8 @@
     <rect x="296" y="326" width="432" height="472" rx="110" fill="#ffffff" fill-opacity="0.1" stroke="#ffffff" stroke-opacity="0.55" stroke-width="14"/>
     <rect x="360" y="236" width="304" height="100" rx="34" fill="#f2eff6"/>
   </symbol>
+  <!-- GitHub mark (Octicons mark-github, MIT), used only to link to GitHub -->
+  <symbol id="github" viewBox="0 0 16 16"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.37A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></symbol>
 </svg>
 
 <a class="skip" href="#main">Skip to content</a>
@@ -50,7 +52,7 @@
 <header class="topbar-wrap">
   <div class="wrap topbar glass-toolbar is-floating glass-rim">
     <a class="brand" href="/"><svg aria-hidden="true"><use href="#jar"/></svg>Nimbrung</a>
-    <a class="glass-btn is-primary is-capsule" href="https://github.com/dezeto/nimbrung#readme">GitHub</a>
+    <a class="gh-btn sm" href="https://github.com/dezeto/nimbrung#readme"><svg aria-hidden="true"><use href="#github"/></svg>GitHub</a>
   </div>
 </header>
 
@@ -63,10 +65,19 @@
     <!-- src: README.md intro "One laptop plays through the speaker. Everyone else adds songs from their phone. No account, no app.";
          README.md "## How it works" step 2 "Guests scan the QR code" -->
     <p class="lead">Turn a laptop and a speaker into a queue the whole room adds to. Guests scan a QR code and add songs from their phones. No account, no app.</p>
-    <a class="glass-btn is-primary is-capsule btn-lg" href="https://github.com/dezeto/nimbrung#readme">Get it on GitHub</a>
-    <!-- src: LICENSE (MIT) -->
-    <p class="status">Open source, MIT licence.</p>
+    <div class="actions">
+      <!-- src: Makefile "dist" (universal app, ad-hoc signed, zipped); macos/Info.plist LSMinimumSystemVersion 14.0 -->
+      <a class="dl-btn" href="https://github.com/dezeto/nimbrung/releases/latest/download/Nimbrung.zip"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download for macOS</a>
+      <a class="gh-btn" href="https://github.com/dezeto/nimbrung#readme"><svg aria-hidden="true"><use href="#github"/></svg>Get it on GitHub</a>
+    </div>
+    <!-- src: LICENSE (MIT); README.md "## Send the app to a friend" (Open Anyway, once) -->
+    <p class="status">macOS 14 or later, Apple Silicon or Intel. Free and open source (MIT).<br>Not notarised by Apple yet: the first time, <a class="text-link" href="https://github.com/dezeto/nimbrung#send-the-app-to-a-friend">allow it once in System Settings</a>.</p>
   </div>
+  <!-- The app's own backdrop: the screen itself, blurred, behind the device -->
+  <picture class="glow hero-glow" aria-hidden="true">
+    <source media="(prefers-color-scheme: light)" srcset="img/queue-light-v1.webp">
+    <img src="img/queue-dark-v1.webp" alt="" width="390" height="844" decoding="async">
+  </picture>
   <figure class="device hero-phone">
     <picture>
       <source media="(prefers-color-scheme: light)" srcset="img/queue-light-v1.webp 390w, img/queue-light-v1@2x.webp 780w" sizes="min(320px, 76vw)">
@@ -81,6 +92,12 @@
   <h2 id="how-title" class="sr-only">How it works</h2>
   <div class="wrap story-grid">
     <div class="story-stage">
+      <div class="glow story-glow" aria-hidden="true">
+        <img class="is-on" data-step="0" src="img/join-v1.webp" alt="" loading="lazy" decoding="async">
+        <img data-step="1" src="img/search-v1.webp" alt="" loading="lazy" decoding="async">
+        <img data-step="2" src="img/lyrics-v1.webp" alt="" loading="lazy" decoding="async">
+        <img data-step="3" src="img/room-queue-v1.webp" alt="" loading="lazy" decoding="async">
+      </div>
       <div class="device story-device">
         <img class="is-on" data-step="0" src="img/join-v1.webp" srcset="img/join-v1.webp 390w, img/join-v1@2x.webp 780w" sizes="300px" width="390" height="844" loading="lazy" decoding="async" alt="The join screen: You’re invited to Rina’s rooftop, twelve faces with the taken ones greyed out, a name field and Join the jam.">
         <img data-step="1" src="img/search-v1.webp" srcset="img/search-v1.webp 390w, img/search-v1@2x.webp 780w" sizes="300px" width="390" height="844" loading="lazy" decoding="async" alt="Search on a phone: Songs, Videos and Playlists, results with Add, one already marked Queued.">
@@ -119,8 +136,11 @@
   <div class="wrap band">
     <svg class="jar" aria-hidden="true"><use href="#jar"/></svg>
     <h2 id="closing-title">Host the next one.</h2>
-    <p>Free and open source. What you need and how to set it up are in the README.</p>
-    <a class="glass-btn is-primary is-capsule btn-lg" href="https://github.com/dezeto/nimbrung#readme">Get it on GitHub</a>
+    <p>Download the Mac app; a setup window walks you through the rest. Or build it yourself from the source.</p>
+    <div class="actions">
+      <a class="dl-btn" href="https://github.com/dezeto/nimbrung/releases/latest/download/Nimbrung.zip"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download for macOS</a>
+      <a class="gh-btn" href="https://github.com/dezeto/nimbrung#readme"><svg aria-hidden="true"><use href="#github"/></svg>Get it on GitHub</a>
+    </div>
   </div>
 </section>
 
@@ -129,9 +149,14 @@
 <footer class="site-footer">
   <div class="wrap">
     <!-- src: README.md "## Not affiliated" -->
-    <p>Nimbrung is not affiliated with, endorsed by, or sponsored by YouTube or Google. YouTube Music is a trademark of Google LLC. Nimbrung works with pear&#8209;desktop, which is made by other developers.</p>
+    <!-- src: README.md "## Not affiliated" ("It drives the third-party pear-desktop app through its API Server plugin"); CLAUDE.md "pear-devs/pear-desktop, formerly th-ch/youtube-music" -->
+    <div class="credit">
+      <p>Nimbrung stands on <a href="https://github.com/pear-devs/pear&#8209;desktop">pear&#8209;desktop</a>, the open-source YouTube Music desktop app by the pear-devs team. Its API Server plugin is what lets guests reach the player. Thank you to everyone who builds it.</p>
+      <a class="gh-btn sm" href="https://github.com/pear-devs/pear-desktop"><svg aria-hidden="true"><use href="#github"/></svg>pear&#8209;desktop on GitHub</a>
+    </div>
+    <p>Nimbrung is not affiliated with, endorsed by, or sponsored by YouTube or Google. YouTube Music is a trademark of Google LLC. pear&#8209;desktop is made by other developers.</p>
     <!-- src: README.md "(Indonesian): to join in on something already going." -->
-    <p><i lang="id">Nimbrung</i> (Indonesian): to join in on something already going. Made by <a href="https://dezeto.dev">Adrian / dezeto</a>. Inter is used under the <a href="/fonts/OFL.txt">SIL Open Font License</a>.</p>
+    <p><i lang="id">Nimbrung</i> (Indonesian): to join in on something already going. AI slop by <a href="https://dezeto.dev">Adrian / dezeto</a>. Inter is used under the <a href="/fonts/OFL.txt">SIL Open Font License</a>.</p>
     <p><a href="https://github.com/dezeto/nimbrung/blob/master/LICENSE">MIT licence</a> · <a href="https://github.com/dezeto/nimbrung">Source on GitHub</a></p>
   </div>
 </footer>

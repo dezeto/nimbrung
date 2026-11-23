@@ -92,6 +92,13 @@ has lyrics, they show there instead, with a switch back to the queue.
   <img src="docs/screenshots/room.png" width="770" alt="Room view on a TV: big artwork, the song playing and who added it, a chat comment, the next three songs, and a Scan to join card with the QR code, the code and how many are in the jam">
 </p>
 
+## Download (macOS)
+
+[**Download Nimbrung.zip**](https://github.com/dezeto/nimbrung/releases/latest/download/Nimbrung.zip)
+(macOS 14 or later, Apple Silicon or Intel). Nothing to build: the app carries
+the server inside. It isn't notarised by Apple yet, so the first open takes one
+extra step; see [Send the app to a friend](#send-the-app-to-a-friend), steps 1–4.
+
 ## Quick start on macOS
 
 You need macOS 14 or later, [Homebrew](https://brew.sh), Xcode's command line
@@ -102,6 +109,12 @@ git clone https://github.com/dezeto/nimbrung.git && cd nimbrung
 cd web && npm install && cd ..    # first time only
 make build && make app
 ```
+
+If `swiftc` stops with "plugin for module 'SwiftUIMacros' not found", your
+Command Line Tools have a newer SDK than their Swift can build SwiftUI with
+(no Xcode installed). Build against the older SDK they also ship:
+`SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk make app`
+(the same for `make dist`).
 
 This builds `./nimbrung` and puts **Nimbrung** in `/Applications`. Open it: a
 jar shows up in the menu bar, and the first time a setup window opens (later,

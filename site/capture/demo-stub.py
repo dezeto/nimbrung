@@ -1,6 +1,6 @@
 # Fake YouTube Music player + LRCLIB for the product-site screenshots (site/capture/shoot.mjs).
-# Grown from web/apps/web/e2e/ytm-stub.py. Invented songs, artists and lyrics; artwork is generated here.
-# Invented songs and artists; artwork is generated here (gradients), nothing is fetched.
+# Grown from web/apps/web/e2e/ytm-stub.py. Songs and lyrics are invented except the one playing (see SONGS); artwork is generated here.
+# Artwork is generated here (gradients), nothing is fetched.
 # usage: python3 stub.py PORT
 import json, math, random, struct, sys, time, zlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -19,8 +19,10 @@ LYRICS = [
 ]
 SYNCED = "\n".join("[%02d:%02d.00] %s" % (t // 60, t % 60, x) for t, x in LYRICS)
 PLAIN = "\n".join(x for _, x in LYRICS if x)
+# The song playing is one real title (Future, Red Velvet, 3:36). It has no lyrics here: real lyrics
+# aren't reproduced, so the lyrics shots switch to the invented Senja di Kemang (the last entry).
 SONGS = [
-    ("Senja di Kemang", "Laut Biru", "Senja", 214),
+    ("Future", "Red Velvet", "Start-Up OST Part 1", 216),
     ("Lampu Kota", "Orkes Malam", "Lampu Kota", 203),
     ("Kopi Pagi", "Teman Sebangku", "Kopi Pagi", 188),
     ("Neon Slowdance", "Kaca Pagi", "Neon Slowdance", 226),
@@ -44,6 +46,7 @@ SONGS = [
     ("Lemonade Summer", "Hollis Reed", "Lemonade Summer", 184),
     ("Hello Again, Tuesday", "Pocket Orchestra", "Tuesday", 191),
     ("Slow Hands, Warm Light", "Teman Hujan", "Warm Light", 211),
+    ("Senja di Kemang", "Laut Biru", "Senja", 214),  # song00024: the only one with lyrics
 ]
 CATALOG = {}  # vid -> (title, artist, album, seconds, index)
 for i, (t, a, al, d) in enumerate(SONGS):

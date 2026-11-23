@@ -152,17 +152,6 @@ async function shots() {
     await ctx.close();
   }
 
-  if (wanted("lyrics")) {
-    const ctx = await phone("dark", bima), page = await ctx.newPage();
-    await page.goto(BASE + "/");
-    await page.getByRole("heading", { name: "Up next" }).waitFor();
-    await stub("/ctl/seek?s=62");
-    await page.getByRole("button", { name: /lyrics/i }).first().click();
-    await sleep(2500);
-    await page.screenshot({ path: join(OUT, "lyrics.png") });
-    await ctx.close();
-  }
-
   if (wanted("recap")) {
     const ctx = await phone("dark", bima), page = await ctx.newPage();
     // The server has only known this jam for a minute or two, so spread the songs over a real night
@@ -201,11 +190,8 @@ async function shots() {
   await stub("/ctl/seek?s=62");
   await r.goto(BASE + "/room");
   await sleep(3000);
-  if (wanted("room-lyrics")) {
-    await r.screenshot({ path: join(OUT, "room-lyrics.png") });
-  }
+  // The song playing has no lyrics here, so the room view opens on the queue.
   if (wanted("room-queue")) {
-    await r.getByRole("button", { name: "Up next" }).click();
     await call(guests.Dewi, "post", "/comments", { text: "this one's for the rooftop" });
     await sleep(6500);                           // the pill stays, the toast is gone
     await burst([["Rina", "fire"], ["Putri", "heart"], ["Andi", "party"]]);
@@ -214,6 +200,31 @@ async function shots() {
   }
   const text = await r.innerText("body");
   console.log("room page: localhost/127.0.0.1 in text:", /localhost|127\.0\.0\.1/.test(text));
+
+  // Lyrics last: the invented Senja di Kemang (song 24, the only song with lyrics) starts
+  // right after the current one, so Up next and who added what stay as they were.
+  if (wanted("lyrics") || wanted("room-lyrics")) {
+    const { cur, queue } = await stub("/ctl/queue");
+    queue.splice(cur + 1, 0, song(24));
+    await stub("/ctl/set", { queue, cur: cur + 1 });
+    await stub("/ctl/seek?s=62");
+    await sleep(2500);                           // the poll sees the new song, the lyrics load
+  }
+  if (wanted("lyrics")) {
+    const ctx = await phone("dark", bima), page = await ctx.newPage();
+    await page.goto(BASE + "/");
+    await page.getByRole("heading", { name: "Up next" }).waitFor();
+    await stub("/ctl/seek?s=62");
+    await page.getByRole("button", { name: /lyrics/i }).first().click();
+    await sleep(2500);
+    await page.screenshot({ path: join(OUT, "lyrics.png") });
+    await ctx.close();
+  }
+  if (wanted("room-lyrics")) {
+    await r.reload();
+    await sleep(3500);
+    await r.screenshot({ path: join(OUT, "room-lyrics.png") });
+  }
   await lap.close();
 }
 

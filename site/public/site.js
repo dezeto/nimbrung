@@ -5,7 +5,8 @@ document.documentElement.classList.add("js");
 
 const device = document.querySelector(".story-device");
 const steps = [...document.querySelectorAll(".story-steps > li")];
-const screens = device ? [...device.querySelectorAll("img")] : [];
+// The device's screens and the blurred glow behind it, both keyed by data-step
+const screens = [...document.querySelectorAll(".story-stage img[data-step]")];
 const wide = matchMedia("(min-width: 1024px)");
 let current = -1;
 
