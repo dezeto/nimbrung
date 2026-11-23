@@ -66,14 +66,11 @@ from an interactive terminal, never CI, the first time:
 3. `npm run deploy`. If wrangler offers to replace a DNS record, stop and check
    the jam has moved.
 
-## Go public (one small commit)
+## Public
 
-Each place to change has an `AFTER PUBLIC` comment in `public/index.html`:
+The page now links to the public repo. After the repo turns public, every
+GitHub link in `public/index.html` must answer 200 when logged out:
 
-- the top bar button, the hero button and the status line under it;
-- the closing band;
-- the footer (MIT licence and source links);
-- the build steps under "What you need".
-
-Then `grep -n "isn’t public yet" public/index.html` must find nothing, and every
-GitHub link must answer 200 when logged out.
+```sh
+grep -o 'https://github.com/[^"#]*' public/index.html | sort -u | xargs -n1 curl -so /dev/null -w '%{http_code} %{url}\n'
+```

@@ -45,7 +45,7 @@
   A playlist link opens the playlist to pick songs from, so guests can bring
   their own (public or unlisted; private ones can't be read).
 - **Save songs** with the heart, on what's playing or in search. The list
-  stays on their phone for the next jam, under ♡ next to "Add a song".
+  stays on their phone for the next jam, under ♡ at the top of Add a song.
 - **Reorder** Up next with ↑/↓ (or drag with a mouse), remove their own songs,
   or **shuffle** Up next. Everyone sees who shuffled, and every song keeps who
   added it.
@@ -56,23 +56,41 @@
   comments slide by. Song activity ("Rina added …") shows quietly too.
 - **Read the lyrics** of the song playing. When [LRCLIB](https://lrclib.net)
   has timed lyrics, the lines follow the song.
-- **See the recap** of the night at `/recap`: time of music, songs played,
+- **See the recap** of the night (the sparkle at the top of the queue, or
+  `/recap`): time of music, songs played,
   reactions, the most loved song, the top DJ and the full list, which opens
   as a YouTube playlist or copies as text.
+
+<p align="center">
+  <img src="docs/screenshots/search.png" width="250" alt="Add a song screen: a search box with chill typed in, Songs, Videos and Playlists chips, results with a plus button or a Queued tick, and the song playing in a bar at the bottom">
+  &nbsp;
+  <img src="docs/screenshots/jam-light.png" width="250" alt="The guest screen in light mode: the same song, reactions and Up next on bright glass">
+</p>
+
+The page follows the phone: dark for dim rooms, light for bright ones.
 
 ## What the host can do
 
 At `/host`:
 
 - Play/pause, skip, volume and mute.
-- Remove any song or guest, or block their network from joining again.
-- House rules: adds per minute, votes to skip, and ask to join (new guests
-  wait until you let them in).
-- The QR code and the join link.
+- Reorder Up next, remove any song, and take songs out of Autoplay before
+  they play.
+- Remove a guest, or block their network from joining again.
+- House rules: adds per minute, votes to skip (0 = only you can skip), and
+  ask to join (new guests wait until you let them in).
+- React and chat with the room.
+- The QR code and the join link, with buttons to copy the invite and to open
+  the room view or the guest queue.
+- **Reset the jam** for the next party: removes everyone and clears Up next.
 
 At `/room`, the room view for a TV: big artwork, the song playing, the next
 three songs, reactions and chat as they happen, and the join QR. When the song
-has lyrics, they show there too.
+has lyrics, they show there instead, with a switch back to the queue.
+
+<p align="center">
+  <img src="docs/screenshots/room.png" width="770" alt="Room view on a TV: big artwork, the song playing and who added it, a chat comment, the next three songs, and a Scan to join card with the QR code, the code and how many are in the jam">
+</p>
 
 ## Quick start on macOS
 
@@ -80,6 +98,7 @@ You need macOS 14 or later, [Homebrew](https://brew.sh), Xcode's command line
 tools (for `swiftc`), Go 1.24+ and Node.js with npm.
 
 ```sh
+git clone https://github.com/dezeto/nimbrung.git && cd nimbrung
 cd web && npm install && cd ..    # first time only
 make build && make app
 ```
@@ -276,6 +295,29 @@ make lint    # gofmt, go vet, web type check
 - **YouTube Music sometimes drops an add.** On some queues the app silently
   ignores "add to the end". Nimbrung adds after the current song instead and
   moves it into place, and tells the guest if the app still didn't take it.
+
+## Who can see and do what
+
+- **Joining needs the code.** It's in the QR and the join link, so share
+  those only with your guests. Ten wrong codes from one network lock that
+  network out for ten minutes. For a link that travels far, turn on **ask to
+  join**, or start with a longer code (`-code`).
+- **What's playing isn't secret.** Anyone who has the address, even without
+  the code, can see the room name, the song, Up next, nicknames and chat.
+  That's what lets a TV show the room view without joining.
+- **The Host link is a password.** Anyone with its `?key=` gets host powers.
+  The launcher opens it on `localhost`, so the key never goes through the
+  tunnel; don't paste it anywhere.
+- **What leaves the laptop:** searches and playback go through YouTube Music,
+  the title and artist of each song go to LRCLIB for lyrics (`-lyrics ""`
+  turns that off), and the page loads its font from Google Fonts. No
+  accounts, no analytics.
+- **What stays on it:** nicknames, who added what, and the address each guest
+  joined from (for blocking), in the state file. Chat is never saved.
+
+## Licence
+
+[MIT](LICENSE).
 
 ## Not affiliated
 
