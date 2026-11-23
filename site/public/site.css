@@ -101,6 +101,40 @@ a { color: inherit; }
 @media (max-width: 479px) { .wrap { width: calc(100% - 2 * var(--gutter)); } }
 .center { text-align: center; }
 
+/* ===== Blueprint frame =====
+   A hatched rail down each side of the page, and hairlines running edge to edge
+   above and below the big lines of text. Lines only; nothing moves. */
+.rails { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.rails::before, .rails::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  background: repeating-linear-gradient(315deg, var(--line) 0 1px, transparent 1px 7px);
+}
+.rails::before { left: 0; box-shadow: inset -1px 0 0 var(--line); }
+.rails::after { right: 0; box-shadow: inset 1px 0 0 var(--line); }
+/* Wide screens: the rails frame the content instead of the window */
+@media (min-width: 1280px) {
+  .rails::before, .rails::after { width: 40px; }
+  .rails::before { left: calc((100vw - 1176px) / 2 - 56px); }
+  .rails::after { right: calc((100vw - 1176px) / 2 - 56px); }
+}
+main, .footer { position: relative; z-index: 1; }
+.ruled { position: relative; }
+.ruled::before, .ruled::after {
+  content: "";
+  position: absolute;
+  left: -100vw;
+  right: -100vw;
+  height: 1px;
+  background: var(--line);
+  pointer-events: none;
+}
+.ruled::before { top: -6px; }
+.ruled::after { bottom: -6px; }
+
 /* ===== Icons: stroked, the GitHub mark filled ===== */
 .i { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .i:has(use[href="#github"]) { fill: currentColor; stroke: none; }
@@ -303,7 +337,7 @@ h2.big { font-size: clamp(2.5rem, 1.4rem + 4.4vw, 4.5rem); letter-spacing: -0.04
   height: 54svh;
   display: grid;
   place-items: center;
-  margin-inline: calc(-1 * var(--gutter));
+  margin-inline: calc(12px - var(--gutter));  /* stops at the rails */
   /* The steps pass underneath: the strip hides them, fading at its foot */
   background: linear-gradient(var(--bg) calc(100% - 28px), transparent);
 }
@@ -356,7 +390,7 @@ h2.big { font-size: clamp(2.5rem, 1.4rem + 4.4vw, 4.5rem); letter-spacing: -0.04
 .credit p a { text-underline-offset: 3px; }
 .foot-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; }
 .foot-left { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
-.foot-left svg { width: 22px; height: 22px; }
+.foot-left svg { width: 22px; height: 22px; flex: none; }
 .foot-left a { color: var(--ink); text-underline-offset: 3px; }
 .foot-links { display: flex; flex-wrap: wrap; gap: 4px 20px; }
 .foot-links a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; color: var(--muted); text-decoration: none; }
