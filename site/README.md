@@ -5,17 +5,17 @@ file, served by Workers static assets. No build step. Only `public/` is deployed
 
 ## Edit
 
-Three parts: the hero (a real capture of the guest queue), the story (four
-steps; the device pins while they scroll, each step swaps its screen, and the
-last turns the phone into the TV), and the closing band. Everything else lives
-in the repo README.
+Four parts, styled after t3.codes: the hero (the host page on the laptop and
+the guest queue on a phone, with guests' faces floating round the title), the
+story (four steps; the device pins while they scroll, each step swaps its
+screen, and the last turns the phone into the TV), "fork it" (a terminal and a
+checklist), and the closing call. Everything else lives in the repo README.
 
 - Copy: `public/index.html`. Every claim has a `src:` comment beside it. Change
   a claim only after checking the file it cites.
-- Look: `public/site.css` (layout, type, the story), `public/glass.css` (a
-  trimmed copy of `docs/design/liquid-glass/glass.css`), `public/tokens.css`
-  (copied as is from `docs/design/liquid-glass/tokens.css`; edit the source,
-  then copy again).
+- Look: `public/site.css` alone: flat black (white in light mode), hairlines
+  between sections, red for the one filled action. `public/tokens.css` and
+  `public/glass.css` are only for `404.html` now.
 - The story's scrolling: `public/site.js`. Without it every step reads in full
   and the device shows the join screen. Under Reduce Motion the device snaps
   to the TV instead of growing.
@@ -33,7 +33,7 @@ Every picture is a capture of the real app on a demo jam: `capture/shoot.mjs`
 1× and `@2x`. The page uses `queue-dark`/`queue-light` (hero), `join`,
 `search`, `lyrics` and `room-queue` (story). The others (`host`, `recap`,
 `room-lyrics`) aren't on the page now; `/img/*` is cached as immutable, so give
-a changed capture a new version (`-v3` next) when it changes.
+a changed capture a new version (`-v4` next) when it changes.
 
 ## OG image and touch icon
 

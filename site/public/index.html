@@ -7,8 +7,8 @@
 <meta name="description" content="A self-hosted jam for YouTube Music. Guests scan a QR code and add songs from their phones. No account, no app.">
 <link rel="canonical" href="https://nimbrung.dezeto.dev/">
 <meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#0f0f11" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#f3f1f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Nimbrung">
 <meta property="og:url" content="https://nimbrung.dezeto.dev/">
@@ -22,8 +22,6 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/tokens.css">
-<link rel="stylesheet" href="/glass.css">
 <link rel="stylesheet" href="/site.css">
 <script type="module" src="/site.js"></script>
 </head>
@@ -45,71 +43,77 @@
   </symbol>
   <!-- GitHub mark (Octicons mark-github, MIT), used only to link to GitHub -->
   <symbol id="github" viewBox="0 0 16 16"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.37A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M8 16 16 8M9 8h7v7"/></symbol>
 </svg>
 
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="topbar-wrap">
-  <div class="wrap topbar glass-toolbar is-floating glass-rim">
+<header class="nav">
+  <div class="wrap nav-row">
     <a class="brand" href="/"><svg aria-hidden="true"><use href="#jar"/></svg>Nimbrung</a>
-    <a class="gh-btn sm" href="https://github.com/dezeto/nimbrung#readme"><svg aria-hidden="true"><use href="#github"/></svg>GitHub</a>
+    <nav aria-label="Site">
+      <a href="https://github.com/dezeto/nimbrung/releases/latest/download/Nimbrung.zip">Download</a>
+      <a href="https://github.com/dezeto/nimbrung"><svg class="i" aria-hidden="true"><use href="#github"/></svg>GitHub</a>
+    </nav>
   </div>
 </header>
 
 <main id="main">
 
-<!-- ===== 1. Hero ===== -->
+<!-- ===== Hero ===== -->
 <section class="hero" aria-labelledby="hero-title">
-  <div class="wrap hero-copy">
-    <h1 id="hero-title">Everyone picks the music.</h1>
-    <!-- src: README.md intro "One laptop plays through the speaker. Everyone else adds songs from their phone. No account, no app.";
-         README.md "## How it works" step 2 "Guests scan the QR code" -->
-    <p class="lead">Turn a laptop and a speaker into a queue the whole room adds to. Guests scan a QR code and add songs from their phones. No account, no app.</p>
-    <div class="actions">
-      <!-- src: Makefile "dist" (universal app, ad-hoc signed, zipped); macos/Info.plist LSMinimumSystemVersion 14.0 -->
-      <a class="dl-btn" href="https://github.com/dezeto/nimbrung/releases/latest/download/Nimbrung.zip"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download for macOS</a>
-      <a class="gh-btn" href="https://github.com/dezeto/nimbrung#readme"><svg aria-hidden="true"><use href="#github"/></svg>Get it on GitHub</a>
-    </div>
-    <!-- src: LICENSE (MIT); README.md "## Send the app to a friend" (Open Anyway, once) -->
-    <p class="status">macOS 14 or later, Apple Silicon or Intel. Free and open source (MIT).<br>Not notarised by Apple yet: the first time, <a class="text-link" href="https://github.com/dezeto/nimbrung#send-the-app-to-a-friend">allow it once in System Settings</a>.</p>
+  <!-- Reactions rise behind the title the way they float over the song in the app:
+       the six reactions are web/apps/web/src/components/reaction-bar.tsx, each with a guest's name chip -->
+  <div class="rise" aria-hidden="true">
+    <span class="r r1">🔥<i>Rina</i></span><span class="r r2">❤️<i>Dewi</i></span><span class="r r3">🎉<i>Yoga</i></span>
+    <span class="r r4">💃<i>Andi</i></span><span class="r r5">😂<i>Bima</i></span><span class="r r6">👏<i>Sari</i></span>
+    <span class="r r7">❤️<i>Putri</i></span><span class="r r8">🔥<i>Bima</i></span>
   </div>
-  <!-- The app's own backdrop: the screen itself, blurred, behind the device -->
-  <picture class="glow hero-glow" aria-hidden="true">
-    <source media="(prefers-color-scheme: light)" srcset="img/queue-light-v2.webp">
-    <img src="img/queue-dark-v2.webp" alt="" width="390" height="844" decoding="async">
-  </picture>
-  <figure class="device hero-phone">
-    <picture>
-      <source media="(prefers-color-scheme: light)" srcset="img/queue-light-v2.webp 390w, img/queue-light-v2@2x.webp 780w" sizes="min(320px, 76vw)">
-      <img src="img/queue-dark-v2.webp" srcset="img/queue-dark-v2.webp 390w, img/queue-dark-v2@2x.webp 780w" sizes="min(320px, 76vw)" width="390" height="844" fetchpriority="high" decoding="async" alt="A guest’s phone in the jam: the song playing and who added it, emoji reactions floating up, a chat line, and Up next with each song’s guest.">
-    </picture>
-  </figure>
+  <div class="wrap hero-copy">
+    <h1 id="hero-title">Everyone picks<br>the music.</h1>
+    <!-- src: README.md intro "One laptop plays through the speaker. Everyone else adds songs from their phone. No account, no app." -->
+    <p class="lead">One laptop plays YouTube Music through the speaker. Everyone else scans a QR code and adds songs from their phone. No account, no app.</p>
+    <!-- src: Makefile "dist" (universal app, ad-hoc signed, zipped); macos/Info.plist LSMinimumSystemVersion 14.0 -->
+    <a class="btn primary" href="https://github.com/dezeto/nimbrung/releases/latest/download/Nimbrung.zip"><svg class="i" aria-hidden="true"><use href="#i-download"/></svg>Download for macOS</a>
+    <a class="quiet-link" href="https://github.com/dezeto/nimbrung"><svg class="i" aria-hidden="true"><use href="#github"/></svg>Get the source on GitHub<svg class="i sm" aria-hidden="true"><use href="#i-out"/></svg></a>
+    <!-- src: README.md "## Send the app to a friend" (Open Anyway, once) -->
+    <p class="fine">macOS 14 or later, Apple Silicon or Intel. Not notarised by Apple yet: <a href="https://github.com/dezeto/nimbrung#send-the-app-to-a-friend">allow it once</a>.</p>
+  </div>
+  <div class="wrap hero-shot">
+    <figure class="frame laptop-frame">
+      <img src="img/host-v3.webp" srcset="img/host-v3.webp 1440w, img/host-v3@2x.webp 2880w" sizes="(min-width: 1180px) 1040px, 90vw" width="1440" height="900" fetchpriority="high" decoding="async" alt="The host page on the laptop: the song playing, volume, the join QR code, who is in the jam, Up next, Autoplay and chat.">
+    </figure>
+    <figure class="device hero-phone">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="img/queue-light-v3.webp 390w, img/queue-light-v3@2x.webp 780w" sizes="280px">
+        <img src="img/queue-dark-v3.webp" srcset="img/queue-dark-v3.webp 390w, img/queue-dark-v3@2x.webp 780w" sizes="280px" width="390" height="844" decoding="async" alt="A guest’s phone in the jam: the song playing and who added it, reactions floating up, a chat line, and Up next with each song’s guest.">
+      </picture>
+    </figure>
+  </div>
 </section>
 
-<!-- ===== 2. The story: the device pins, each step swaps its screen, the last turns it into the TV.
+<!-- ===== The story: the device pins, each step swaps its screen, the last turns it into the TV.
      Without JS every step reads in full and the device shows the join screen. ===== -->
-<section id="how" class="story" aria-labelledby="how-title">
-  <h2 id="how-title" class="sr-only">How it works</h2>
+<section id="how" class="section story" aria-labelledby="how-title">
+  <div class="wrap section-head">
+    <h2 id="how-title">From any phone in the room.</h2>
+    <p>Guests use the browser already on their phone.</p>
+  </div>
   <div class="wrap story-grid">
     <div class="story-stage">
-      <div class="glow story-glow" aria-hidden="true">
-        <img class="is-on" data-step="0" src="img/join-v2.webp" alt="" loading="lazy" decoding="async">
-        <img data-step="1" src="img/search-v2.webp" alt="" loading="lazy" decoding="async">
-        <img data-step="2" src="img/lyrics-v2.webp" alt="" loading="lazy" decoding="async">
-        <img data-step="3" src="img/room-queue-v2.webp" alt="" loading="lazy" decoding="async">
-      </div>
       <div class="device story-device">
-        <img class="is-on" data-step="0" src="img/join-v2.webp" srcset="img/join-v2.webp 390w, img/join-v2@2x.webp 780w" sizes="300px" width="390" height="844" loading="lazy" decoding="async" alt="The join screen: You’re invited to Rina’s rooftop, twelve faces with the taken ones greyed out, a name field and Join the jam.">
-        <img data-step="1" src="img/search-v2.webp" srcset="img/search-v2.webp 390w, img/search-v2@2x.webp 780w" sizes="300px" width="390" height="844" loading="lazy" decoding="async" alt="Search on a phone: Songs, Videos and Playlists, results with Add, one already marked Queued.">
-        <img data-step="2" src="img/lyrics-v2.webp" srcset="img/lyrics-v2.webp 390w, img/lyrics-v2@2x.webp 780w" sizes="300px" width="390" height="844" loading="lazy" decoding="async" alt="The lyrics on a phone, the line being sung highlighted.">
-        <img data-step="3" src="img/room-queue-v2.webp" srcset="img/room-queue-v2.webp 1440w, img/room-queue-v2@2x.webp 2880w" sizes="(min-width: 1024px) 640px, 100vw" width="1440" height="900" loading="lazy" decoding="async" alt="The room view on a TV: the artwork, the song and who added it, the next three songs, reactions, and the QR code to join.">
+        <img class="is-on" data-step="0" src="img/join-v3.webp" srcset="img/join-v3.webp 390w, img/join-v3@2x.webp 780w" sizes="300px" width="390" height="844" loading="lazy" decoding="async" alt="The join screen: You’re invited to Rina’s rooftop, twelve faces with the taken ones greyed out, a name field and Join the jam.">
+        <img data-step="1" src="img/search-v3.webp" srcset="img/search-v3.webp 390w, img/search-v3@2x.webp 780w" sizes="300px" width="390" height="844" loading="lazy" decoding="async" alt="Search on a phone: Songs, Videos and Playlists, results with Add, one already marked Queued.">
+        <img data-step="2" src="img/lyrics-v3.webp" srcset="img/lyrics-v3.webp 390w, img/lyrics-v3@2x.webp 780w" sizes="300px" width="390" height="844" loading="lazy" decoding="async" alt="The lyrics on a phone, the line being sung highlighted.">
+        <img data-step="3" src="img/room-queue-v3.webp" srcset="img/room-queue-v3.webp 1440w, img/room-queue-v3@2x.webp 2880w" sizes="(min-width: 1024px) 640px, 100vw" width="1440" height="900" loading="lazy" decoding="async" alt="The room view on a TV: the artwork, the song and who added it, the next three songs, reactions, and the QR code to join.">
       </div>
     </div>
     <ol class="story-steps">
       <li data-step="0">
         <h3>Scan. Pick a face. You’re in.</h3>
         <!-- src: web/apps/web/src/routes/join.$code.tsx ("Pick your face", the name field); server/internal/room/avatar.go (twelve faces) -->
-        <p>A nickname and one of twelve faces. No account, no app.</p>
+        <p>Type a nickname and pick one of twelve faces, and you’re in the jam.</p>
       </li>
       <li data-step="1">
         <h3>Find any song.</h3>
@@ -131,33 +135,38 @@
   </div>
 </section>
 
-<!-- ===== 3. Get it ===== -->
-<section class="closing" aria-labelledby="closing-title">
-  <div class="wrap band">
-    <svg class="jar" aria-hidden="true"><use href="#jar"/></svg>
-    <h2 id="closing-title">Host the next one.</h2>
-    <p>Download the Mac app; a setup window walks you through the rest. Or build it yourself from the source.</p>
-    <div class="actions">
-      <a class="dl-btn" href="https://github.com/dezeto/nimbrung/releases/latest/download/Nimbrung.zip"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download for macOS</a>
-      <a class="gh-btn" href="https://github.com/dezeto/nimbrung#readme"><svg aria-hidden="true"><use href="#github"/></svg>Get it on GitHub</a>
+<!-- ===== Closing ===== -->
+<section class="section closing" aria-labelledby="closing-title">
+  <div class="wrap center">
+    <h2 id="closing-title" class="big">Host the next one.</h2>
+    <p class="lead">Download the Mac app and a setup window walks you through the rest: YouTube Music, player control, and how guests reach you.</p>
+    <div class="row-actions center">
+      <a class="btn primary" href="https://github.com/dezeto/nimbrung/releases/latest/download/Nimbrung.zip"><svg class="i" aria-hidden="true"><use href="#i-download"/></svg>Download for macOS</a>
+      <a class="btn" href="https://github.com/dezeto/nimbrung#readme"><svg class="i" aria-hidden="true"><use href="#github"/></svg>Get it on GitHub</a>
     </div>
   </div>
 </section>
 
 </main>
 
-<footer class="site-footer">
+<footer class="footer">
   <div class="wrap">
-    <!-- src: README.md "## Not affiliated" -->
-    <!-- src: README.md "## Not affiliated" ("It drives the third-party pear-desktop app through its API Server plugin"); CLAUDE.md "pear-devs/pear-desktop, formerly th-ch/youtube-music" -->
+    <!-- src: README.md "## Not affiliated" ("It drives the third-party pear-desktop app through its API Server plugin"); CLAUDE.md "pear-devs/pear-desktop" -->
     <div class="credit">
-      <p>Nimbrung stands on <a href="https://github.com/pear-devs/pear&#8209;desktop">pear&#8209;desktop</a>, the open-source YouTube Music desktop app by the pear-devs team. Its API Server plugin is what lets guests reach the player. Thank you to everyone who builds it.</p>
-      <a class="gh-btn sm" href="https://github.com/pear-devs/pear-desktop"><svg aria-hidden="true"><use href="#github"/></svg>pear&#8209;desktop on GitHub</a>
+      <p>Nimbrung stands on <a href="https://github.com/pear-devs/pear-desktop">pear&#8209;desktop</a>, the open-source YouTube Music desktop app by the pear-devs team. Its API Server plugin is what lets guests reach the player. Thank you to everyone who builds it.</p>
+      <a class="btn sm" href="https://github.com/pear-devs/pear-desktop"><svg class="i" aria-hidden="true"><use href="#github"/></svg>pear&#8209;desktop on GitHub</a>
     </div>
-    <p>Nimbrung is not affiliated with, endorsed by, or sponsored by YouTube or Google. YouTube Music is a trademark of Google LLC. pear&#8209;desktop is made by other developers.</p>
-    <!-- src: README.md "(Indonesian): to join in on something already going." -->
-    <p><i lang="id">Nimbrung</i> (Indonesian): to join in on something already going. AI slop by <a href="https://dezeto.dev">Adrian / dezeto</a>. Inter is used under the <a href="/fonts/OFL.txt">SIL Open Font License</a>.</p>
-    <p><a href="https://github.com/dezeto/nimbrung/blob/master/LICENSE">MIT licence</a> · <a href="https://github.com/dezeto/nimbrung">Source on GitHub</a></p>
+    <div class="foot-row">
+      <p class="foot-left"><svg aria-hidden="true"><use href="#jar"/></svg>AI slop by <a href="https://dezeto.dev">Adrian / dezeto</a> · MIT licensed</p>
+      <nav aria-label="Footer" class="foot-links">
+        <a href="https://github.com/dezeto/nimbrung">GitHub</a>
+        <a href="https://github.com/dezeto/nimbrung/releases/latest">Download</a>
+        <a href="https://github.com/dezeto/nimbrung/blob/master/LICENSE">Licence</a>
+        <a href="/fonts/OFL.txt">Font licence</a>
+      </nav>
+    </div>
+    <!-- src: README.md "## Not affiliated"; README.md "(Indonesian): to join in on something already going." -->
+    <p class="fine-print"><i lang="id">Nimbrung</i> (Indonesian): to join in on something already going. Not affiliated with, endorsed by, or sponsored by YouTube or Google. YouTube Music is a trademark of Google LLC.</p>
   </div>
 </footer>
 </body>

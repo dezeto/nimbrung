@@ -55,7 +55,7 @@ const phone = (scheme = "dark", state) =>
 const laptop = () => browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, colorScheme: "dark" });
 const wanted = (name) => !ONLY || ONLY.includes(name);
 
-/** PNG -> name-v2.webp (1x, downscaled, <= max1x KB) and name-v2@2x.webp (<= 300 KB), lowering the quality as needed. */
+/** PNG -> name-v3.webp (1x, downscaled, <= max1x KB) and name-v3@2x.webp (<= 300 KB), lowering the quality as needed. */
 function encode(name, w1, max1x = 120) {
   const png = join(OUT, name + ".png");
   const run = (out, resize, max) => {
@@ -66,8 +66,8 @@ function encode(name, w1, max1x = 120) {
     }
     return { q: 30, kb: statSync(out).size / 1024 };
   };
-  const a = run(join(IMG, `${name}-v2.webp`), w1, max1x);
-  const b = run(join(IMG, `${name}-v2@2x.webp`), 0, 300);
+  const a = run(join(IMG, `${name}-v3.webp`), w1, max1x);
+  const b = run(join(IMG, `${name}-v3@2x.webp`), 0, 300);
   console.log(`${name}: 1x q${a.q} ${a.kb.toFixed(0)} KB, 2x q${b.q} ${b.kb.toFixed(0)} KB`);
 }
 

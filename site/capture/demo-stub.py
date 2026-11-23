@@ -1,5 +1,5 @@
 # Fake YouTube Music player + LRCLIB for the product-site screenshots (site/capture/shoot.mjs).
-# Grown from web/apps/web/e2e/ytm-stub.py. Songs and lyrics are invented except the one playing (see SONGS); artwork is generated here.
+# Grown from web/apps/web/e2e/ytm-stub.py. Songs are invented except the first four (see SONGS); lyrics are invented.
 # Artwork is generated here (gradients), nothing is fetched.
 # usage: python3 stub.py PORT
 import json, math, random, struct, sys, time, zlib
@@ -19,13 +19,15 @@ LYRICS = [
 ]
 SYNCED = "\n".join("[%02d:%02d.00] %s" % (t // 60, t % 60, x) for t, x in LYRICS)
 PLAIN = "\n".join(x for _, x in LYRICS if x)
-# The song playing is one real title (Future, Red Velvet, 3:36). It has no lyrics here: real lyrics
-# aren't reproduced, so the lyrics shots switch to the invented Senja di Kemang (the last entry).
+# Entries 0-3 are real songs (title, artist, release, length): 0 plays in every shot, 1-3 sit in
+# Up next. Everything after them is invented. No real lyrics or artwork are used: covers are the
+# generated gradients, and only the invented Senja di Kemang (the last entry) has lyrics, so the
+# lyrics shots switch to it.
 SONGS = [
     ("Future", "Red Velvet", "Start-Up OST Part 1", 216),
-    ("Lampu Kota", "Orkes Malam", "Lampu Kota", 203),
-    ("Kopi Pagi", "Teman Sebangku", "Kopi Pagi", 188),
-    ("Neon Slowdance", "Kaca Pagi", "Neon Slowdance", 226),
+    ("心电感应808", "张靓颖", "心电感应808", 179),
+    ("Maybe if", "BIBI", "Our Beloved Summer OST Part 2", 210),
+    ("FIRESTARTER", "K/DA", "FIRESTARTER", 187),
     ("Jalan Pulang", "Rumah Kaca", "Jalan Pulang", 241),
     ("Hujan Pertama", "Dara Ayu", "Hujan Pertama", 207),
     ("Paper Planes in June", "Wren Holloway", "Paper Planes", 198),
