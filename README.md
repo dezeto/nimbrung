@@ -7,11 +7,17 @@
 <p align="center">
   A self-hosted jam for YouTube Music.<br>
   One laptop plays through the speaker. Everyone else adds songs from their phone.<br>
-  No account, no app.
+  No account, no app.<br>
+  <sub>A hobby project, made for fun.</sub>
 </p>
 
 <p align="center">
   <i>nimbrung</i> (Indonesian): to join in on something already going.
+</p>
+
+<p align="center">
+  <a href="https://nimbrung.dezeto.dev">nimbrung.dezeto.dev</a> ·
+  <a href="https://github.com/dezeto/nimbrung/releases/latest/download/Nimbrung.zip">Download for macOS</a>
 </p>
 
 <p align="center">
@@ -327,6 +333,17 @@ make lint    # gofmt, go vet, web type check
   accounts, no analytics.
 - **What stays on it:** nicknames, who added what, and the address each guest
   joined from (for blocking), in the state file. Chat is never saved.
+
+## Thanks
+
+Nimbrung stands on [pear-desktop](https://github.com/pear-devs/pear-desktop),
+the open-source YouTube Music desktop app by the pear-devs team (formerly
+th-ch/youtube-music). Its API Server plugin is what lets guests reach the
+player: without it there would be no jam. Thank you to everyone who builds and
+looks after it.
+
+Song lyrics come from [LRCLIB](https://lrclib.net), a free lyrics database run
+by its community.
 
 ## Licence
 
