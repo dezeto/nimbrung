@@ -11,6 +11,7 @@ import { LiveControls } from "@/components/live-controls";
 import { LiveStage } from "@/components/live-stage";
 import Loader from "@/components/loader";
 import { StickyMiniPlayer } from "@/components/mini-player";
+import { MadeWith } from "@/components/made-with";
 import { Mnemonic } from "@/components/mnemonic";
 import { NowPlayingCard } from "@/components/now-playing";
 import { ReorderableQueue } from "@/components/reorderable-queue";
@@ -225,6 +226,7 @@ function QueueScreen() {
             removingId={removeSong.isPending ? removeSong.variables : undefined}
           />
         </div>
+        <MadeWith className="mt-10" />
       </section>
 
       {/* The dock floats over the list; the edge fades the rows out under it. */}

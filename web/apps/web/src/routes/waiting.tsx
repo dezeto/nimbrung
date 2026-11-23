@@ -4,6 +4,7 @@ import { Hourglass } from "lucide-react";
 
 import { isKicked } from "@/api/client";
 import { meQuery, roomInfoQuery } from "@/hooks/use-session";
+import { MadeWith } from "@/components/made-with";
 
 export const Route = createFileRoute("/waiting")({ component: WaitingScreen });
 
@@ -27,6 +28,7 @@ function WaitingScreen() {
         You’ll be in {room?.name ?? "the jam"} as soon as the host lets you in. Keep this page
         open.
       </p>
+      <MadeWith className="fixed inset-x-0 bottom-[max(1.5rem,env(safe-area-inset-bottom))] px-4" />
     </main>
   );
 }

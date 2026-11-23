@@ -14,6 +14,7 @@ import {
 import { toast } from "sonner";
 
 import { AutoplayList } from "@/components/autoplay-list";
+import { MadeWith } from "@/components/made-with";
 import { AutoplayMark } from "@/components/autoplay-mark";
 import { BlockedList } from "@/components/blocked-list";
 import { EmptyQueue } from "@/components/empty-queue";
@@ -82,6 +83,7 @@ function NotHost({ status }: { status: Exclude<HostStatus, HostStatus.Ok> }) {
           ? "The server makes a new host key every time it starts. Open the latest Host link printed in the terminal."
           : "Open the Host link printed in the terminal when you started Nimbrung (it ends in ?key=…)."}
       </p>
+      <MadeWith className="fixed inset-x-0 bottom-[max(1.5rem,env(safe-area-inset-bottom))] px-4" />
     </main>
   );
 }
@@ -493,7 +495,7 @@ function HostDashboard() {
               />
             </section>
           </div>
-
+          <MadeWith />
         </main>
       </div>
       <ShortcutHelp {...shortcuts} />

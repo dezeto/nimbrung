@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { UserMinus } from "lucide-react";
 
 import { meQuery, roomInfoQuery } from "@/hooks/use-session";
+import { MadeWith } from "@/components/made-with";
 
 // No guard: this browser's cookie now answers 410 to every guest call, so the
 // screen asks nothing but the room's public name.
@@ -22,6 +23,7 @@ function RemovedScreen() {
       <p className="text-sm text-muted-foreground">
         You’re no longer in {room?.name ?? "the jam"}.
       </p>
+      <MadeWith className="fixed inset-x-0 bottom-[max(1.5rem,env(safe-area-inset-bottom))] px-4" />
     </main>
   );
 }

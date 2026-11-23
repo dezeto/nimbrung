@@ -4,6 +4,7 @@ import { type FormEvent, useState } from "react";
 
 import { useRoomState } from "@/hooks/use-room-state";
 import { NO_CODE, meQuery, roomInfoQuery, useJoin } from "@/hooks/use-session";
+import { MadeWith } from "@/components/made-with";
 
 export const Route = createFileRoute("/join/$code")({
   // Already in (e.g. scanned the QR again) → straight to the queue.
@@ -168,6 +169,7 @@ function JoinScreen() {
       </form>
 
       <p className="text-center text-xs t-2">No account, no app. Just pick songs.</p>
+      <MadeWith />
     </main>
   );
 }

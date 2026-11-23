@@ -17,6 +17,7 @@ import { inviteUrl } from "@/lib/links";
 import { splitQueue } from "@/lib/queue";
 import { formatDuration } from "@/lib/time";
 import { who } from "@/lib/who";
+import { MadeWith } from "@/components/made-with";
 
 // The big screen in the room: what's playing, what's next, and the QR to
 // join, readable from across the room. Needs no guest: the QR and code show
@@ -194,6 +195,7 @@ function RoomView() {
         <p className="w-full border-t border-[var(--nb-separator)] pt-5 text-center text-[22px] font-semibold tabular-nums">
           {guests} in the jam
         </p>
+        <MadeWith className="text-lg" />
       </aside>
     </main>
   );

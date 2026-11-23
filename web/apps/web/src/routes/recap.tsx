@@ -7,6 +7,7 @@ import { api, type Played, Reaction } from "@/api/client";
 import { REACTION_LOOKS } from "@/components/reaction-bar";
 import { QueryKey } from "@/hooks/query-keys";
 import { who } from "@/lib/who";
+import { MadeWith } from "@/components/made-with";
 
 // Public like the Room view: what played is on the TV anyway.
 export const Route = createFileRoute("/recap")({ component: RecapScreen });
@@ -153,6 +154,7 @@ function RecapScreen() {
           </div>
         </>
       )}
+      <MadeWith className="pt-4" />
     </main>
   );
 }

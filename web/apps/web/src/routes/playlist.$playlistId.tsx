@@ -11,6 +11,7 @@ import { usePlaylist, useRowAdds } from "@/hooks/use-queue";
 import { useSaved } from "@/hooks/use-saved";
 import { requireGuest, useStillInTheJam } from "@/hooks/use-session";
 import { Shortcut, ariaShortcut, useShortcuts } from "@/hooks/use-shortcuts";
+import { MadeWith } from "@/components/made-with";
 
 export const Route = createFileRoute("/playlist/$playlistId")({
   // q is the search this was opened from, so Back lands on the same results.
@@ -93,6 +94,7 @@ function PlaylistScreen() {
             ))}
           </ul>
         )}
+        <MadeWith className="mt-10" />
       </main>
       <ShortcutHelp {...shortcuts} />
     </div>

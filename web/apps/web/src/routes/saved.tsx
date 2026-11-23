@@ -10,6 +10,7 @@ import { useRowAdds } from "@/hooks/use-queue";
 import { useSaved } from "@/hooks/use-saved";
 import { requireGuest, useStillInTheJam } from "@/hooks/use-session";
 import { Shortcut, useShortcuts } from "@/hooks/use-shortcuts";
+import { MadeWith } from "@/components/made-with";
 
 export const Route = createFileRoute("/saved")({
   // Shares ?q= with Search, so switching chips keeps what was typed.
@@ -87,6 +88,7 @@ function SavedScreen() {
             ))}
           </ul>
         )}
+        <MadeWith className="mt-10" />
       </main>
       <MiniPlayer />
       <ShortcutHelp {...shortcuts} />

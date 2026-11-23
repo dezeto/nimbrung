@@ -14,6 +14,7 @@ import { useSaved } from "@/hooks/use-saved";
 import { requireGuest, useStillInTheJam } from "@/hooks/use-session";
 import { Shortcut, ariaShortcut, useShortcuts } from "@/hooks/use-shortcuts";
 import { playlistIdFromUrl } from "@/lib/links";
+import { MadeWith } from "@/components/made-with";
 
 // Recent searches live in this browser only, like Saved: no account.
 const RECENT_KEY = "nimbrung.recent";
@@ -291,6 +292,7 @@ function SearchScreen() {
             )}
           </>
         )}
+        <MadeWith className="mt-10" />
       </main>
       <MiniPlayer />
       <ShortcutHelp {...shortcuts} />
