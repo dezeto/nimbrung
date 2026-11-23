@@ -87,6 +87,13 @@ def png(w, h, rows):
 
 
 ART = {}
+# Hand-picked colours for the covers that fill the backdrop in the shots (the app blurs and dims the
+# playing song's art behind every page); seeded ones can land on muddy browns there.
+# index -> (top-left, bottom-right, glow, disc) as RGB
+PALETTES = {
+    0: ((92, 76, 255), (22, 18, 74), (255, 120, 196), (255, 214, 236)),    # Future: city night, pink glow
+    24: ((36, 176, 214), (16, 30, 96), (150, 236, 255), (226, 250, 255)),  # Senja di Kemang by Laut Biru: sea
+}
 
 
 def art(vid):
@@ -107,6 +114,7 @@ def art(vid):
     c1, c2 = hsv(h1, 0.62, 0.92), hsv(h2, 0.7, 0.55)
     glow = hsv((h1 + 0.08) % 1, 0.3, 1.0)
     disc = hsv((h1 + 0.92) % 1, 0.28, 0.98)
+    c1, c2, glow, disc = PALETTES.get(CATALOG[vid][4], (c1, c2, glow, disc))
     gx, gy = rnd.uniform(0.2, 0.8) * n, rnd.uniform(0.15, 0.5) * n
     dx, dy, dr = rnd.uniform(0.3, 0.7) * n, rnd.uniform(0.5, 0.78) * n, rnd.uniform(0.14, 0.24) * n
     sy, sh = rnd.uniform(0.25, 0.7) * n, rnd.uniform(0.03, 0.07) * n
