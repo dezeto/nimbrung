@@ -75,6 +75,7 @@ export function ReactionBar({ onReact }: { onReact: (reaction: Reaction) => void
               type="button"
               className="react"
               aria-label={REACTION_LOOKS[reaction].label}
+              title={REACTION_LOOKS[reaction].label}
               onClick={() => onReact(reaction)}
             >
               {REACTION_LOOKS[reaction].emoji}

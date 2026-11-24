@@ -88,6 +88,7 @@ func (s *Server) routes(static fs.FS) {
 	m.HandleFunc("GET /api/artists/{artistId}", s.withGuest(s.handleArtist))
 	m.HandleFunc("GET /api/albums/{albumId}", s.withGuest(s.handleAlbum))
 	m.HandleFunc("GET /api/tracks/{videoId}", s.withGuest(s.handleFindTrack))
+	m.HandleFunc("GET /api/radio/{videoId}", s.withGuest(s.handleRadio))
 	m.HandleFunc("GET /api/suggest", s.withGuest(s.handleSuggest))
 	m.HandleFunc("POST /api/queue", s.withGuest(s.handleAdd))
 	m.HandleFunc("DELETE /api/queue/{videoId}", s.withGuest(s.handleRemove))
@@ -375,6 +376,19 @@ func (s *Server) handleAlbum(w http.ResponseWriter, r *http.Request) {
 		page.Tracks = []ytm.Track{}
 	}
 	writeJSON(w, http.StatusOK, page)
+}
+
+func (s *Server) handleRadio(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("videoId")
+	if cleanID(id) == "" {
+		writeErr(w, http.StatusBadRequest, "that isn't a YouTube video ID")
+		return
+	}
+	tracks := s.room.Radio(r.Context(), id)
+	if tracks == nil {
+		tracks = []ytm.Track{}
+	}
+	writeJSON(w, http.StatusOK, map[string][]ytm.Track{"tracks": tracks})
 }
 
 func (s *Server) handleFindTrack(w http.ResponseWriter, r *http.Request) {

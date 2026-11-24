@@ -42,6 +42,7 @@ func (idlePlayer) Album(context.Context, string) (ytm.AlbumPage, error) {
 	return ytm.AlbumPage{}, nil
 }
 func (idlePlayer) FindTrack(context.Context, string) (ytm.Track, error) { return ytm.Track{}, nil }
+func (idlePlayer) Radio(context.Context, string) []ytm.Track            { return nil }
 func (idlePlayer) Suggest(context.Context, string) []string             { return nil }
 
 const testJoinURL = "http://192.168.1.2:8080/join/TEST"
@@ -454,6 +455,9 @@ func TestAlbumsAndTracksAnswerGuestsWithTheRightStatus(t *testing.T) {
 		{"a video YouTube doesn't know", "/api/tracks/aaaaaaaaaaa", guest, http.StatusNotFound, ""},
 		{"something that can't be a video ID", "/api/tracks/nope", guest, http.StatusBadRequest, ""},
 		{"a track needs a guest", "/api/tracks/BSTsnWoslP4", nil, http.StatusUnauthorized, ""},
+		{"a radio YouTube has nothing for is an empty list, not null", "/api/radio/BSTsnWoslP4", guest, http.StatusOK, `{"tracks":[]}`},
+		{"a radio for something that can't be a video ID", "/api/radio/nope", guest, http.StatusBadRequest, ""},
+		{"a radio needs a guest", "/api/radio/BSTsnWoslP4", nil, http.StatusUnauthorized, ""},
 	}
 	for _, c := range cases {
 		rec := call(s, http.MethodGet, c.path, "", c.cookies...)

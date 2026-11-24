@@ -382,6 +382,12 @@ func (r *Room) FindTrack(ctx context.Context, videoID string) (ytm.Track, error)
 	return track, err
 }
 
+// Radio is songs like videoID (the one playing), for the search screen's
+// "More like what's playing". Empty when YouTube has none.
+func (r *Room) Radio(ctx context.Context, videoID string) []ytm.Track {
+	return r.player.Radio(ctx, videoID)
+}
+
 // minSuggestInput is how much a guest types before suggestions mean anything.
 const minSuggestInput = 2
 

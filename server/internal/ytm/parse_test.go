@@ -382,6 +382,34 @@ func TestParseTrack(t *testing.T) {
 	}
 }
 
+// next_radio.json is a live anonymous next call for the song radio of IU's
+// "Dear my crazy soulmate" (Nov 2026), trimmed to four rows plus the seed
+// repeated at the end.
+func TestParseRadioDropsTheSeedAndRepeats(t *testing.T) {
+	live, err := os.ReadFile(filepath.Join("testdata", "next_radio.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := parseRadio(live, "IHIt9S2DWcQ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []struct{ videoID, title, artist, album string }{
+		{"es6bbfAjk3I", "Celebrity", "IU", "IU 5th Album 'LILAC'"},
+		{"bB8rDZPNjyI", "삐그덕 (seesaw) (feat. 아이유(IU))", "Crush", "삐그덕 (seesaw)"},
+		{"R5By6ms2a3Y", "Suddenly", "I.O.I", "I.O.I 3rd MINI ALBUM [I.O.I : LOOP]"},
+	}
+	if len(got) != len(want) {
+		t.Fatalf("got %d tracks, want %d: %+v", len(got), len(want), got)
+	}
+	for i, w := range want {
+		g := got[i]
+		if g.VideoID != w.videoID || g.Title != w.title || g.Artist != w.artist || g.Album != w.album || g.Duration == 0 || g.Thumb == "" {
+			t.Errorf("track %d: got %+v, want %+v with a duration and thumb", i, g, w)
+		}
+	}
+}
+
 // browse_artist_songs.json is a live anonymous browse of the playlist behind
 // Tulus's "Top songs" (Nov 2026), trimmed to six of its 71 rows. Its rows
 // have a play count where a playlist's have the album.

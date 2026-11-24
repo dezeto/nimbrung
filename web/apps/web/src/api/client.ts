@@ -268,6 +268,7 @@ export const api = {
   album: (id: string) => request<AlbumPage>(`/albums/${encodeURIComponent(id)}`),
   // One song by ID, for a pasted link: what it is before it's added.
   track: (videoId: string) => request<Track>(`/tracks/${encodeURIComponent(videoId)}`),
+  radio: (videoId: string) => request<{ tracks: Track[] }>(`/radio/${encodeURIComponent(videoId)}`),
   suggest: (q: string) =>
     request<{ suggestions: string[] }>(`/suggest?${new URLSearchParams({ q })}`).then(
       (page) => page.suggestions,

@@ -27,6 +27,7 @@ type Player interface {
 	Artist(ctx context.Context, id string) (ArtistPage, error)    // an empty page when id isn't an artist
 	Album(ctx context.Context, id string) (AlbumPage, error)      // an empty page when id isn't an album
 	FindTrack(ctx context.Context, videoID string) (Track, error) // a zero Track when YouTube doesn't know it
+	Radio(ctx context.Context, videoID string) []Track            // songs like this one; empty, never an error, when unknown
 	Suggest(ctx context.Context, input string) []string           // ways to finish a search; empty, never an error, when unknown
 	AddToQueue(ctx context.Context, videoID string, pos InsertPosition) error
 	RemoveFromQueue(ctx context.Context, index int) error
@@ -59,6 +60,7 @@ type Client struct {
 	autoplay  autoplayGuess         // see autoplay.go
 	artists   pageCache[ArtistPage] // see artist.go
 	albums    pageCache[AlbumPage]
+	radios    pageCache[[]Track] // see radio.go
 	log       *slog.Logger
 }
 

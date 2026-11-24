@@ -18,7 +18,7 @@ import { SearchRow, SearchRowStatus } from "@/components/search-row";
 import { ShortcutHelp } from "@/components/shortcut-help";
 import { SongShelf } from "@/components/song-shelf";
 import { VideoShelf } from "@/components/video-shelf";
-import { useAlbum, useAlbumStrip, useLinkedTrack, useVideoStrip } from "@/hooks/use-albums";
+import { useAlbum, useAlbumStrip, useLikePlaying, useLinkedTrack, useVideoStrip } from "@/hooks/use-albums";
 import { QueryKey } from "@/hooks/query-keys";
 import { useArtistSearch, useJamArtists } from "@/hooks/use-artists";
 import { usePlayedTonight, usePlaylist, useRowAdds, useSearch, useSuggestions } from "@/hooks/use-queue";
@@ -156,9 +156,9 @@ function SearchScreen() {
   const isOpen = (videoId: string) => statusOf(videoId) === SearchRowStatus.Add;
   const playedNote = (videoId: string) =>
     isOpen(videoId) && played.has(videoId) ? "played tonight" : undefined;
-  // Autoplay's picks that aren't in the queue yet: the jam's taste, one tap away.
+  // Songs like the one playing, not queued yet: one tap away.
   const np = room?.nowPlaying;
-  const alike = (room?.autoplay ?? []).filter((t) => t.videoId !== np?.videoId).slice(0, SHELF_SONGS);
+  const alike = useLikePlaying(SHELF_SONGS);
   const tracks = results.data?.tracks ?? [];
   const playlists = results.data?.playlists ?? [];
   const albums = results.data?.albums ?? [];

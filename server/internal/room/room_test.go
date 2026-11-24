@@ -60,6 +60,17 @@ func (f *fakePlayer) Album(_ context.Context, id string) (ytm.AlbumPage, error) 
 	return f.albums[id], nil
 }
 
+// Radio is the queue after the seed: what a radio for it would play.
+func (f *fakePlayer) Radio(_ context.Context, videoID string) []ytm.Track {
+	var tracks []ytm.Track
+	for _, t := range f.queue {
+		if t.VideoID != videoID {
+			tracks = append(tracks, t)
+		}
+	}
+	return tracks
+}
+
 // FindTrack knows the songs in the queue and nothing else.
 func (f *fakePlayer) FindTrack(_ context.Context, videoID string) (ytm.Track, error) {
 	for _, t := range f.queue {

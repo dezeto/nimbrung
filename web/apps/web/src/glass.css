@@ -447,8 +447,14 @@ html, body { overflow-x: clip; }
   /* The reactions tray grows out of its button (left of volume, so a bit right of centre), never from nothing */
   .react-tray { position: absolute; z-index: 20; bottom: calc(100% + 8px); right: 0; transform-origin: 70% 100%; transition: opacity 160ms cubic-bezier(0.23, 1, 0.32, 1), transform 160ms cubic-bezier(0.23, 1, 0.32, 1); }
   @starting-style { .react-tray { opacity: 0; transform: translateY(4px) scale(0.95); } }
-  .react-tray > button.react { width: 44px; height: 44px; font-size: 24px; }
-  @media (prefers-reduced-motion: reduce) { .react, .react-tray { transition: opacity 160ms ease; } .react:active { transform: none; } @starting-style { .react-tray { transform: none; } } }
+  .react-tray > button.react { width: 44px; height: 44px; font-size: 24px; transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1), background-color 140ms ease; }
+  /* The one under the pointer lifts on a soft disc, so it's clear which one a click sends */
+  @media (hover: hover) and (pointer: fine) {
+    .react-tray > button.react:hover { background: rgb(var(--nb-fg) / 0.16); transform: scale(1.15); }
+  }
+  .react-tray > button.react:focus-visible { outline: 2px solid var(--lg-ink); outline-offset: -2px; background: rgb(var(--nb-fg) / 0.16); }
+  .react-tray > button.react:active { transform: scale(0.95); }
+  @media (prefers-reduced-motion: reduce) { .react, .react-tray, .react-tray > button.react { transition: opacity 160ms ease, background-color 140ms ease; } .react:active, .react-tray > button.react:hover, .react-tray > button.react:active { transform: none; } @starting-style { .react-tray { transform: none; } } }
 
   /* Two asks that share one control fill (Quieter | Louder) */
   .seg-group { display: inline-flex; align-items: center; flex: none; gap: 2px; padding: 2px; border-radius: var(--lg-radius-full); background: rgb(var(--nb-fg) / 0.1); border: 0; } /* flat: it sits on the page, not floating */

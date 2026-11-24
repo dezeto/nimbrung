@@ -8,6 +8,7 @@ export enum QueryKey {
   ArtistSearch = "artist-search",
   Album = "album",
   Track = "track",
+  Radio = "radio",
   Suggest = "suggest",
   Recap = "recap",
 }

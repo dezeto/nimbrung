@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { api, SearchKind } from "@/api/client";
+import { api, SearchKind, type Track } from "@/api/client";
 import { QueryKey } from "@/hooks/query-keys";
 import { useSearch } from "@/hooks/use-queue";
+import { useRoomState } from "@/hooks/use-room-state";
 
 // An album's songs don't change in a night.
 const ALBUM_STALE = 30 * 60_000;
@@ -47,4 +48,24 @@ export function useLinkedTrack(videoId: string | undefined) {
     staleTime: ALBUM_STALE,
     retry: false,
   });
+}
+
+/**
+ * Songs like the one playing, not in the queue yet: YouTube's song radio for
+ * it. Until that answers (or if it has nothing), the player's own autoplay
+ * guess stands in, so the shelf is never empty for no reason.
+ */
+export function useLikePlaying(limit: number): Track[] {
+  const room = useRoomState();
+  const np = room?.nowPlaying;
+  const { data } = useQuery({
+    queryKey: [QueryKey.Radio, np?.videoId],
+    queryFn: () => api.radio(np!.videoId),
+    enabled: !!np?.videoId,
+    staleTime: ALBUM_STALE, // a song's radio barely changes in a night; the server remembers it too
+    retry: false,
+  });
+  const taken = new Set([np?.videoId, ...(room?.queue ?? []).map((t) => t.videoId)]);
+  const radio = data?.tracks.length ? data.tracks : (room?.autoplay ?? []);
+  return radio.filter((t) => !taken.has(t.videoId)).slice(0, limit);
 }
