@@ -38,7 +38,7 @@ export default defineConfig({
     },
     {
       // A temp token file keeps the real token cache untouched.
-      command: `../../../nimbrung -listen 127.0.0.1:${SERVER_PORT} -ytm http://127.0.0.1:${STUB_PORT} -name "Test jam" -code TEST -host-key e2e-host-key -skip-votes 50 -state-file "" -lyrics http://127.0.0.1:${STUB_PORT} -token-file ${join(tmpdir(), `nimbrung-e2e-token-${process.pid}.json`)}`,
+      command: `../../../nimbrung -listen 127.0.0.1:${SERVER_PORT} -ytm http://127.0.0.1:${STUB_PORT} -name "Test jam" -code TEST -host-key e2e-host-key -skip-votes 50 -state-file "" -lyrics http://127.0.0.1:${STUB_PORT} -youtube http://127.0.0.1:${STUB_PORT} -token-file ${join(tmpdir(), `nimbrung-e2e-token-${process.pid}.json`)}`,
       url: `${BASE_URL}/`,
       reuseExistingServer: false,
     },

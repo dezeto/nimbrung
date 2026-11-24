@@ -4,5 +4,8 @@ export enum QueryKey {
   Room = "room",
   Search = "search",
   Playlist = "playlist",
+  Artist = "artist",
+  ArtistSearch = "artist-search",
+  Suggest = "suggest",
   Recap = "recap",
 }

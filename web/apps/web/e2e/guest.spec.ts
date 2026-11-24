@@ -230,6 +230,23 @@ test.describe("search", () => {
     await expect(page.getByRole("searchbox", { name: "Search songs" })).toHaveValue("lofi");
   });
 
+  test("a suggestion searches, the artist comes first, and their page adds songs", async ({ browser }) => {
+    const page = await joinAs(browser, "Kai");
+    await page.getByRole("link", { name: "Add a song" }).click();
+    const box = page.getByRole("searchbox", { name: "Search songs" });
+    await box.pressSequentially("stub", { delay: 30 });
+    await page.getByRole("list", { name: "Suggestions" }).getByRole("button", { name: "stub live" }).click();
+    await expect(box).toHaveValue("stub live");
+
+    await page.getByRole("region", { name: "Artists" }).getByRole("link", { name: "Stub Artist" }).click();
+    await expect(page.getByRole("heading", { name: "Stub Artist" })).toBeVisible();
+    await page.getByRole("button", { name: "Add Stub Artist Hit 1", exact: true }).click();
+    await expect(page.getByText("Queued")).toBeVisible();
+
+    await page.getByRole("button", { name: "Back" }).click();
+    await expect(box).toHaveValue("stub live");
+  });
+
   test("header frost fades in as the page scrolls", async ({ browser }) => {
     const page = await joinAs(browser, "Jo");
     await page.goto("/search?q=lofi");

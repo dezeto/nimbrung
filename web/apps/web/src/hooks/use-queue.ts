@@ -21,11 +21,7 @@ import { meQuery } from "@/hooks/use-session";
  * Pages after the first repeat some of its rows, so each song shows once.
  */
 export function useSearch(input: string, kind: SearchKind) {
-  const [query, setQuery] = useState(input.trim());
-  useEffect(() => {
-    const t = setTimeout(() => setQuery(input.trim()), 300);
-    return () => clearTimeout(t);
-  }, [input]);
+  const query = useDebounced(input.trim(), 300);
 
   return useInfiniteQuery({
     queryKey: [QueryKey.Search, kind, query],
@@ -41,6 +37,44 @@ export function useSearch(input: string, kind: SearchKind) {
       correctedQuery: pages[0].correctedQuery,
     }),
   });
+}
+
+/** A value that only changes once it has stopped changing for `ms`. */
+export function useDebounced<T>(value: T, ms: number) {
+  const [settled, setSettled] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setSettled(value), ms);
+    return () => clearTimeout(t);
+  }, [value, ms]);
+  return settled;
+}
+
+/**
+ * Ways to finish what's typed so far. Quicker than the search itself: a
+ * suggestion is only worth having before the guest has typed the rest.
+ */
+export function useSuggestions(input: string) {
+  const query = useDebounced(input.trim(), 150);
+  const { data } = useQuery({
+    queryKey: [QueryKey.Suggest, query],
+    queryFn: () => api.suggest(query),
+    enabled: query.length >= 2,
+    placeholderData: keepPreviousData,
+    staleTime: 5 * 60_000,
+    retry: false, // a nicety: when it fails, there are just no suggestions
+  });
+  // Suggesting what's already in the box is no suggestion.
+  return (data ?? []).filter((s) => s.toLowerCase() !== input.trim().toLowerCase());
+}
+
+/** The songs the jam has already heard tonight, by videoId, to mark them in lists. */
+export function usePlayedTonight() {
+  const { data } = useQuery({
+    queryKey: [QueryKey.Recap],
+    queryFn: api.recap,
+    staleTime: 60_000,
+  });
+  return new Set(data?.played?.map((p) => p.videoId));
 }
 
 function uniqueBy<T>(items: T[], key: (item: T) => string): T[] {

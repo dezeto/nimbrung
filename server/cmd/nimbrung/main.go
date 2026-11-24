@@ -45,6 +45,7 @@ func main() {
 		code      = flag.String("code", "", "join code (default: random 4 chars)")
 		tokenFile = flag.String("token-file", configFile("token"), "where to cache the plugin access token")
 		lyricsURL = flag.String("lyrics", "https://lrclib.net", "LRCLIB to ask for lyrics (\"\" = no lyrics)")
+		youtube   = flag.String("youtube", "https://music.youtube.com", "YouTube Music, asked anonymously for artists, playlists, suggestions and the autoplay guess")
 		stateFile = flag.String("state-file", configFile("jam.json"), "where guests and who added what are saved, so a restart keeps them (\"\" = don't save)")
 		clientID  = flag.String("client-id", "nimbrung", "client ID shown in the plugin's approval dialog")
 		maxAdds   = flag.Int("max-adds", room.DefaultRules.MaxAddsPerMinute, "max adds per guest per minute (0 = unlimited)")
@@ -81,7 +82,7 @@ func main() {
 		return
 	}
 
-	player, err := connectPlayer(ctx, *ytmBase, *clientID, *tokenFile, log)
+	player, err := connectPlayer(ctx, *ytmBase, *clientID, *tokenFile, log, ytm.WithYouTube(*youtube))
 	if err != nil {
 		log.Error("cannot reach YouTube Music", "err", err)
 		os.Exit(1)

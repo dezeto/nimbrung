@@ -9,7 +9,9 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"reflect"
 	"slices"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -278,5 +280,63 @@ func TestSetMutedTogglesOnlyWhenTheAppDisagrees(t *testing.T) {
 			t.Errorf("%s: level = %d, want 63 (rounded)", c.name, v.Level)
 		}
 		srv.Close()
+	}
+}
+
+func TestArtistAsksYouTubeForThePageThenItsSongsAndRemembers(t *testing.T) {
+	page, err := os.ReadFile(filepath.Join("testdata", "browse_artist.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	songs, err := os.ReadFile(filepath.Join("testdata", "browse_artist_songs.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var asked []string
+	youtube := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var in struct{ BrowseID string }
+		_ = json.NewDecoder(r.Body).Decode(&in)
+		asked = append(asked, in.BrowseID)
+		if strings.HasPrefix(in.BrowseID, "VL") {
+			w.Write(songs)
+			return
+		}
+		w.Write(page)
+	}))
+	defer youtube.Close()
+	cl := New("http://plugin.invalid", WithToken("plugin-secret"))
+	cl.autoplay.youtube = youtube.URL
+
+	const tulus = "UC_DHlXllTSMB8pTC38_leFg"
+	for range 2 {
+		got, err := cl.Artist(context.Background(), tulus)
+		if err != nil || got.ID != tulus || got.Name != "Tulus" || len(got.Tracks) != 6 || got.Tracks[0].Duration != 213 {
+			t.Errorf("got %q (%s) with %d songs, %v; want Tulus with the playlist's 6", got.Name, got.ID, len(got.Tracks), err)
+		}
+	}
+	if want := []string{tulus, "VLOLAK5uy_mHgw7gB4UOePEByyIUPoXcCIWTbVade7w"}; !reflect.DeepEqual(asked, want) {
+		t.Errorf("asked YouTube for %v, want %v once", asked, want)
+	}
+}
+
+func TestSearchForArtistsSkipsThePlugin(t *testing.T) {
+	live, err := os.ReadFile(filepath.Join("testdata", "search_artists.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var params string
+	youtube := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var in struct{ Params string }
+		_ = json.NewDecoder(r.Body).Decode(&in)
+		params = in.Params
+		w.Write(live)
+	}))
+	defer youtube.Close()
+	cl := New("http://plugin.invalid") // a call to the plugin would fail
+	cl.autoplay.youtube = youtube.URL
+
+	got, err := cl.Search(context.Background(), SearchRequest{Query: "tulus", Kind: SearchArtists})
+	if err != nil || len(got.Artists) != 2 || params != artistsFilter {
+		t.Errorf("got %d artists with filter %q, %v; want 2 with the artists filter", len(got.Artists), params, err)
 	}
 }

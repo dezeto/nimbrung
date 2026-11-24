@@ -46,7 +46,10 @@
 - **Join with a name and a face.** Pick one of twelve emoji faces; the ones
   already taken are greyed out. The face shows next to every song you add.
 - **Search** songs, videos or playlists (pick songs from one), even by a line
-  from the lyrics, and add them.
+  from the lyrics, and add them. Before anyone types, Add a song already
+  shows the artists in this jam, songs like the one playing and their saved
+  songs. Type an artist's name and they come first: tap them for all their
+  songs, most played first.
 - **Share a link** from the YouTube Music app (Share → Nimbrung) or paste one.
   A playlist link opens the playlist to pick songs from, so guests can bring
   their own (public or unlisted; private ones can't be read).
@@ -68,7 +71,7 @@
   as a YouTube playlist or copies as text.
 
 <p align="center">
-  <img src="docs/screenshots/search.png" width="250" alt="Add a song screen: a search box with chill typed in, Songs, Videos and Playlists chips, results with a plus button or a Queued tick, and the song playing in a bar at the bottom">
+  <img src="docs/screenshots/search.png" width="250" alt="Add a song screen before typing: the search box, Songs, Videos and Playlists chips, a row of round artist photos under In this jam, song covers with a plus button under More like what's playing, saved songs, and the song playing in a bar at the bottom">
   &nbsp;
   <img src="docs/screenshots/jam-light.png" width="250" alt="The guest screen in light mode: the same song, reactions and Up next on bright glass">
 </p>
@@ -329,7 +332,9 @@ make lint    # gofmt, go vet, web type check
 - **The Host link is a password.** Anyone with its `?key=` gets host powers.
   The launcher opens it on `localhost`, so the key never goes through the
   tunnel; don't paste it anywhere.
-- **What leaves the laptop:** searches and playback go through YouTube Music,
+- **What leaves the laptop:** searches and playback go through YouTube Music;
+  artist pages, playlists and search suggestions are asked of YouTube Music
+  directly, without the host's login;
   the title and artist of each song go to LRCLIB for lyrics (`-lyrics ""`
   turns that off), and the page loads its font from Google Fonts. No
   accounts, no analytics.

@@ -85,6 +85,8 @@ func (s *Server) routes(static fs.FS) {
 	m.HandleFunc("GET /api/events", s.handleEvents)
 	m.HandleFunc("GET /api/search", s.withGuest(s.handleSearch))
 	m.HandleFunc("GET /api/playlists/{playlistId}", s.withGuest(s.handlePlaylist))
+	m.HandleFunc("GET /api/artists/{artistId}", s.withGuest(s.handleArtist))
+	m.HandleFunc("GET /api/suggest", s.withGuest(s.handleSuggest))
 	m.HandleFunc("POST /api/queue", s.withGuest(s.handleAdd))
 	m.HandleFunc("DELETE /api/queue/{videoId}", s.withGuest(s.handleRemove))
 	m.HandleFunc("PATCH /api/queue/{videoId}", s.withGuest(s.handleMove))
@@ -347,6 +349,26 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 		page.Tracks = []ytm.Track{}
 	}
 	writeJSON(w, http.StatusOK, page)
+}
+
+func (s *Server) handleArtist(w http.ResponseWriter, r *http.Request) {
+	page, err := s.room.Artist(r.Context(), r.PathValue("artistId"))
+	if err != nil {
+		s.writeRoomErr(w, err)
+		return
+	}
+	if page.Tracks == nil {
+		page.Tracks = []ytm.Track{}
+	}
+	writeJSON(w, http.StatusOK, page)
+}
+
+func (s *Server) handleSuggest(w http.ResponseWriter, r *http.Request) {
+	suggestions := s.room.Suggest(r.Context(), r.URL.Query().Get("q"))
+	if suggestions == nil {
+		suggestions = []string{}
+	}
+	writeJSON(w, http.StatusOK, map[string][]string{"suggestions": suggestions})
 }
 
 func (s *Server) handlePlaylist(w http.ResponseWriter, r *http.Request) {

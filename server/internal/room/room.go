@@ -341,6 +341,34 @@ func (r *Room) Playlist(ctx context.Context, id string) (ytm.PlaylistPage, error
 	return r.player.Playlist(ctx, id)
 }
 
+// artistIDs is the shape of a YouTube channel ID, which is what an artist is.
+var artistIDs = regexp.MustCompile(`^UC[A-Za-z0-9_-]{10,62}$`)
+
+// Artist opens an artist from search results or a song's byline, to pick
+// from their songs.
+func (r *Room) Artist(ctx context.Context, id string) (ytm.ArtistPage, error) {
+	if !artistIDs.MatchString(id) {
+		return ytm.ArtistPage{}, ErrNotFound
+	}
+	page, err := r.player.Artist(ctx, id)
+	if err == nil && page.Name == "" {
+		return ytm.ArtistPage{}, ErrNotFound
+	}
+	return page, err
+}
+
+// minSuggestInput is how much a guest types before suggestions mean anything.
+const minSuggestInput = 2
+
+// Suggest returns ways to finish what a guest has typed so far.
+func (r *Room) Suggest(ctx context.Context, input string) []string {
+	input = strings.TrimSpace(input)
+	if len(input) < minSuggestInput {
+		return nil
+	}
+	return r.player.Suggest(ctx, input)
+}
+
 // Add queues a song on behalf of a guest, enforcing rate limit and dedupe.
 func (r *Room) Add(ctx context.Context, guestID, videoID string) error {
 	r.mu.Lock()
@@ -700,6 +728,10 @@ func (r *Room) Refresh(ctx context.Context) error {
 	for _, q := range queue {
 		if q.Selected {
 			seenCurrent = true
+			// The plugin's now-playing has no link to the artist; the queue row does.
+			if np != nil && np.VideoID == q.VideoID {
+				np.ArtistID = q.ArtistID
+			}
 			continue // "up next" starts after the current song
 		}
 		if !seenCurrent {

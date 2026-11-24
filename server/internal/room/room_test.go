@@ -19,6 +19,7 @@ type fakePlayer struct {
 	guess   []ytm.Track // what Autoplay answers
 	volume  ytm.Volume
 	volErr  error // what Volume fails with, if set
+	artists map[string]ytm.ArtistPage
 }
 
 func newFake(tracks ...ytm.Track) *fakePlayer {
@@ -33,7 +34,9 @@ func (f *fakePlayer) NowPlaying(context.Context) (*ytm.NowPlaying, error) {
 	if f.current < 0 || f.current >= len(f.queue) {
 		return nil, nil
 	}
-	return &ytm.NowPlaying{Track: f.queue[f.current], IsPaused: f.paused}, nil
+	track := f.queue[f.current]
+	track.ArtistID = "" // like the plugin's now-playing, which doesn't link the artist
+	return &ytm.NowPlaying{Track: track, IsPaused: f.paused}, nil
 }
 func (f *fakePlayer) Queue(context.Context) ([]ytm.QueueItem, error) {
 	out := make([]ytm.QueueItem, len(f.queue))
@@ -48,6 +51,12 @@ func (f *fakePlayer) Search(context.Context, ytm.SearchRequest) (ytm.SearchPage,
 }
 func (f *fakePlayer) Playlist(_ context.Context, id string) (ytm.PlaylistPage, error) {
 	return ytm.PlaylistPage{Title: id}, nil
+}
+func (f *fakePlayer) Artist(_ context.Context, id string) (ytm.ArtistPage, error) {
+	return f.artists[id], nil
+}
+func (f *fakePlayer) Suggest(_ context.Context, input string) []string {
+	return []string{input + " live"}
 }
 func (f *fakePlayer) AddToQueue(_ context.Context, id string, pos ytm.InsertPosition) error {
 	t := ytm.Track{VideoID: id, Title: "t-" + id}
@@ -619,5 +628,47 @@ func TestPlaylistRefusesWhatCantBeAPlaylistID(t *testing.T) {
 	}
 	if page, err := r.Playlist(context.Background(), "PLl578ZPbYIlFcSxuka8Km37VgbUYUWI5p"); err != nil || page.Title == "" {
 		t.Errorf("a real-looking ID: %+v, %v; want the player asked", page, err)
+	}
+}
+
+func TestArtistOpensOnlyChannelIDsThatAreArtists(t *testing.T) {
+	const tulus = "UC_DHlXllTSMB8pTC38_leFg"
+	f := newFake()
+	f.artists = map[string]ytm.ArtistPage{tulus: {Artist: ytm.Artist{ID: tulus, Name: "Tulus"}}}
+	r := New("TEST", "test jam", f, DefaultRules, nil)
+	cases := []struct {
+		name, id string
+		want     error
+	}{
+		{"an artist", tulus, nil},
+		{"a channel that isn't an artist", "UCxxxxxxxxxxxxxxxxxxxxxx", ErrNotFound},
+		{"a playlist id", "VLPLl578ZPbYIlFcSxuka8Km37VgbUYUWI5p", ErrNotFound},
+		{"not an id at all", "../home", ErrNotFound},
+	}
+	for _, c := range cases {
+		if _, err := r.Artist(context.Background(), c.id); !errors.Is(err, c.want) {
+			t.Errorf("%s: got %v, want %v", c.name, err, c.want)
+		}
+	}
+}
+
+func TestNowPlayingTakesItsArtistLinkFromTheQueueRow(t *testing.T) {
+	f := newFake(ytm.Track{VideoID: "v1", Title: "One", Artist: "Tulus", ArtistID: "UC_DHlXllTSMB8pTC38_leFg"})
+	r := New("TEST", "test jam", f, DefaultRules, nil)
+	if err := r.Refresh(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	if got := r.State().NowPlaying; got == nil || got.ArtistID != "UC_DHlXllTSMB8pTC38_leFg" {
+		t.Errorf("now playing %+v, want the queue row's artist link", got)
+	}
+}
+
+func TestSuggestWaitsForTwoCharacters(t *testing.T) {
+	r := New("TEST", "test jam", newFake(), DefaultRules, nil)
+	if got := r.Suggest(context.Background(), " t "); got != nil {
+		t.Errorf("one character got %v, want nothing", got)
+	}
+	if got := r.Suggest(context.Background(), "tul"); len(got) != 1 {
+		t.Errorf("three characters got %v, want the player's suggestions", got)
 	}
 }

@@ -225,3 +225,110 @@ func TestParseDuration(t *testing.T) {
 		}
 	}
 }
+
+// search_artists.json is a live anonymous "tulus" search with the Artists
+// filter (Nov 2026), trimmed to two rows and the fields parse.go reads.
+func TestParseSearchReadsArtistRows(t *testing.T) {
+	live, err := os.ReadFile(filepath.Join("testdata", "search_artists.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []Artist{
+		{ID: "UC_DHlXllTSMB8pTC38_leFg", Name: "Tulus",
+			Thumb: "https://yt3.googleusercontent.com/h8P1jEIZLM8lkMxNA6Nbq98b43wcqllJSNmcZTCRPAB-F6rG_0Nqw5w7fwou0PN1QGwSW5viwWD5NV0=w240-h240-p-l90-rj"},
+		{ID: "UCbwAI7LydeNSRU-bywK0EHw", Name: "Nadhif Basalamah",
+			Thumb: "https://yt3.googleusercontent.com/jjFbDHc_GFI6lVSSRPGWMrh71fJ16iZYMccLFbkN_Jq6uR-QYXzgRwFDSuZeDpOuAbIIzNnPAPDZgAHv=w240-h240-p-l90-rj"},
+	}
+	got, err := parseSearch(live)
+	if err != nil || !reflect.DeepEqual(got.Artists, want) || len(got.Tracks) != 0 {
+		t.Errorf("got %+v, %v\nwant artists %+v and no songs", got, err, want)
+	}
+}
+
+// browse_artist.json is a live anonymous browse of Tulus's channel (Nov
+// 2026), trimmed to its header and two of the five songs on its first shelf.
+func TestParseArtist(t *testing.T) {
+	live, err := os.ReadFile(filepath.Join("testdata", "browse_artist.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	cases := []struct {
+		name      string
+		raw       []byte
+		wantName  string
+		wantThumb string
+		wantSongs string
+		wantIDs   []string
+	}{
+		{"name, a square photo, the first shelf's songs and the playlist behind it", live, "Tulus",
+			"https://yt3.googleusercontent.com/h8P1jEIZLM8lkMxNA6Nbq98b43wcqllJSNmcZTCRPAB-F6rG_0Nqw5w7fwou0PN1QGwSW5viwWD5NV0=w240-h240-p-l90-rj",
+			"OLAK5uy_mHgw7gB4UOePEByyIUPoXcCIWTbVade7w", []string{"5F28ye50-Kc", "qrnJL6P-QqQ"}},
+		{"a page that isn't an artist has no name", []byte(`{"contents":{}}`), "", "", "", nil},
+	}
+	for _, c := range cases {
+		page, songs, err := parseArtist(c.raw)
+		var ids []string
+		for _, track := range page.Tracks {
+			ids = append(ids, track.VideoID)
+		}
+		if err != nil || page.Name != c.wantName || page.Thumb != c.wantThumb || songs != c.wantSongs || !reflect.DeepEqual(ids, c.wantIDs) {
+			t.Errorf("%s:\n got %q %q songs=%q %v, %v", c.name, page.Name, page.Thumb, songs, ids, err)
+		}
+	}
+}
+
+// browse_artist_songs.json is a live anonymous browse of the playlist behind
+// Tulus's "Top songs" (Nov 2026), trimmed to six of its 71 rows. Its rows
+// have a play count where a playlist's have the album.
+func TestParsePlaylistReadsAnArtistsSongs(t *testing.T) {
+	live, err := os.ReadFile(filepath.Join("testdata", "browse_artist_songs.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := parsePlaylist(live)
+	if err != nil || len(got.Tracks) != 6 {
+		t.Fatalf("got %d songs, %v; want 6", len(got.Tracks), err)
+	}
+	cases := []struct {
+		name string
+		got  Track
+		want Track
+	}{
+		{"a song links its artist and keeps the album, not the play count", got.Tracks[0],
+			Track{VideoID: "5F28ye50-Kc", Title: "Teh Hijau", Artist: "Tulus", ArtistID: "UC_DHlXllTSMB8pTC38_leFg", Album: "Teh Hijau", Duration: 213}},
+		{"a song by several artists links the first", got.Tracks[5],
+			Track{VideoID: "aZLzcvHffVc", Title: "Adu Rayu", Artist: "Yovie Widianto, Tulus & Glenn Fredly", ArtistID: "UCWpMHJPVmQ9dXa-EWJEC33Q", Album: "Adu Rayu", Duration: 208}},
+	}
+	for _, c := range cases {
+		c.got.Thumb = "" // pinned by the playlist test
+		if c.got != c.want {
+			t.Errorf("%s:\n got %+v\nwant %+v", c.name, c.got, c.want)
+		}
+	}
+}
+
+// search_suggestions.json is a live anonymous suggestions call for "tul"
+// (Nov 2026), trimmed to three suggestions. The artist and song rows YouTube
+// sends along are not suggestions.
+func TestParseSuggestions(t *testing.T) {
+	live, err := os.ReadFile(filepath.Join("testdata", "search_suggestions.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []string{"tulus", "tulus teh hijau", "tulus full album"}
+	got, err := parseSuggestions(live)
+	if err != nil || !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v, %v\nwant %v", got, err, want)
+	}
+}
+
+func TestParseQueueLinksTheArtist(t *testing.T) {
+	raw := `{"items":[{"playlistPanelVideoRenderer":{"videoId":"v1","title":{"runs":[{"text":"Monokrom"}]},"longBylineText":{"runs":[
+	 {"text":"Tulus","navigationEndpoint":{"browseEndpoint":{"browseId":"UC_DHlXllTSMB8pTC38_leFg","browseEndpointContextSupportedConfigs":{"browseEndpointContextMusicConfig":{"pageType":"MUSIC_PAGE_TYPE_ARTIST"}}}}},
+	 {"text":" • "},
+	 {"text":"Monokrom","navigationEndpoint":{"browseEndpoint":{"browseId":"MPREb_4TEBtGA3cZb","browseEndpointContextSupportedConfigs":{"browseEndpointContextMusicConfig":{"pageType":"MUSIC_PAGE_TYPE_ALBUM"}}}}}]}}}]}`
+	got, _, err := parseQueue(json.RawMessage(raw))
+	if err != nil || len(got) != 1 || got[0].ArtistID != "UC_DHlXllTSMB8pTC38_leFg" {
+		t.Errorf("got %+v, %v; want the artist's channel, not the album's", got, err)
+	}
+}

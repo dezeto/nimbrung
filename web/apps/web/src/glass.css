@@ -500,9 +500,45 @@ html, body { overflow-x: clip; }
 
   /* Category chips: flat pills on the page (glass is for what floats).
      The selected one is solid ink, like the system's filter pills. */
-  .chips { display: flex; gap: 6px; }
+  .chips { display: flex; gap: 6px; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
   .chip { display: inline-flex; flex: none; align-items: center; height: 36px; padding: 0 14px; border-radius: var(--lg-radius-full); background: rgb(var(--nb-fg) / 0.1); color: var(--lg-ink); font-size: 14px; font-weight: 550; white-space: nowrap; }
   .chip[aria-current="page"] { background: var(--lg-ink); color: rgb(var(--nb-shade)); font-weight: 650; }
+
+  /* Shelves: a sideways strip that runs to the screen's edges. The next item
+     peeks in on the right, so the strip reads as more; items snap one by one. */
+  .shelf { display: flex; align-items: flex-start; gap: 14px; margin-inline: -16px; padding: 10px 16px 2px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scroll-padding-inline: 16px; scrollbar-width: none; }
+  .shelf::-webkit-scrollbar { display: none; }
+  .shelf > li { flex: none; scroll-snap-align: start; }
+  .shelf-heading { padding-inline: 4px; font-size: 17px; line-height: 22px; font-weight: 650; letter-spacing: -0.01em; }
+  /* Round is an artist; square is a song */
+  .artist-tile { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 76px; font-size: 13px; line-height: 17px; font-weight: 550; text-align: center; }
+  .artist-face { display: grid; place-items: center; width: 72px; height: 72px; flex: none; overflow: hidden; border-radius: 50%; background: rgb(var(--nb-fg) / 0.1); outline: 1px solid var(--lg-border-subtle); outline-offset: -1px; transition: transform var(--lg-duration-fast) var(--lg-easing-spring); }
+  .artist-tile:active .artist-face { transform: scale(var(--lg-press-scale)); }
+  .artist-tile:focus-visible { outline: none; }
+  .artist-tile:focus-visible .artist-face { outline: 2px solid var(--lg-ink); outline-offset: 2px; }
+  .song-card { position: relative; width: 132px; }
+  .song-art { width: 132px; height: 132px; overflow: hidden; border-radius: var(--lg-radius-md); background: rgb(var(--nb-fg) / 0.1); }
+  /* The + sits on the artwork, so it brings its own dark disc: white on it
+     holds 4.5:1 over any cover, in light and dark */
+  .song-add { position: absolute; top: 84px; right: 8px; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: rgb(0 0 0 / 0.62); border: 1px solid rgb(255 255 255 / 0.3); color: #fff; -webkit-backdrop-filter: blur(var(--lg-blur-sm)); backdrop-filter: blur(var(--lg-blur-sm)); transition: transform var(--lg-duration-fast) var(--lg-easing-spring); }
+  button.song-add::before { content: ""; position: absolute; inset: -4px; } /* a 48px target */
+  button.song-add:active { transform: scale(0.9); }
+  .song-add.is-playing { color: #ff8a84; } /* the accent, lightened to hold 4.5:1 on the disc */
+
+  /* An artist's name in a row's second line opens their songs. The line and
+     the link grow a taller hit area without moving anything. */
+  .row-sub:has(.row-artist), .row-sub:has(.row-artist) > .truncate { padding-block: 6px; margin-block: -6px; }
+  .row-artist { position: relative; }
+  .row-artist::after { content: ""; position: absolute; inset: -6px -4px; }
+  .row-artist:focus-visible { outline: none; color: var(--lg-ink); text-decoration: underline; text-underline-offset: 3px; }
+  @media (hover: hover) { .row-artist:hover { color: var(--lg-ink); text-decoration: underline; text-underline-offset: 3px; } }
+
+  /* The search header's title folds away while there's a query, so results get the room */
+  .fold { display: grid; grid-template-rows: 1fr; transition: grid-template-rows var(--lg-duration-fast) ease-out, margin-top var(--lg-duration-fast) ease-out, opacity var(--lg-duration-fast) ease-out; }
+  .fold > * { min-height: 0; overflow: hidden; }
+  .fold[data-folded="true"] { grid-template-rows: 0fr; margin-top: -12px; opacity: 0; } /* -12px: the header's own gap */
+  @media (prefers-reduced-motion: reduce) { .fold, .artist-face, .song-add { transition: none; } }
 
   /* Scroll edge under a sticky header: rows fade and blur as they pass under it */
   .edge-top { isolation: isolate; }
