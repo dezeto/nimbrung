@@ -440,7 +440,15 @@ html, body { overflow-x: clip; }
   .progress > i { display: block; height: 100%; border-radius: inherit; background: var(--np-accent, var(--nb-accent)); transition: background-color 1.2s ease-out; }
 
   .react { width: 40px; height: 44px; flex: none; display: inline-grid; place-items: center; border-radius: 50%; font-size: 22px; line-height: 1; }
-  .react:active { transform: scale(0.9); }
+  .react { transition: transform 120ms cubic-bezier(0.23, 1, 0.32, 1); }
+  .react:active { transform: scale(0.95); }
+  .react-trigger { position: relative; }
+  .react-trigger::before { content: ""; position: absolute; inset: -4px 0; } /* a 44px target on a 36px pill */
+  /* The reactions tray grows out of its button: from the bottom centre, never from nothing */
+  .react-tray { position: absolute; z-index: 20; bottom: calc(100% + 8px); left: 50%; translate: -50% 0; transform-origin: 50% 100%; transition: opacity 160ms cubic-bezier(0.23, 1, 0.32, 1), transform 160ms cubic-bezier(0.23, 1, 0.32, 1); }
+  @starting-style { .react-tray { opacity: 0; transform: translateY(4px) scale(0.95); } }
+  .react-tray > button.react { width: 44px; height: 44px; font-size: 24px; }
+  @media (prefers-reduced-motion: reduce) { .react, .react-tray { transition: opacity 160ms ease; } .react:active { transform: none; } @starting-style { .react-tray { transform: none; } } }
 
   /* Two asks that share one control fill (Quieter | Louder) */
   .seg-group { display: inline-flex; align-items: center; flex: none; gap: 2px; padding: 2px; border-radius: var(--lg-radius-full); background: rgb(var(--nb-fg) / 0.1); border: 0; } /* flat: it sits on the page, not floating */
@@ -526,6 +534,56 @@ html, body { overflow-x: clip; }
   button.song-add:active { transform: scale(0.9); }
   .song-add.is-playing { color: #ff8a84; } /* the accent, lightened to hold 4.5:1 on the disc */
 
+  /* "See all" beside a shelf's heading: opens the chip it's a taste of */
+  .see-all { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; margin-block: -11px; padding: 0 4px; font-size: 13px; font-weight: 550; color: var(--lg-ink-muted); }
+  .see-all:focus-visible { outline: 2px solid var(--lg-ink); outline-offset: -4px; border-radius: 8px; }
+  /* Square is an album too; its title and line sit under the cover like a song card's */
+  .album-tile { display: flex; flex-direction: column; gap: 2px; width: 132px; }
+  .album-art { display: grid; place-items: center; width: 132px; height: 132px; margin-bottom: 6px; overflow: hidden; border-radius: var(--lg-radius-md); background: rgb(var(--nb-fg) / 0.1); transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1); }
+  .album-tile:active .album-art { transform: scale(var(--lg-press-scale)); }
+  .album-tile:focus-visible { outline: none; }
+  .album-tile:focus-visible .album-art { outline: 2px solid var(--lg-ink); outline-offset: 2px; }
+  .tile-title { font-size: 14px; line-height: 18px; font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tile-sub { font-size: 12px; line-height: 16px; color: var(--lg-ink-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* Wide is a video: 16:9, with its length on the picture and the song card's + disc */
+  .video-card { position: relative; display: flex; flex-direction: column; gap: 2px; width: 224px; }
+  .video-art { position: relative; width: 224px; height: 126px; margin-bottom: 6px; overflow: hidden; border-radius: var(--lg-radius-md); background: rgb(var(--nb-fg) / 0.1); }
+  .video-len { position: absolute; left: 8px; bottom: 8px; padding: 1px 6px; border-radius: 6px; background: rgb(0 0 0 / 0.66); color: #fff; font-size: 11px; line-height: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .video-card .song-add { top: 78px; }
+  .thumb.wide { width: 86px; height: 48px; border-radius: 8px; }
+  .row.is-wide + .row.is-wide::after { left: 98px; }
+  /* A 16:9 box already crops a 4:3 thumbnail's bars; the square boxes' zoom would cut the picture */
+  .video-art > img.size-full[src], .thumb.wide > img.size-full[src] { scale: 1; }
+
+  /* A row that opens a page (a playlist, an album): the cover answers the press */
+  .row-link { display: flex; flex: 1; min-width: 0; align-items: center; gap: 12px; border-radius: 12px; }
+  .row-link .thumb { transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1); }
+  .row-link:active .thumb { transform: scale(var(--lg-press-scale)); }
+  .row-link:focus-visible { outline: 2px solid var(--lg-ink); outline-offset: 2px; }
+
+  /* An album's page: a big cover, then songs by number instead of by picture */
+  .cover { width: 148px; height: 148px; flex: none; overflow: hidden; border-radius: 16px; background: rgb(var(--nb-fg) / 0.1); box-shadow: 0 12px 32px light-dark(rgb(0 0 0 / 0.18), rgb(0 0 0 / 0.4)); }
+  .track-no { display: grid; place-items: center; width: 28px; flex: none; font-size: 15px; color: var(--lg-ink-muted); font-variant-numeric: tabular-nums; }
+  .row.is-numbered { min-height: 56px; }
+  .row.is-numbered + .row.is-numbered::after { left: 40px; }
+  .album-artist { position: relative; align-self: flex-start; max-width: 100%; font-size: 15px; line-height: 20px; font-weight: 550; color: var(--nb-accent-text); }
+  .album-artist::after { content: ""; position: absolute; inset: -12px -6px; } /* a 44px target */
+  .album-artist:focus-visible { outline: none; text-decoration: underline; text-underline-offset: 3px; }
+  .kicker { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: var(--lg-ink-muted); }
+
+  /* A link pasted into the search box, as the one thing to act on */
+  .link-card { display: flex; flex-direction: column; gap: 14px; padding: 16px; }
+  .link-art { display: grid; place-items: center; width: 72px; height: 72px; flex: none; overflow: hidden; border-radius: 12px; background: rgb(var(--nb-fg) / 0.1); }
+  .link-done { display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border-radius: var(--lg-radius-full); background: rgb(var(--nb-fg) / 0.08); font-size: 15px; font-weight: 600; }
+
+  /* What a filter matched, in a title */
+  .mark { padding: 0 1px; border-radius: 3px; background: color-mix(in oklab, var(--nb-accent) 30%, transparent); color: inherit; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .see-all:hover { color: var(--lg-ink); }
+    .album-artist:hover { text-decoration: underline; text-underline-offset: 3px; }
+  }
+
   /* An artist's name in a row's second line opens their songs. The line and
      the link grow a taller hit area without moving anything. */
   .row-sub:has(.row-artist), .row-sub:has(.row-artist) > .truncate { padding-block: 6px; margin-block: -6px; }
@@ -535,10 +593,10 @@ html, body { overflow-x: clip; }
   @media (hover: hover) { .row-artist:hover { color: var(--lg-ink); text-decoration: underline; text-underline-offset: 3px; } }
 
   /* The search header's title folds away while there's a query, so results get the room */
-  .fold { display: grid; grid-template-rows: 1fr; transition: grid-template-rows var(--lg-duration-fast) ease-out, margin-top var(--lg-duration-fast) ease-out, opacity var(--lg-duration-fast) ease-out; }
+  .fold { display: grid; grid-template-rows: 1fr; transition: grid-template-rows var(--lg-duration-fast) cubic-bezier(0.23, 1, 0.32, 1), margin-top var(--lg-duration-fast) cubic-bezier(0.23, 1, 0.32, 1), opacity var(--lg-duration-fast) cubic-bezier(0.23, 1, 0.32, 1); }
   .fold > * { min-height: 0; overflow: hidden; }
   .fold[data-folded="true"] { grid-template-rows: 0fr; margin-top: -12px; opacity: 0; } /* -12px: the header's own gap */
-  @media (prefers-reduced-motion: reduce) { .fold, .artist-face, .song-add { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .fold, .artist-face, .song-add, .album-art, .row-link .thumb { transition: none; } }
 
   /* Scroll edge under a sticky header: rows fade and blur as they pass under it */
   .edge-top { isolation: isolate; }

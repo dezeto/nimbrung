@@ -38,7 +38,12 @@ test.describe("queue", () => {
     await expect(card.getByRole("heading", { name: NOW_TITLE })).toBeVisible();
     await expect(card.getByText(NOW_ARTIST)).toBeVisible();
 
+    // One button opens the tray; it stays open for more taps and closes on Escape.
+    await expect(page.getByRole("group", { name: "React to the song" })).toHaveCount(0);
+    await page.getByRole("button", { name: "React", exact: true }).click();
     await expect(page.getByRole("group", { name: "React to the song" }).getByRole("button")).toHaveCount(6);
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("group", { name: "React to the song" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: /^Vote to skip/ })).toBeVisible();
 
     const dock = page.getByRole("navigation", { name: "Song actions" });
@@ -209,12 +214,25 @@ test.describe("search", () => {
     const recent = page.getByRole("region", { name: "Recent searches" });
     await expect(recent.getByText("lofi")).toBeVisible();
 
-    await expect(page.getByLabel(/Got a link/)).toHaveCount(0);
-    await page.getByRole("button", { name: "Paste a link" }).click();
-    await expect(page.getByRole("textbox", { name: /Got a link/ })).toBeVisible();
-
     await recent.getByRole("button", { name: "Clear" }).click();
     await expect(page.getByRole("heading", { name: "Recent searches" })).toHaveCount(0);
+  });
+
+  test("a link in the search box is offered as one card, not searched", async ({ browser }) => {
+    const page = await joinAs(browser, "Lou");
+    await page.getByRole("link", { name: "Add a song" }).click();
+    const box = page.getByRole("searchbox", { name: "Search songs" });
+    await box.fill("https://music.youtube.com/watch?v=dQw4w9WgXcQ");
+    await expect(page.getByRole("button", { name: "Add to the queue" })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Search in" })).toHaveCount(0);
+
+    await box.fill("https://music.youtube.com/playlist?list=PLstub");
+    await expect(page.getByRole("link", { name: "Open the playlist" })).toBeVisible();
+
+    await box.fill("https://example.com/song");
+    await expect(page.getByText("That isn’t a YouTube link")).toBeVisible();
+    await page.getByRole("button", { name: "Search for it anyway" }).click();
+    await expect(page.getByText("That isn’t a YouTube link")).toHaveCount(0);
   });
 
   test("the Saved heart keeps the typed words both ways", async ({ browser }) => {
@@ -294,6 +312,7 @@ test.describe("recap", () => {
     const friend = await joinAs(browser, "Tess"); // Rex's own row just says "Yours"
     await expect(friend.getByText(/· \S+ Rex$/)).toBeVisible(); // face, then name
 
+    await page.getByRole("button", { name: "React", exact: true }).click();
     await page.getByRole("button", { name: "Fire" }).click();
     await page.getByRole("link", { name: "Tonight’s recap" }).click();
     await expect(page.getByRole("heading", { name: "Test jam" })).toBeVisible();

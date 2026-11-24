@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Pause } from "lucide-react";
 
 import type { NowPlaying } from "@/api/client";
@@ -51,7 +52,18 @@ export function NowPlayingCard({ song, saved = false, onSave }: Props) {
           <h2 className="line-clamp-2 text-[24px] leading-[30px] font-bold tracking-[-0.02em]">
             {song.title}
           </h2>
-          <p className="truncate text-[17px] leading-6 font-medium t-2">{song.artist}</p>
+          {/* The artist opens their page; one the queue can't name by ID opens a search for them. */}
+          <p className="-my-1.5 truncate py-1.5 text-[17px] leading-6 font-medium t-2">
+            {song.artistId ? (
+              <Link to="/artist/$artistId" params={{ artistId: song.artistId }} className="row-artist">
+                {song.artist}
+              </Link>
+            ) : song.artist ? (
+              <Link to="/search" search={{ q: song.artist }} className="row-artist">
+                {song.artist}
+              </Link>
+            ) : null}
+          </p>
           <p className="truncate pt-0.5 text-[13px] t-2">
             {song.addedBy ? `Added by ${who(song.addedBy, song.addedByAvatar)}` : <AutoplayMark labelled />}
           </p>

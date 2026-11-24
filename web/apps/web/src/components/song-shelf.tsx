@@ -53,7 +53,7 @@ export function SongShelf({ id, heading, sub, tracks, statusOf, error, onAdd }: 
 }
 
 /** The + on a cover. Once the song is in the queue it's a mark, not a button. */
-function AddDisc({ title, status, onAdd }: { title: string; status: SearchRowStatus; onAdd: () => void }) {
+export function AddDisc({ title, status, onAdd }: { title: string; status: SearchRowStatus; onAdd: () => void }) {
   if (status === SearchRowStatus.Playing) {
     return (
       <span className="song-add is-playing" role="img" aria-label="Playing">

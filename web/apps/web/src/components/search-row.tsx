@@ -27,6 +27,14 @@ type Props = {
   note?: string;
   /** False on the artist's own page, where their name leads nowhere new. */
   linkArtist?: boolean;
+  /** False where the page already says who it's by (an album, an artist's page). */
+  showArtist?: boolean;
+  /** A video: a 16:9 picture instead of a square cover. */
+  wide?: boolean;
+  /** Its place on an album, shown instead of the cover. */
+  trackNo?: number;
+  /** Letters of the title to mark, [start, end): what a filter matched. */
+  mark?: [number, number];
 };
 
 export function SearchRow({
@@ -39,32 +47,46 @@ export function SearchRow({
   showAlbum,
   note,
   linkArtist = true,
+  showArtist = true,
+  wide,
+  trackNo,
+  mark,
 }: Props) {
+  const playing = status === SearchRowStatus.Playing;
+  const artist = showArtist ? track.artist : "";
   const details = [
     showAlbum && track.album,
+    track.views,
     track.duration > 0 && formatDuration(track.duration),
     note,
   ].filter(Boolean);
   return (
-    <li className="row">
-      <div className="thumb">
-        {track.thumb && <img src={track.thumb} alt="" loading="lazy" className="size-full object-cover" />}
-      </div>
+    <li className={`row ${wide ? "is-wide" : ""} ${trackNo ? "is-numbered" : ""}`}>
+      {trackNo ? (
+        // The playing song shows a speaker where its number was.
+        <span className="track-no">
+          {playing ? <Volume2 className="size-4 text-[var(--nb-accent)]" aria-hidden /> : trackNo}
+        </span>
+      ) : (
+        <div className={`thumb ${wide ? "wide" : ""}`}>
+          {track.thumb && <img src={track.thumb} alt="" loading="lazy" className="size-full object-cover" />}
+        </div>
+      )}
       <div className="row-text">
-        <p className="row-title">{track.title}</p>
+        <p className="row-title">{mark ? <Marked text={track.title} range={mark} /> : track.title}</p>
         <p className="row-sub flex items-center gap-1 tabular-nums">
           {saved && !onSave && (
             <Heart className="size-3 shrink-0 fill-current text-[var(--nb-accent)]" aria-label="Saved" />
           )}
           <span className="truncate">
-            {track.artistId && linkArtist ? (
+            {artist && track.artistId && linkArtist ? (
               <Link to="/artist/$artistId" params={{ artistId: track.artistId }} className="row-artist">
-                {track.artist}
+                {artist}
               </Link>
             ) : (
-              track.artist
+              artist
             )}
-            {track.artist && details.length > 0 && " · "}
+            {artist && details.length > 0 && " · "}
             {details.join(" · ")}
           </span>
         </p>
@@ -75,9 +97,9 @@ export function SearchRow({
         )}
       </div>
       {onSave && <SaveButton title={track.title} saved={saved} onToggle={onSave} />}
-      {status === SearchRowStatus.Playing ? (
+      {playing ? (
         <span className="status t-mine">
-          <Volume2 className="size-4" /> Playing
+          {!trackNo && <Volume2 className="size-4" />} Playing
         </span>
       ) : status === SearchRowStatus.Queued ? (
         <span className="status t-2">
@@ -104,5 +126,16 @@ export function SearchRow({
         </button>
       )}
     </li>
+  );
+}
+
+/** The title with the matched letters marked. */
+function Marked({ text, range: [start, end] }: { text: string; range: [number, number] }) {
+  return (
+    <>
+      {text.slice(0, start)}
+      <mark className="mark">{text.slice(start, end)}</mark>
+      {text.slice(end)}
+    </>
   );
 }

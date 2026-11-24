@@ -106,6 +106,13 @@ func parseSearch(raw json.RawMessage) (SearchPage, error) {
 			}
 			return
 		}
+		if a, ok := albumRow(r); ok {
+			if !seen[a.ID] {
+				seen[a.ID] = true
+				page.Albums = append(page.Albums, a)
+			}
+			return
+		}
 		t, ok := trackRow(r)
 		if !ok || seen[t.VideoID] {
 			return
@@ -154,18 +161,19 @@ func trackRow(r node) (Track, bool) {
 	}
 	t.Artist, t.Album, t.Duration = splitSubtitle(runs)
 	t.ArtistID = artistID(flexColumn(r, 1))
+	video := videoTypeOf(r).isVideo()
+	if video {
+		t.Views, t.Album = t.Album, "" // a video's subtitle has its view count where a song's has the album
+	}
 	// A playlist's rows give the album and the duration columns of their own.
 	// The album is the last one: an artist's songs have a play count before it.
 	if fixed := r.list("fixedColumns"); len(fixed) > 0 {
-		if cols := len(r.list("flexColumns")); t.Album == "" && cols > 2 {
+		if cols := len(r.list("flexColumns")); t.Album == "" && !video && cols > 2 {
 			t.Album = flexColumn(r, cols-1).runsText()
 		}
 		if t.Duration == 0 {
 			t.Duration = parseDuration(fixed[0].obj("musicResponsiveListItemFixedColumnRenderer").obj("text").runsText())
 		}
-	}
-	if videoTypeOf(r).isVideo() {
-		t.Album = "" // a video's subtitle has its view count where a song's has the album
 	}
 	return t, t.Title != ""
 }
@@ -174,6 +182,7 @@ func trackRow(r node) (Track, bool) {
 const (
 	musicPagePlaylist = "MUSIC_PAGE_TYPE_PLAYLIST"
 	musicPageArtist   = "MUSIC_PAGE_TYPE_ARTIST"
+	musicPageAlbum    = "MUSIC_PAGE_TYPE_ALBUM"
 )
 
 // pageTypeOf is the kind of page a browse link opens.
@@ -193,12 +202,118 @@ func artistID(byline node) string {
 	return ""
 }
 
+// albumTitle is the name of the album a byline links to; "" when it links
+// none, as videos don't.
+func albumTitle(byline node) string {
+	for _, run := range byline.list("runs") {
+		if pageTypeOf(run.obj("navigationEndpoint").obj("browseEndpoint")) == musicPageAlbum {
+			return run.str("text")
+		}
+	}
+	return ""
+}
+
 // artistRow reads an artist row of a search page: "Name" over
 // "Artist • 53.7M monthly audience".
 func artistRow(r node) (Artist, bool) {
 	browse := r.obj("navigationEndpoint").obj("browseEndpoint")
-	a := Artist{ID: browse.str("browseId"), Name: flexColumn(r, 0).runsText(), Thumb: squareThumb(rowThumb(r))}
+	a := Artist{ID: browse.str("browseId"), Name: flexColumn(r, 0).runsText(), Thumb: squareThumb(rowThumb(r), artistPhotoSize)}
 	return a, pageTypeOf(browse) == musicPageArtist && a.ID != "" && a.Name != ""
+}
+
+// albumRow reads an album row of a search page: "Title" over
+// "Album • The Beatles • 1969".
+func albumRow(r node) (Album, bool) {
+	return albumFrom(r.obj("navigationEndpoint"), flexColumn(r, 0), flexColumn(r, 1), rowThumb(r))
+}
+
+// carouselAlbum reads an album tile on an artist's page: "Title" over
+// "Single • 2026", or just "2022" on the Albums shelf, which drops the word.
+func carouselAlbum(item node) (Album, bool) {
+	thumb := item.obj("thumbnailRenderer").obj("musicThumbnailRenderer").obj("thumbnail").bestThumb()
+	a, ok := albumFrom(item.obj("navigationEndpoint"), item.obj("title"), item.obj("subtitle"), thumb)
+	if a.Kind == "" {
+		a.Kind = "Album"
+	}
+	return a, ok
+}
+
+// albumFrom reads the parts a search row and an artist page's tile share.
+func albumFrom(nav, title, subtitle node, thumb string) (Album, bool) {
+	browse := nav.obj("browseEndpoint")
+	a := Album{ID: browse.str("browseId"), Title: title.runsText(), ArtistID: artistID(subtitle), Thumb: squareThumb(thumb, albumArtSize)}
+	a.Kind, a.Artist, a.Year = albumSubtitle(subtitle.runs())
+	return a, pageTypeOf(browse) == musicPageAlbum && a.ID != "" && a.Title != ""
+}
+
+// albumSubtitle splits an album's subtitle: "Album • The Beatles • 1969" in
+// search, "Single • 2026" on an artist's page, "EP • 2019" over its own page.
+func albumSubtitle(runs []string) (kind, artist, year string) {
+	parts := subtitleParts(runs)
+	switch rowLabel(strings.ToLower(parts[0])) {
+	case labelAlbum, labelSingle, labelEP:
+		kind, parts = parts[0], parts[1:]
+	}
+	if n := len(parts); n > 0 {
+		if _, err := strconv.Atoi(parts[n-1]); err == nil && len(parts[n-1]) == 4 {
+			year, parts = parts[n-1], parts[:n-1]
+		}
+	}
+	return kind, strings.Join(parts, " • "), year
+}
+
+// parseAlbum extracts an album's title, artist, year and songs from
+// YouTube's raw browse response for it. Its rows leave out the artist unless
+// a guest joins in, and have no art of their own: they get the album's.
+func parseAlbum(raw json.RawMessage) (AlbumPage, error) {
+	var root any
+	if err := json.Unmarshal(raw, &root); err != nil {
+		return AlbumPage{}, err
+	}
+	// The rows need the header, so it gets a walk of its own: map order is random.
+	var page AlbumPage
+	walk(root, "musicResponsiveHeaderRenderer", func(h node) {
+		page.Title = h.obj("title").runsText()
+		page.Kind, _, page.Year = albumSubtitle(h.obj("subtitle").runs())
+		page.Artist, page.ArtistID = h.obj("straplineTextOne").runsText(), artistID(h.obj("straplineTextOne"))
+		page.Thumb = rowThumb(h)
+	})
+	seen := map[string]bool{}
+	walk(root, "musicShelfRenderer", func(shelf node) {
+		walk(map[string]any(shelf), "musicResponsiveListItemRenderer", func(r node) {
+			t, ok := trackRow(r)
+			if !ok || seen[t.VideoID] {
+				return
+			}
+			seen[t.VideoID] = true
+			if t.Artist == "" {
+				t.Artist, t.ArtistID = page.Artist, page.ArtistID
+			}
+			if t.Thumb == "" {
+				t.Thumb = page.Thumb
+			}
+			t.Album = page.Title // the column trackRow took for it is the play count
+			page.Tracks = append(page.Tracks, t)
+		})
+	})
+	return page, nil
+}
+
+// parseTrack extracts one song or video from YouTube's raw next response
+// for it, which lists it first, playing; a zero Track when it isn't there.
+func parseTrack(raw json.RawMessage, videoID string) (Track, error) {
+	var root any
+	if err := json.Unmarshal(raw, &root); err != nil {
+		return Track{}, err
+	}
+	var t Track
+	walk(root, "playlistPanelVideoRenderer", func(r node) {
+		if t.VideoID == "" && r.str("videoId") == videoID {
+			t = panelTrack(r)
+			t.Album = albumTitle(r.obj("longBylineText"))
+		}
+	})
+	return t, nil
 }
 
 // parseArtist extracts an artist's name, photo and first few songs from
@@ -214,9 +329,18 @@ func parseArtist(raw json.RawMessage) (ArtistPage, string, error) {
 	for _, header := range []string{"musicImmersiveHeaderRenderer", "musicVisualHeaderRenderer"} {
 		walk(root, header, func(h node) {
 			page.Name = h.obj("title").runsText()
-			page.Thumb = squareThumb(rowThumb(h))
+			page.Thumb = squareThumb(rowThumb(h), artistPhotoSize)
 		})
 	}
+	seenAlbum := map[string]bool{}
+	walk(root, "musicCarouselShelfRenderer", func(shelf node) {
+		for _, item := range shelf.list("contents") {
+			if a, ok := carouselAlbum(item.obj("musicTwoRowItemRenderer")); ok && !seenAlbum[a.ID] {
+				seenAlbum[a.ID] = true
+				page.Albums = append(page.Albums, a)
+			}
+		}
+	})
 	// Only the first shelf is their songs; the ones after it are albums,
 	// videos and other artists.
 	var songs string
@@ -330,6 +454,7 @@ const (
 	labelAlbum    rowLabel = "album"
 	labelPlaylist rowLabel = "playlist"
 	labelArtist   rowLabel = "artist"
+	labelEP       rowLabel = "ep"
 )
 
 // leadingLabel returns the first run as a rowLabel, e.g. labelEpisode.
@@ -422,20 +547,24 @@ func (n node) bestThumb() string {
 	return best
 }
 
-// artistPhotoSize is the side, in pixels, artist photos are asked for: a
-// 72px circle on a 3x phone.
-const artistPhotoSize = 240
+// The sides, in pixels, squareThumb asks for: an artist photo is a 72px
+// circle on a 3x phone, an album tile 132px on a 2x one.
+const (
+	artistPhotoSize = 240
+	albumArtSize    = 264
+)
 
 // squareThumb asks Google's image host for a square, face-centred crop of a
-// photo: artist rows come 120px wide and artist headers as wide banners, and
-// the size is the "=w…" tail of the URL. Other hosts' URLs pass through.
-func squareThumb(url string) string {
+// photo, px wide: artist rows come 120px wide, artist headers as wide
+// banners and album art at 544px, and the size is the "=w…" tail of the
+// URL. Other hosts' URLs pass through.
+func squareThumb(url string, px int) string {
 	base, _, sized := strings.Cut(url, "=w")
 	if !sized || !strings.Contains(base, ".googleusercontent.com/") {
 		return url
 	}
-	px := strconv.Itoa(artistPhotoSize)
-	return base + "=w" + px + "-h" + px + "-p-l90-rj"
+	side := strconv.Itoa(px)
+	return base + "=w" + side + "-h" + side + "-p-l90-rj"
 }
 
 // artistFromByline takes a byline like ["Artist", " • ", "Album", " • ", "3:45"]
@@ -448,18 +577,7 @@ func artistFromByline(runs []string) string {
 // splitSubtitle parses the " • "-separated subtitle used in search rows:
 // "Song • Artist • Album • 3:45". The leading "Song" token is optional.
 func splitSubtitle(runs []string) (artist, album string, duration int) {
-	var parts []string
-	var cur strings.Builder
-	for _, r := range runs {
-		if strings.TrimSpace(r) == "•" {
-			parts = append(parts, strings.TrimSpace(cur.String()))
-			cur.Reset()
-			continue
-		}
-		cur.WriteString(r)
-	}
-	parts = append(parts, strings.TrimSpace(cur.String()))
-
+	parts := subtitleParts(runs)
 	// Drop a leading type label ("Song", "Video", "Lagu", …) if present.
 	if len(parts) > 1 && isTypeLabel(parts[0]) {
 		parts = parts[1:]
@@ -478,6 +596,21 @@ func splitSubtitle(runs []string) (artist, album string, duration int) {
 		album = parts[1]
 	}
 	return
+}
+
+// subtitleParts splits a subtitle's runs at its " • "s; never empty.
+func subtitleParts(runs []string) []string {
+	var parts []string
+	var cur strings.Builder
+	for _, r := range runs {
+		if strings.TrimSpace(r) == "•" {
+			parts = append(parts, strings.TrimSpace(cur.String()))
+			cur.Reset()
+			continue
+		}
+		cur.WriteString(r)
+	}
+	return append(parts, strings.TrimSpace(cur.String()))
 }
 
 func isTypeLabel(s string) bool {

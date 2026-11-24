@@ -6,12 +6,9 @@ import (
 	"time"
 )
 
-// Artists, their songs and search suggestions come from YouTube anonymously,
-// like Playlist: the plugin has no endpoint for them, and an anonymous call
-// doesn't wait its turn behind the guests' searches.
-
-// artistsFilter is the Artists search filter, built like songsFilter.
-const artistsFilter = "EgWKAQIgAWoMEA4QChADEAQQCRAF"
+// Artists, albums, their songs and search suggestions come from YouTube
+// anonymously, like Playlist: the plugin has no endpoint for them, and an
+// anonymous call doesn't wait its turn behind the guests' searches.
 
 // suggestTimeout is short: a suggestion that arrives late is one nobody reads.
 const suggestTimeout = 3 * time.Second
@@ -19,40 +16,47 @@ const suggestTimeout = 3 * time.Second
 // maxSuggestions is how many fit in one row of chips before nobody scrolls.
 const maxSuggestions = 6
 
-// artistCacheSize is how many artists are remembered: a night's worth.
-const artistCacheSize = 200
+// pageCacheSize is how many artists, or albums, are remembered: a night's worth.
+const pageCacheSize = 200
 
-// artistCache remembers artist pages for the life of the jam: every guest's
-// search screen asks for the artists in the queue, and each answer costs
-// YouTube two calls.
-type artistCache struct {
+// pageCache remembers artist and album pages for the life of the jam: every
+// guest's search screen asks for the artists in the queue, an artist page
+// costs YouTube two calls, and an album page is opened by everyone a guest
+// shows it to.
+type pageCache[T any] struct {
 	mu    sync.Mutex
-	pages map[string]ArtistPage
+	pages map[string]T
 }
 
-func (c *artistCache) get(id string) (ArtistPage, bool) {
+func (c *pageCache[T]) get(id string) (T, bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	page, ok := c.pages[id]
 	return page, ok
 }
 
-func (c *artistCache) put(id string, page ArtistPage) {
+func (c *pageCache[T]) put(id string, page T) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	// Full means start over: simpler than tracking which artist is oldest,
+	// Full means start over: simpler than tracking which page is oldest,
 	// and a jam doesn't browse 200 of them.
-	if c.pages == nil || len(c.pages) >= artistCacheSize {
-		c.pages = map[string]ArtistPage{}
+	if c.pages == nil || len(c.pages) >= pageCacheSize {
+		c.pages = map[string]T{}
 	}
 	c.pages[id] = page
 }
 
-// searchArtists asks YouTube for the artists matching a query.
-func (c *Client) searchArtists(ctx context.Context, query string) (SearchPage, error) {
+// searchYouTube asks YouTube itself for one page of results. A "More
+// results" cursor goes along with the query and filter, as the web player
+// sends it.
+func (c *Client) searchYouTube(ctx context.Context, req SearchRequest) (SearchPage, error) {
 	ctx, cancel := context.WithTimeout(ctx, searchTimeout)
 	defer cancel()
-	raw, err := c.youtubei(ctx, "search", map[string]any{"query": query, "params": artistsFilter})
+	fields := map[string]any{"query": req.Query, "params": req.Kind.filter()}
+	if req.Cursor != "" {
+		fields["continuation"] = req.Cursor
+	}
+	raw, err := c.youtubei(ctx, "search", fields)
 	if err != nil {
 		return SearchPage{}, err
 	}
@@ -76,6 +80,9 @@ func (c *Client) Artist(ctx context.Context, id string) (ArtistPage, error) {
 		return ArtistPage{}, err
 	}
 	page.ID = id
+	for i := range page.Albums {
+		page.Albums[i].Artist, page.Albums[i].ArtistID = page.Name, id
+	}
 	// The artist's own page shows five songs without durations; the playlist
 	// behind its "Top songs" has the rest. If that fails, five is still an answer.
 	if songs != "" {
@@ -85,6 +92,39 @@ func (c *Client) Artist(ctx context.Context, id string) (ArtistPage, error) {
 	}
 	c.artists.put(id, page)
 	return page, nil
+}
+
+// Album asks YouTube for an album's title, artist, art and songs. A page
+// without a title isn't an album; it comes back empty and isn't remembered.
+func (c *Client) Album(ctx context.Context, id string) (AlbumPage, error) {
+	if page, ok := c.albums.get(id); ok {
+		return page, nil
+	}
+	ctx, cancel := context.WithTimeout(ctx, searchTimeout)
+	defer cancel()
+	raw, err := c.youtubei(ctx, "browse", map[string]any{"browseId": id})
+	if err != nil {
+		return AlbumPage{}, err
+	}
+	page, err := parseAlbum(raw)
+	if err != nil || page.Title == "" {
+		return AlbumPage{}, err
+	}
+	page.ID = id
+	c.albums.put(id, page)
+	return page, nil
+}
+
+// FindTrack asks YouTube what a video is, for a link a guest pasted: the
+// next endpoint answers with the video first, as the player it starts.
+func (c *Client) FindTrack(ctx context.Context, videoID string) (Track, error) {
+	ctx, cancel := context.WithTimeout(ctx, searchTimeout)
+	defer cancel()
+	raw, err := c.youtubei(ctx, "next", map[string]any{"videoId": videoID})
+	if err != nil {
+		return Track{}, err
+	}
+	return parseTrack(raw, videoID)
 }
 
 // Suggest returns ways to finish what a guest has typed so far; empty, never

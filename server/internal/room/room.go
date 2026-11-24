@@ -357,6 +357,31 @@ func (r *Room) Artist(ctx context.Context, id string) (ytm.ArtistPage, error) {
 	return page, err
 }
 
+// albumIDs is the shape of YouTube's album browse IDs.
+var albumIDs = regexp.MustCompile(`^MPREb_[A-Za-z0-9_-]{5,40}$`)
+
+// Album opens an album from search results or an artist's page, to pick
+// from its songs.
+func (r *Room) Album(ctx context.Context, id string) (ytm.AlbumPage, error) {
+	if !albumIDs.MatchString(id) {
+		return ytm.AlbumPage{}, ErrNotFound
+	}
+	page, err := r.player.Album(ctx, id)
+	if err == nil && page.Title == "" {
+		return ytm.AlbumPage{}, ErrNotFound
+	}
+	return page, err
+}
+
+// FindTrack tells a guest what the link they pasted is before they add it.
+func (r *Room) FindTrack(ctx context.Context, videoID string) (ytm.Track, error) {
+	track, err := r.player.FindTrack(ctx, videoID)
+	if err == nil && track.VideoID == "" {
+		return ytm.Track{}, ErrNotFound
+	}
+	return track, err
+}
+
 // minSuggestInput is how much a guest types before suggestions mean anything.
 const minSuggestInput = 2
 

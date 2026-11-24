@@ -15,6 +15,7 @@ type Track struct {
 	Artist   string `json:"artist"`
 	ArtistID string `json:"artistId,omitempty"` // the first artist's channel, "UC…"; "" when the row links none
 	Album    string `json:"album,omitempty"`
+	Views    string `json:"views,omitempty"` // "2.1B views" on a video's search row, where a song's has the album
 	Thumb    string `json:"thumb,omitempty"`
 	Duration int    `json:"duration"` // seconds, 0 if unknown
 }
@@ -48,6 +49,7 @@ const (
 	SearchVideos    SearchKind = "videos"
 	SearchPlaylists SearchKind = "playlists"
 	SearchArtists   SearchKind = "artists"
+	SearchAlbums    SearchKind = "albums"
 )
 
 // Artist is an artist in search results; Client.Artist opens them.
@@ -58,9 +60,29 @@ type Artist struct {
 }
 
 // ArtistPage is an artist and their songs, most played first: YouTube's
-// first page, up to 100 of them.
+// first page, up to 100 of them. Albums are the ones on their page: albums,
+// then singles and EPs.
 type ArtistPage struct {
 	Artist
+	Tracks []Track `json:"tracks"`
+	Albums []Album `json:"albums,omitempty"`
+}
+
+// Album is an album, EP or single in search results or on an artist's page;
+// Client.Album opens it.
+type Album struct {
+	ID       string `json:"id"` // YouTube's browseId, "MPREb_…"
+	Title    string `json:"title"`
+	Artist   string `json:"artist"`
+	ArtistID string `json:"artistId,omitempty"`
+	Year     string `json:"year,omitempty"`
+	Kind     string `json:"kind,omitempty"` // "Album", "EP" or "Single", as YouTube labels it
+	Thumb    string `json:"thumb,omitempty"`
+}
+
+// AlbumPage is an album and its songs in order.
+type AlbumPage struct {
+	Album
 	Tracks []Track `json:"tracks"`
 }
 
@@ -93,6 +115,7 @@ type SearchPage struct {
 	Tracks         []Track    `json:"tracks"`
 	Playlists      []Playlist `json:"playlists,omitempty"`
 	Artists        []Artist   `json:"artists,omitempty"`
+	Albums         []Album    `json:"albums,omitempty"`
 	Next           string     `json:"next,omitempty"`
 	CorrectedQuery string     `json:"correctedQuery,omitempty"`
 }

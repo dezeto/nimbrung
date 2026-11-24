@@ -8,7 +8,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { api, type Playlist, type SearchKind, type Track } from "@/api/client";
+import { type Album, api, type Playlist, type SearchKind, type Track } from "@/api/client";
 import { SearchRowStatus } from "@/components/search-row";
 import { QueryKey } from "@/hooks/query-keys";
 import { useRoomState } from "@/hooks/use-room-state";
@@ -19,8 +19,10 @@ import { meQuery } from "@/hooks/use-session";
 /**
  * Search the player, debounced so typing doesn't fire a request per key.
  * Pages after the first repeat some of its rows, so each song shows once.
+ * A strip on the Songs chip asks the same query as its own chip, so opening
+ * "See all" finds the first page already there.
  */
-export function useSearch(input: string, kind: SearchKind) {
+export function useSearch(input: string, kind: SearchKind, enabled = true) {
   const query = useDebounced(input.trim(), 300);
 
   return useInfiniteQuery({
@@ -28,12 +30,13 @@ export function useSearch(input: string, kind: SearchKind) {
     queryFn: ({ pageParam }) => api.search(query, kind, pageParam),
     initialPageParam: "",
     getNextPageParam: (last) => last.next,
-    enabled: query.length >= 2,
+    enabled: enabled && query.length >= 2,
     placeholderData: keepPreviousData, // keep old rows while the next query loads
     staleTime: 60_000,
     select: ({ pages }) => ({
       tracks: uniqueBy(pages.flatMap((p) => p.tracks), (t: Track) => t.videoId),
       playlists: uniqueBy(pages.flatMap((p) => p.playlists ?? []), (p: Playlist) => p.id),
+      albums: uniqueBy(pages.flatMap((p) => p.albums ?? []), (a: Album) => a.id),
       correctedQuery: pages[0].correctedQuery,
     }),
   });
@@ -86,11 +89,12 @@ function uniqueBy<T>(items: T[], key: (item: T) => string): T[] {
   });
 }
 
-/** A playlist's songs, to add from one by one. */
-export function usePlaylist(id: string) {
+/** A playlist's songs, to add from one by one. No id, no ask (a pasted link that isn't one). */
+export function usePlaylist(id: string | undefined) {
   return useQuery({
     queryKey: [QueryKey.Playlist, id],
-    queryFn: () => api.playlist(id),
+    queryFn: () => api.playlist(id!),
+    enabled: !!id,
     staleTime: 5 * 60_000,
   });
 }
