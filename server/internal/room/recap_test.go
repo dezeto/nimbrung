@@ -4,6 +4,7 @@ import (
 	"context"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/dezeto/nimbrung/internal/ytm"
 )
@@ -43,5 +44,21 @@ func TestRecapRemembersWhatPlayedAndItsReactions(t *testing.T) {
 	_ = after.Refresh(ctx) // b still playing: not counted again
 	if got := after.Recap().Played; len(got) != 2 || got[1].Reactions[ReactionFire] != 2 {
 		t.Errorf("a restart lost or repeated the history: %+v", got)
+	}
+}
+
+func TestRecapIsOnlyToday(t *testing.T) {
+	r := newTestRoom(newFake())
+	now := time.Date(2026, 11, 24, 16, 30, 0, 0, time.Local)
+	r.now = func() time.Time { return now }
+	r.history = []Played{
+		{Track: ytm.Track{VideoID: "last-week"}, StartedAt: now.AddDate(0, 0, -14)},
+		{Track: ytm.Track{VideoID: "last-night"}, StartedAt: time.Date(2026, 11, 23, 23, 59, 0, 0, time.Local)},
+		{Track: ytm.Track{VideoID: "midnight"}, StartedAt: time.Date(2026, 11, 24, 0, 0, 0, 0, time.Local)},
+		{Track: ytm.Track{VideoID: "now"}, StartedAt: now},
+	}
+	played := r.Recap().Played
+	if len(played) != 2 || played[0].VideoID != "midnight" || played[1].VideoID != "now" {
+		t.Errorf("played = %+v, want midnight then now", played)
 	}
 }
