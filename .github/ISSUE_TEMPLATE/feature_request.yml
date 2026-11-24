@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest an idea for the jam
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would you like to do?
+      description: Describe the moment at a jam where this would help — who (guest or host) and what gets in the way today.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: How you picture it working.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Fits Nimbrung's scope
+      options:
+        - label: Works without guests needing an account or an app
+          required: false

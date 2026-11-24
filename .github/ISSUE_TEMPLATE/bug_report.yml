@@ -1,0 +1,84 @@
+name: Bug report
+description: Something in Nimbrung doesn't work the way it should
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. Please check [Known quirks](https://github.com/dezeto/nimbrung#known-quirks) first — some things (like a frozen UI behind a quick tunnel) are already explained there.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what you saw instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Start a jam with …
+        2. On a guest phone, …
+        3. …
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where does it happen?
+      multiple: true
+      options:
+        - Guest page (phone)
+        - Host page (/host)
+        - Room view (/room, TV)
+        - macOS menu-bar app
+        - Server / command line
+        - Setup / install
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How do you run Nimbrung?
+      options:
+        - Nimbrung.app (macOS download)
+        - Built from source (make build)
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Nimbrung version or commit
+      placeholder: e.g. v0.3.0 or 48b076b
+  - type: input
+    id: ytm
+    attributes:
+      label: YouTube Music desktop app version
+      placeholder: e.g. pear-desktop 3.x
+  - type: input
+    id: env
+    attributes:
+      label: Host OS and guest browser
+      placeholder: e.g. macOS 15, guests on iOS Safari
+  - type: dropdown
+    id: access
+    attributes:
+      label: How do guests reach the jam?
+      options:
+        - Same Wi-Fi
+        - Cloudflare named tunnel
+        - ngrok
+        - Tailscale
+        - Other
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Output from the nimbrung server or the menu-bar app. Remove host keys and tunnel URLs you don't want public.
+      render: text
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots or anything else
