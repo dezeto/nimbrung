@@ -524,8 +524,10 @@ html, body { overflow-x: clip; }
      peeks in on the right, so the strip reads as more; items snap one by one. */
   .shelf { display: flex; align-items: flex-start; gap: 14px; margin-inline: -16px; padding: 10px 16px 2px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scroll-padding-inline: 16px; scrollbar-width: none; }
   .shelf::-webkit-scrollbar { display: none; }
+  /* Wider than the column (28rem, max-w-md), the edge isn't the screen's: bleeding would cut the strip off mid-air. */
+  @media (min-width: 28rem) { .shelf { margin-inline: 0; padding-inline: 0; scroll-padding-inline: 0; mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); } }
   .shelf > li { flex: none; scroll-snap-align: start; }
-  .shelf-heading { padding-inline: 4px; font-size: 17px; line-height: 22px; font-weight: 650; letter-spacing: -0.01em; }
+  .shelf-heading { font-size: 17px; line-height: 22px; font-weight: 650; letter-spacing: -0.01em; }
   /* Round is an artist; square is a song */
   .artist-tile { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 76px; font-size: 13px; line-height: 17px; font-weight: 550; text-align: center; }
   .artist-face { display: grid; place-items: center; width: 72px; height: 72px; flex: none; overflow: hidden; border-radius: 50%; background: rgb(var(--nb-fg) / 0.1); outline: 1px solid var(--lg-border-subtle); outline-offset: -1px; transition: transform var(--lg-duration-fast) var(--lg-easing-spring); }

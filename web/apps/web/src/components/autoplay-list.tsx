@@ -23,11 +23,11 @@ export function AutoplayList({ items, startsIn, onRemove, removingId }: Props) {
     <section aria-labelledby="autoplay">
       <h2
         id="autoplay"
-        className="flex items-center gap-2 px-1 text-[17px] leading-[22px] font-semibold tracking-[-0.01em]"
+        className="flex items-center gap-2 text-[17px] leading-[22px] font-semibold tracking-[-0.01em]"
       >
         Autoplay <InfinityIcon className="size-5 t-2" aria-hidden />
       </h2>
-      <p className="px-1 pt-0.5 pb-1 text-[13px] t-2">
+      <p className="pt-0.5 pb-1 text-[13px] t-2">
         Keeps the music going after Up next
         {startsIn > 60 && `, in about ${aboutMinutes(startsIn)}`}.
       </p>
@@ -45,7 +45,7 @@ export function AutoplayList({ items, startsIn, onRemove, removingId }: Props) {
         ))}
       </ul>
       {items.length > SHOWN && (
-        <p className="px-1 pt-2 text-[13px] tabular-nums t-2">and {items.length - SHOWN} more</p>
+        <p className="pt-2 text-[13px] tabular-nums t-2">and {items.length - SHOWN} more</p>
       )}
     </section>
   );

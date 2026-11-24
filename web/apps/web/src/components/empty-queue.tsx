@@ -28,7 +28,7 @@ export function EmptyQueue() {
       </div>
       {picks.length > 0 && (
         <section aria-labelledby="suggested" className="w-full text-left">
-          <h3 id="suggested" className="px-1 pt-1 text-[13px] font-semibold t-2">
+          <h3 id="suggested" className="pt-1 text-[13px] font-semibold t-2">
             From your saved songs
           </h3>
           <ul className="list">

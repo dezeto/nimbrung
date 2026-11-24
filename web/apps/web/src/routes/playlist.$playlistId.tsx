@@ -45,7 +45,7 @@ function PlaylistScreen() {
         }
       >
         {playlist.data ? (
-          <h1 className="pl-1 text-[26px] leading-8 font-bold tracking-[-0.025em] break-words text-balance">
+          <h1 className="text-[26px] leading-8 font-bold tracking-[-0.025em] break-words text-balance">
             {playlist.data.title}
           </h1>
         ) : (
@@ -53,7 +53,7 @@ function PlaylistScreen() {
         )}
       </PageHeader>
 
-      <main className="flex-1 px-4 pb-28">
+      <main className="flex flex-1 flex-col px-4 pb-28">
         {playlist.isPending ? (
           <ul aria-label="Loading songs…" aria-busy="true">
             {Array.from({ length: 6 }, (_, i) => (
@@ -95,7 +95,7 @@ function PlaylistScreen() {
             })}
           </ul>
         )}
-        <MadeWith className="mt-10" />
+        <MadeWith className="mt-auto pt-10" />
       </main>
       <MiniPlayer />
       <ShortcutHelp {...shortcuts} />

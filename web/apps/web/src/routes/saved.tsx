@@ -64,9 +64,9 @@ function SavedScreen() {
         </div>
       </AddSongHeader>
 
-      <main className="flex-1 px-4 pb-28">
+      <main className="flex flex-1 flex-col px-4 pb-28">
         {saved.length === 0 ? (
-          <p className="flex items-start gap-2 px-1 pt-1 text-[13px] t-2">
+          <p className="flex items-start gap-2 pt-1 text-[13px] t-2">
             <Heart className="mt-0.5 size-4 shrink-0" aria-hidden />
             Nothing saved yet. Tap the heart on any song to keep it here. The list stays on this
             phone, for the next jam too.
@@ -88,7 +88,7 @@ function SavedScreen() {
             ))}
           </ul>
         )}
-        <MadeWith className="mt-10" />
+        <MadeWith className="mt-auto pt-10" />
       </main>
       <MiniPlayer />
       <ShortcutHelp {...shortcuts} />

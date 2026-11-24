@@ -1,7 +1,7 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Check, Heart, Plus, SkipForward, Sparkles, Users } from "lucide-react";
+import { Check, Heart, Plus, SkipForward, Sparkles } from "lucide-react";
 
 import { AutoplayList } from "@/components/autoplay-list";
 import { EmptyQueue } from "@/components/empty-queue";
@@ -18,6 +18,7 @@ import { ReorderableQueue } from "@/components/reorderable-queue";
 import { ShortcutHelp } from "@/components/shortcut-help";
 import { ShuffleButton } from "@/components/shuffle-button";
 import { NUDGE_LOOKS, VolumeNudges, myNudge } from "@/components/volume-nudges";
+import { WhosHere } from "@/components/whos-here";
 import { useComment, useLiveMoments, useNudge, useReact } from "@/hooks/use-live";
 import { useMoveSong, useRemoveSong, useVoteSkip } from "@/hooks/use-queue";
 import { useRoomState } from "@/hooks/use-room-state";
@@ -109,17 +110,11 @@ function QueueScreen() {
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-md flex-col">
       {/* One slim line, so the song gets the room: name and who's here on the left, recap and leave on the right. */}
-      <header className="flex h-12 items-center justify-between gap-3 px-5 pt-1">
+      <header className="flex h-12 items-center justify-between gap-3 px-4 pt-1">
         <div className="flex min-w-0 items-center gap-2">
           <h1 className="truncate text-[17px] font-semibold tracking-[-0.015em]">{room.name}</h1>
           {/* Who's here sits with the room's name; the code lives on the join QR and /host. */}
-          <span
-            className="inline-flex shrink-0 items-center gap-1 text-[13px] tabular-nums t-2"
-            aria-label={`${room.guests?.length ?? 0} in the jam`}
-          >
-            <Users className="size-4" aria-hidden />
-            {room.guests?.length ?? 0}
-          </span>
+          <WhosHere guests={room.guests ?? []} meId={me.guest.id} />
         </div>
         <div className="flex shrink-0 items-center gap-3 text-[13px] t-2">
           <Link
@@ -180,8 +175,8 @@ function QueueScreen() {
         />
       </section>
 
-      <section aria-labelledby="up-next" className="flex-1 px-4 pt-5 pb-32">
-        <div className="flex items-center justify-between gap-3 px-1 pb-1">
+      <section aria-labelledby="up-next" className="flex flex-1 flex-col px-4 pt-5 pb-32">
+        <div className="flex items-center justify-between gap-3 pb-1">
           <h2 id="up-next" className="text-[17px] leading-[22px] font-semibold tracking-[-0.01em]">
             Up next
           </h2>
@@ -217,7 +212,7 @@ function QueueScreen() {
             removingId={removeSong.isPending ? removeSong.variables : undefined}
           />
         </div>
-        <MadeWith className="mt-10" />
+        <MadeWith className="mt-auto pt-10" />
       </section>
 
       {/* The dock floats over the list; the edge fades the rows out under it. */}

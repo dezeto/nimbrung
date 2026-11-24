@@ -109,7 +109,7 @@ function ArtistScreen() {
         {!artist.isError && (
           // Folds away while filtering; the name moves up beside Back.
           <div className="fold" data-folded={filtering}>
-            <div className="flex items-center gap-3.5 pl-1">
+            <div className="flex items-center gap-3.5">
               <span className="artist-face size-[84px]">
                 {artist.data?.thumb ? (
                   <img src={artist.data.thumb} alt="" className="size-full object-cover" />
@@ -159,7 +159,7 @@ function ArtistScreen() {
         )}
       </PageHeader>
 
-      <main className="flex-1 px-4 pb-28">
+      <main className="flex flex-1 flex-col px-4 pb-28">
         {artist.isPending ? (
           <ul aria-label="Loading songs…" aria-busy="true">
             {Array.from({ length: 6 }, (_, i) => (
@@ -189,7 +189,7 @@ function ArtistScreen() {
           </p>
         ) : filtering ? (
           <>
-            <p role="status" className="px-1 pb-1 text-[13px] tabular-nums t-2">
+            <p role="status" className="pb-1 text-[13px] tabular-nums t-2">
               {shown.length} of {songs} songs
             </p>
             <ul className="list">
@@ -218,7 +218,7 @@ function ArtistScreen() {
             </section>
           </div>
         )}
-        <MadeWith className="mt-10" />
+        <MadeWith className="mt-auto pt-10" />
       </main>
       <MiniPlayer />
       <ShortcutHelp {...shortcuts} />

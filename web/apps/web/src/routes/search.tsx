@@ -218,7 +218,7 @@ function SearchScreen() {
         </div>
       </AddSongHeader>
 
-      <main className="flex-1 px-4 pb-28">
+      <main className="flex flex-1 flex-col px-4 pb-28">
         {link ? (
           <div className="pt-1">
             <LinkCard
@@ -232,13 +232,15 @@ function SearchScreen() {
               onSearchAnyway={() => setAsWords(input)}
             />
             {link.kind === LinkKind.Song && (
-              <p className="px-1 pt-3.5 text-[13px] t-2">
+              <p className="pt-3.5 text-[13px] t-2">
                 Tip: in YouTube Music, Share → Nimbrung adds a song without copying the link.
               </p>
             )}
           </div>
         ) : idle ? (
           <div className="flex flex-col gap-7 pt-1">
+            {/* Right under the box, where the suggestions sit while typing. */}
+            <RecentSearches recent={recent} onPick={runSearch} onClear={forget} />
             {/* One artist is just the song that's playing; two or more is a jam's taste. */}
             {jamArtists.length > 1 && <ArtistStrip id="jam-artists" heading="In this jam" artists={jamArtists} />}
             <SongShelf
@@ -277,7 +279,6 @@ function SearchScreen() {
                 </ul>
               </section>
             )}
-            <RecentSearches recent={recent} onPick={runSearch} onClear={forget} />
           </div>
         ) : results.isPending ? (
           <ul aria-label="Loading results…" aria-busy="true">
@@ -365,7 +366,7 @@ function SearchScreen() {
             )}
           </div>
         )}
-        <MadeWith className="mt-10" />
+        <MadeWith className="mt-auto pt-10" />
       </main>
       <MiniPlayer />
       <ShortcutHelp {...shortcuts} />

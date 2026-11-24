@@ -8,6 +8,7 @@ import { REACTION_LOOKS } from "@/components/reaction-bar";
 import { QueryKey } from "@/hooks/query-keys";
 import { who } from "@/lib/who";
 import { MadeWith } from "@/components/made-with";
+import { backClass } from "@/components/page-header";
 
 // Public like the Room view: what played is on the TV anyway.
 export const Route = createFileRoute("/recap")({ component: RecapScreen });
@@ -57,9 +58,9 @@ function RecapScreen() {
 
   return (
     <main className="mx-auto flex min-h-svh w-full max-w-md flex-col gap-4 px-4 pt-3 pb-8">
-      <Link to="/" className="-ml-2 inline-flex min-h-11 items-center gap-1 self-start px-2 text-[15px] t-2">
+      <Link to="/" aria-label="Back to the jam" className={`${backClass} self-start text-[15px]`}>
         <ChevronLeft className="size-5" aria-hidden />
-        Back to the jam
+        Back
       </Link>
       <header>
         <p className="text-[13px] font-bold tracking-[0.12em] t-2 uppercase">
@@ -81,17 +82,36 @@ function RecapScreen() {
           </dl>
 
           {loved && (
-            <section aria-label="Most loved song" className="flex items-center gap-3 rounded-[20px] bg-[rgb(var(--nb-fg)/0.1)] p-3 shadow-[inset_0_0_0_1px_rgb(var(--nb-fg)/0.14)]">
-              <span className="size-16 shrink-0 overflow-hidden rounded-xl bg-[rgb(var(--nb-fg)/0.08)]">
-                {loved.thumb && <img src={loved.thumb} alt="" className="size-full object-cover" />}
-              </span>
-              <div className="min-w-0">
-                <p className="text-xs font-bold tracking-[0.08em] t-mine uppercase">Most loved song</p>
-                <p className="truncate text-[17px] font-bold">{loved.title}</p>
-                <p className="truncate text-[13px] t-2">
-                  {topReactions(loved)}
-                  {loved.addedBy && ` · added by ${who(loved.addedBy, loved.addedByAvatar)}`}
-                </p>
+            <section
+              aria-label="Most loved song"
+              className="rounded-[24px] bg-[rgb(var(--nb-fg)/0.1)] p-3 shadow-[inset_0_0_0_1px_rgb(var(--nb-fg)/0.14)]"
+            >
+              <div className="flex items-center gap-3.5">
+                <span className="size-20 shrink-0 overflow-hidden rounded-xl bg-[rgb(var(--nb-fg)/0.08)] shadow-[0_8px_24px_rgb(0_0_0/0.35)]">
+                  {loved.thumb && <img src={loved.thumb} alt="" className="size-full object-cover" />}
+                </span>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-bold tracking-[0.1em] t-mine uppercase">Most loved song</p>
+                  <p className="mt-0.5 line-clamp-2 text-[20px] leading-6 font-extrabold tracking-[-0.01em]">{loved.title}</p>
+                  <p className="truncate text-[13px] t-2">
+                    {loved.artist}
+                    {loved.addedBy && ` · ${who(loved.addedBy, loved.addedByAvatar)}`}
+                  </p>
+                  <ul aria-label="Reactions" className="mt-2 flex flex-wrap gap-1">
+                    {byCount(loved).map(([r, n]) => (
+                      <li
+                        key={r}
+                        className="inline-flex h-7 items-center gap-1 rounded-full bg-[rgb(var(--nb-fg)/0.12)] px-2.5 text-[13px] font-semibold tabular-nums"
+                      >
+                        <span aria-hidden>{REACTION_LOOKS[r].emoji}</span>
+                        <span>
+                          {n}
+                          <span className="sr-only"> {REACTION_LOOKS[r].label}</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </section>
           )}
@@ -109,7 +129,7 @@ function RecapScreen() {
           </dl>
 
           <section aria-labelledby="take-home" className="grid gap-2.5">
-            <div className="px-1">
+            <div>
               <h2 id="take-home" className="text-[15px] font-bold">
                 Take tonight home
               </h2>
@@ -153,7 +173,7 @@ function RecapScreen() {
           </section>
 
           <section aria-labelledby="what-played">
-            <h2 id="what-played" className="px-1 text-[15px] font-bold">
+            <h2 id="what-played" className="text-[15px] font-bold">
               What played <span className="font-normal t-2 tabular-nums">· {played.length}</span>
             </h2>
             <ol>
@@ -190,7 +210,7 @@ function Stat({ value, label, note, titled }: StatProps) {
   return (
     <div className={`flex rounded-[18px] bg-[rgb(var(--nb-fg)/0.08)] p-3 ${titled ? "flex-col" : "flex-col-reverse"}`}>
       <dt className={titled ? "text-xs font-bold tracking-[0.08em] t-2 uppercase" : "text-xs t-2"}>{label}</dt>
-      <dd className={titled ? "mt-1 truncate text-lg font-bold" : "text-2xl font-extrabold tabular-nums"}>{value}</dd>
+      <dd className={titled ? "mt-1 truncate text-lg font-bold" : "text-2xl font-extrabold tracking-[-0.02em] whitespace-nowrap tabular-nums"}>{value}</dd>
       {note && <dd className="text-[13px] t-2">{note}</dd>}
     </div>
   );
@@ -203,11 +223,7 @@ function hoursMinutes(seconds: number) {
   return m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${m % 60}m`;
 }
 
-/** "🔥 41 · ❤️ 28": the song's two biggest reactions. */
-function topReactions(p: Played) {
-  return Object.entries(p.reactions ?? {})
-    .sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0))
-    .slice(0, 2)
-    .map(([r, n]) => `${REACTION_LOOKS[r as Reaction].emoji} ${n}`)
-    .join(" · ");
+/** The song's reactions, biggest first. */
+function byCount(p: Played) {
+  return (Object.entries(p.reactions ?? {}) as [Reaction, number][]).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]);
 }

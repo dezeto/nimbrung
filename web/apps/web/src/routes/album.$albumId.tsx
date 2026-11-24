@@ -59,10 +59,10 @@ function AlbumScreen() {
         }
       />
 
-      <main className="flex-1 px-4 pb-28">
+      <main className="flex flex-1 flex-col px-4 pb-28">
         {/* The cover scrolls away with the page: pinned, it would take half the screen from the songs. */}
         {album.isPending ? (
-          <div className="flex items-end gap-4 pt-1 pb-5 pl-1" aria-busy="true" aria-label="Loading the album…">
+          <div className="flex items-end gap-4 pt-1 pb-5" aria-busy="true" aria-label="Loading the album…">
             <Skeleton className="cover" />
             <div className="grid flex-1 gap-2.5 pb-1">
               <Skeleton className="h-3 w-1/3 rounded-full" />
@@ -71,7 +71,7 @@ function AlbumScreen() {
             </div>
           </div>
         ) : album.data ? (
-          <div className="flex items-end gap-4 pt-1 pb-5 pl-1">
+          <div className="flex items-end gap-4 pt-1 pb-5">
             <div className="cover grid place-items-center">
               {album.data.thumb ? (
                 <img src={album.data.thumb} alt="" className="size-full object-cover" />
@@ -152,7 +152,7 @@ function AlbumScreen() {
             })}
           </ul>
         )}
-        <MadeWith className="mt-10" />
+        <MadeWith className="mt-auto pt-10" />
       </main>
       <MiniPlayer />
       <ShortcutHelp {...shortcuts} />

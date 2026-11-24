@@ -83,13 +83,13 @@ export function AddSongHeader({
         </div>
       </div>
       <div className="fold" data-folded={!!folded}>
-        <h1 className="pl-1 text-[30px] leading-9 font-bold tracking-[-0.025em]">
+        <h1 className="text-[30px] leading-9 font-bold tracking-[-0.025em]">
           {onSaved ? "Saved songs" : "Add a song"}
         </h1>
       </div>
       {children}
       {suggestions.length > 0 ? (
-        <ul aria-label="Suggestions" className="chips -mx-4 overflow-x-auto px-4">
+        <ul aria-label="Suggestions" className="chips -mx-4 overflow-x-auto px-4 min-[28rem]:mx-0 min-[28rem]:px-0">
           {suggestions.map((suggestion) => (
             <li key={suggestion} className="flex-none">
               <button
@@ -106,7 +106,7 @@ export function AddSongHeader({
           ))}
         </ul>
       ) : !onSaved && showChips && (
-      <nav aria-label="Search in" className="chips -mx-4 overflow-x-auto px-4">
+      <nav aria-label="Search in" className="chips -mx-4 overflow-x-auto px-4 min-[28rem]:mx-0 min-[28rem]:px-0">
         {chips.map(({ kind, label }) => (
           <Link
             key={kind}
