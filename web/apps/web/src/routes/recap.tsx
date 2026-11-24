@@ -108,53 +108,77 @@ function RecapScreen() {
             <Stat label="In the jam" value={`${data.people} ${data.people === 1 ? "person" : "people"}`} titled />
           </dl>
 
-          <section aria-labelledby="what-played" className="grid gap-1.5">
-            <h2 id="what-played" className="px-1 text-[15px] font-bold">
-              What played
-            </h2>
-            <ol className="grid gap-1.5">
-              {played.map((p, i) => (
-                <li key={`${p.videoId}-${p.startedAt}`} className="flex items-center gap-2.5 text-sm">
-                  <span className="w-6 shrink-0 text-right tabular-nums t-2">{i + 1}</span>
-                  <span className="min-w-0 flex-1 truncate">
-                    <span className="font-semibold">{p.title}</span>
-                    <span className="t-2"> · {p.artist}</span>
-                  </span>
-                  {p.addedByAvatar && (
-                    <span role="img" aria-label={`added by ${p.addedBy}`}>
-                      {p.addedByAvatar}
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ol>
-          </section>
-
-          <div className="sticky bottom-4 mt-auto grid gap-2.5 pt-2">
-            {playlists.map((chunk, i) => (
+          <section aria-labelledby="take-home" className="grid gap-2.5">
+            <div className="px-1">
+              <h2 id="take-home" className="text-[15px] font-bold">
+                Take tonight home
+              </h2>
+              {playlists.length > 1 && (
+                <p className="text-[13px] t-2">YouTube opens {PLAYLIST_MAX} songs at a time.</p>
+              )}
+            </div>
+            {playlists.length === 1 ? (
               <a
-                key={chunk[0]}
-                href={`https://www.youtube.com/watch_videos?video_ids=${chunk.join(",")}`}
+                href={playlistUrl(playlists[0])}
                 target="_blank"
                 rel="noreferrer"
-                className="glass-btn is-primary is-capsule h-[54px] gap-2 text-base"
+                className="glass-btn is-primary is-capsule h-[52px] gap-2 text-base"
               >
                 <ListMusic className="size-5" aria-hidden />
-                {playlists.length === 1
-                  ? "Open as playlist"
-                  : `Open songs ${i * PLAYLIST_MAX + 1}–${i * PLAYLIST_MAX + chunk.length}`}
+                Open as playlist
               </a>
-            ))}
-            <button type="button" onClick={copyList} className="glass-btn is-capsule h-12 text-[15px]">
+            ) : (
+              <div className="grid grid-cols-2 gap-2">
+                {playlists.map((chunk, i) => (
+                  <a
+                    key={chunk[0]}
+                    href={playlistUrl(chunk)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-plain min-h-11 tabular-nums"
+                    aria-label={`Open songs ${i * PLAYLIST_MAX + 1} to ${i * PLAYLIST_MAX + chunk.length} as a playlist`}
+                  >
+                    <ListMusic className="size-4 t-2" aria-hidden />
+                    {i * PLAYLIST_MAX + 1}–{i * PLAYLIST_MAX + chunk.length}
+                  </a>
+                ))}
+              </div>
+            )}
+            <button type="button" onClick={copyList} className="btn-plain is-ghost min-h-11">
               {copied === "yes" ? "Copied" : copied === "no" ? "Couldn’t copy on this link" : "Copy song list"}
             </button>
             <p className="sr-only" role="status">
               {copied === "yes" ? "Song list copied" : ""}
             </p>
-          </div>
+          </section>
+
+          <section aria-labelledby="what-played">
+            <h2 id="what-played" className="px-1 text-[15px] font-bold">
+              What played <span className="font-normal t-2 tabular-nums">· {played.length}</span>
+            </h2>
+            <ol>
+              {played.map((p) => (
+                <li key={`${p.videoId}-${p.startedAt}`} className="row">
+                  <div className="thumb">
+                    {p.thumb && <img src={p.thumb} alt="" loading="lazy" className="size-full object-cover" />}
+                  </div>
+                  <div className="row-text">
+                    <p className="row-title">{p.title}</p>
+                    <p className="row-sub">
+                      {p.artist}
+                      {p.addedBy && ` · ${who(p.addedBy, p.addedByAvatar)}`}
+                    </p>
+                  </div>
+                  <time dateTime={p.startedAt} className="text-[13px] tabular-nums t-2">
+                    {new Date(p.startedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+                  </time>
+                </li>
+              ))}
+            </ol>
+          </section>
         </>
       )}
-      <MadeWith className="pt-4" />
+      <MadeWith className="mt-auto pt-8" />
     </main>
   );
 }
@@ -171,6 +195,8 @@ function Stat({ value, label, note, titled }: StatProps) {
     </div>
   );
 }
+
+const playlistUrl = (ids: string[]) => `https://www.youtube.com/watch_videos?video_ids=${ids.join(",")}`;
 
 function hoursMinutes(seconds: number) {
   const m = Math.round(seconds / 60);

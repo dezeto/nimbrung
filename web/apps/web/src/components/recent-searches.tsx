@@ -1,5 +1,3 @@
-import { Clock } from "lucide-react";
-
 type Props = { recent: string[]; onPick: (q: string) => void; onClear: () => void };
 
 /** This phone's last few searches as chips; tapping one runs it again. */
@@ -18,8 +16,7 @@ export function RecentSearches({ recent, onPick, onClear }: Props) {
       <ul className="flex flex-wrap gap-2 pt-2">
         {recent.map((q) => (
           <li key={q} className="min-w-0">
-            <button type="button" onClick={() => onPick(q)} className="chip max-w-full gap-1.5">
-              <Clock className="size-3.5 shrink-0 t-2" aria-hidden />
+            <button type="button" onClick={() => onPick(q)} className="chip max-w-full">
               <span className="truncate">{q}</span>
             </button>
           </li>

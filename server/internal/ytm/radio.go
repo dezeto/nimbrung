@@ -46,6 +46,11 @@ func parseRadio(raw json.RawMessage, seed string) ([]Track, error) {
 		}
 		seen[t.VideoID] = true
 		t.Album = albumTitle(r.obj("longBylineText"))
+		if t.Thumb == "" {
+			// Some radio rows come without art; the video's own still always
+			// exists, and the web zooms past its letterbox bars.
+			t.Thumb = "https://i.ytimg.com/vi/" + t.VideoID + "/hqdefault.jpg"
+		}
 		tracks = append(tracks, t)
 	})
 	return tracks, nil

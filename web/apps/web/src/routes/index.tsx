@@ -108,20 +108,18 @@ function QueueScreen() {
 
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-md flex-col">
-      {/* One slim line, so the song gets the room: name · code on the left, people on the right. */}
+      {/* One slim line, so the song gets the room: name and who's here on the left, recap and leave on the right. */}
       <header className="flex h-12 items-center justify-between gap-3 px-5 pt-1">
         <div className="flex min-w-0 items-center gap-2">
           <h1 className="truncate text-[17px] font-semibold tracking-[-0.015em]">{room.name}</h1>
-          {/* The code as a quiet tag, so friends can read it off your screen. */}
-          {code && (
-            <span
-              translate="no"
-              aria-label={`Code ${code}`}
-              className="shrink-0 rounded-full bg-[rgb(var(--nb-fg)/0.12)] px-2 py-0.5 text-[11px] font-semibold tracking-[0.14em]"
-            >
-              {code}
-            </span>
-          )}
+          {/* Who's here sits with the room's name; the code lives on the join QR and /host. */}
+          <span
+            className="inline-flex shrink-0 items-center gap-1 text-[13px] tabular-nums t-2"
+            aria-label={`${room.guests?.length ?? 0} in the jam`}
+          >
+            <Users className="size-4" aria-hidden />
+            {room.guests?.length ?? 0}
+          </span>
         </div>
         <div className="flex shrink-0 items-center gap-3 text-[13px] t-2">
           <Link
@@ -132,13 +130,6 @@ function QueueScreen() {
           >
             <Sparkles className="size-4" aria-hidden />
           </Link>
-          <span
-            className="inline-flex items-center gap-1 tabular-nums"
-            aria-label={`${room.guests?.length ?? 0} in the jam`}
-          >
-            <Users className="size-4" aria-hidden />
-            {room.guests?.length ?? 0}
-          </span>
           {me.guest.isHost ? (
             <Link to="/host" className="font-semibold text-[var(--lg-ink)]">
               Host

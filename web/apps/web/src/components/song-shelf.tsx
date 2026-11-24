@@ -7,8 +7,6 @@ type Props = {
   /** The heading's id, unique on the screen. */
   id: string;
   heading: string;
-  /** One line under the heading: why these songs. */
-  sub?: string;
   tracks: Track[];
   statusOf: (videoId: string) => SearchRowStatus;
   /** Why the last add failed, shown on its card. */
@@ -17,14 +15,13 @@ type Props = {
 };
 
 /** A sideways strip of songs as covers, each with its own +. Nothing when there are none. */
-export function SongShelf({ id, heading, sub, tracks, statusOf, error, onAdd }: Props) {
+export function SongShelf({ id, heading, tracks, statusOf, error, onAdd }: Props) {
   if (tracks.length === 0) return null;
   return (
     <section aria-labelledby={id}>
-      <h2 id={id} className="shelf-heading">
+      <h2 id={id} className="shelf-heading truncate">
         {heading}
       </h2>
-      {sub && <p className="truncate px-1 pt-0.5 text-[13px] t-2">{sub}</p>}
       <ul className="shelf">
         {tracks.map((track) => {
           const status = statusOf(track.videoId);

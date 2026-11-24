@@ -184,7 +184,8 @@ function SearchScreen() {
         folded={input.length > 0}
         suggestions={typing && !idle ? suggestions : []}
         onSuggest={onSuggest}
-        showChips={!link}
+        // Chips narrow results; before a query there are none, so they wait for one.
+        showChips={!link && !idle}
       >
         <div className="glass-field">
           {link ? (
@@ -242,8 +243,8 @@ function SearchScreen() {
             {jamArtists.length > 1 && <ArtistStrip id="jam-artists" heading="In this jam" artists={jamArtists} />}
             <SongShelf
               id="alike"
-              heading="More like what’s playing"
-              sub={np ? [np.title, np.artist].filter(Boolean).join(" · ") : undefined}
+              // The song itself is in the mini player below; the heading only says whose it is.
+              heading={np?.artist ? `Like ${np.artist}` : "Like what’s playing"}
               tracks={alike}
               statusOf={statusOf}
               error={add.error?.message}

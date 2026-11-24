@@ -410,6 +410,14 @@ func TestParseRadioDropsTheSeedAndRepeats(t *testing.T) {
 	}
 }
 
+func TestParseRadioGivesARowWithoutArtItsVideoStill(t *testing.T) {
+	raw := []byte(`{"contents":[{"playlistPanelVideoRenderer":{"videoId":"abcdefghijk","title":{"runs":[{"text":"Your Existence"}]},"longBylineText":{"runs":[{"text":"Wonstein"}]}}}]}`)
+	got, err := parseRadio(raw, "seed0000000")
+	if err != nil || len(got) != 1 || got[0].Thumb != "https://i.ytimg.com/vi/abcdefghijk/hqdefault.jpg" {
+		t.Fatalf("got %+v, %v", got, err)
+	}
+}
+
 // browse_artist_songs.json is a live anonymous browse of the playlist behind
 // Tulus's "Top songs" (Nov 2026), trimmed to six of its 71 rows. Its rows
 // have a play count where a playlist's have the album.

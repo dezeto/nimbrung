@@ -443,6 +443,7 @@ html, body { overflow-x: clip; }
   .react { transition: transform 120ms cubic-bezier(0.23, 1, 0.32, 1); }
   .react:active { transform: scale(0.95); }
   .react-trigger { position: relative; }
+  .react-trigger:focus-visible { outline-offset: -2px; } /* the ring inside, so it doesn't outgrow Skip and volume */
   .react-trigger::before { content: ""; position: absolute; inset: -4px 0; } /* a 44px target on a 36px pill */
   /* The reactions tray grows out of its button (left of volume, so a bit right of centre), never from nothing */
   .react-tray { position: absolute; z-index: 20; bottom: calc(100% + 8px); right: 0; transform-origin: 70% 100%; transition: opacity 160ms cubic-bezier(0.23, 1, 0.32, 1), transform 160ms cubic-bezier(0.23, 1, 0.32, 1); }
@@ -458,7 +459,7 @@ html, body { overflow-x: clip; }
 
   /* Two asks that share one control fill (Quieter | Louder) */
   .seg-group { display: inline-flex; align-items: center; flex: none; gap: 2px; padding: 2px; border-radius: var(--lg-radius-full); background: rgb(var(--nb-fg) / 0.1); border: 0; } /* flat: it sits on the page, not floating */
-  .seg-group > button { display: inline-flex; align-items: center; gap: 4px; height: 34px; padding: 0 10px; border-radius: var(--lg-radius-full); font-size: 13px; font-weight: 600; color: var(--lg-ink-muted); }
+  .seg-group > button { display: inline-flex; align-items: center; gap: 4px; height: 32px; /* 36px with the group's padding: the row's one height */ padding: 0 10px; border-radius: var(--lg-radius-full); font-size: 13px; font-weight: 600; color: var(--lg-ink-muted); }
   /* Pressed reads like the selected chip: solid ink, dark icon. Red stays for primary actions. */
   .seg-group > button[aria-pressed="true"] { background: var(--lg-ink); color: rgb(var(--nb-shade)); font-weight: 700; }
 

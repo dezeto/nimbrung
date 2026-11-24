@@ -32,7 +32,7 @@ test.describe("queue", () => {
   test("header, now playing, reactions row and dock", async ({ browser }) => {
     const page = await joinAs(browser, "Ben");
     await expect(page.getByRole("heading", { name: "Test jam", level: 1 })).toBeVisible();
-    await expect(page.getByLabel("Code TEST")).toBeVisible();
+    await expect(page.getByLabel(/^\d+ in the jam$/)).toBeVisible(); // who's here sits beside the name; no code tag
 
     const card = page.getByRole("region", { name: "Now playing" });
     await expect(card.getByRole("heading", { name: NOW_TITLE })).toBeVisible();
