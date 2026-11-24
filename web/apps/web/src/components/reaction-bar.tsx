@@ -16,7 +16,8 @@ export const REACTION_LOOKS: Record<Reaction, { emoji: string; label: string }> 
 const REACTIONS = Object.values(Reaction);
 
 /**
- * One button that opens a tray of reactions above it. The tray stays open
+ * One button that opens a tray of reactions above it, held by the nearest
+ * positioned parent (the row's right-hand group). The tray stays open
  * while reacting, since tapping fast is the point, and closes on a tap or
  * focus elsewhere, or Escape (which hands focus back to the button).
  * Reactions are never disabled while a tap is in flight.
@@ -52,7 +53,7 @@ export function ReactionBar({ onReact }: { onReact: (reaction: Reaction) => void
   };
 
   return (
-    <div ref={root} className="relative" onBlur={onBlur}>
+    <div ref={root} className="contents" onBlur={onBlur}>
       <button
         ref={trigger}
         type="button"

@@ -50,11 +50,14 @@ export function LiveControls({
 
   return (
     <section className="grid gap-1.5">
-      {/* One row: Skip, the reactions button in the middle, volume. */}
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-        <div className="justify-self-start">{lead}</div>
-        <ReactionBar onReact={onReact} />
-        <div className="justify-self-end">{aside}</div>
+      {/* One row: Skip on the left; reactions beside volume on the right. The
+          right group anchors the reactions tray, so it stays on screen. */}
+      <div className="flex items-center justify-between gap-2">
+        {lead ?? <span />}
+        <div className="relative flex items-center gap-2">
+          <ReactionBar onReact={onReact} />
+          {aside}
+        </div>
       </div>
       {status && (
         <p role="status" className="first-letter:uppercase px-1 text-xs t-2">
