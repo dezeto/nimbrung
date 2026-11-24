@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import {
   Copy,
+  Infinity as InfinityIcon,
   KeyRound,
   ListMusic,
   MonitorPlay,
@@ -15,7 +16,6 @@ import { toast } from "sonner";
 
 import { AutoplayList } from "@/components/autoplay-list";
 import { MadeWith } from "@/components/made-with";
-import { AutoplayMark } from "@/components/autoplay-mark";
 import { BlockedList } from "@/components/blocked-list";
 import { EmptyQueue } from "@/components/empty-queue";
 import { GuestList } from "@/components/guest-list";
@@ -49,7 +49,6 @@ import { Shortcut, ariaShortcut, useShortcuts } from "@/hooks/use-shortcuts";
 import { inviteUrl } from "@/lib/links";
 import { aboutMinutes, splitQueue, totalSeconds } from "@/lib/queue";
 import { formatDuration } from "@/lib/time";
-import { who } from "@/lib/who";
 
 export const Route = createFileRoute("/host")({
   validateSearch: (s: Record<string, unknown>): { key?: string } =>
@@ -221,8 +220,22 @@ function HostDashboard() {
             aria-label="Now playing"
             className="flex min-w-0 flex-1 items-center gap-2.5 rounded-2xl bg-[rgb(var(--nb-fg)/0.06)] py-1 pr-2.5 pl-1 shadow-[inset_0_0_0_1px_rgb(var(--nb-fg)/0.1)] lg:flex-[1_1_380px] lg:gap-3 lg:py-1.5 lg:pr-3.5 lg:pl-1.5"
           >
-            <div className="thumb size-10 lg:size-12">
-              {np?.thumb && <img src={np.thumb} alt="" className="size-full object-cover" />}
+            <div className="relative shrink-0">
+              <div className="thumb size-10 lg:size-12">
+                {np?.thumb && <img src={np.thumb} alt="" className="size-full object-cover" />}
+              </div>
+              {/* Who added it, as a sticker on the art's corner: same as the guests' card. */}
+              {np && (
+                <span
+                  role="img"
+                  aria-label={np.addedBy ? `Added by ${np.addedBy}` : "Autoplay"}
+                  title={np.addedBy ? `Added by ${np.addedBy}` : "Autoplay"}
+                  className="absolute top-0 right-0 translate-x-[38%] -translate-y-[38%] rotate-[20deg] text-[18px] leading-none font-extrabold text-[#FF3B3B]"
+                  style={{ filter: "drop-shadow(0 2px 3px rgb(0 0 0 / 0.35))" }}
+                >
+                  {np.addedBy ? (np.addedByAvatar ?? np.addedBy.charAt(0).toUpperCase()) : <InfinityIcon className="size-4" aria-hidden />}
+                </span>
+              )}
             </div>
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <p className="flex min-w-0 items-baseline justify-between gap-3">
@@ -235,11 +248,6 @@ function HostDashboard() {
                     <span className="t-2">Nothing playing</span>
                   )}
                 </span>
-                {np && (
-                  <span className="shrink-0 text-xs t-2 max-sm:hidden">
-                    {np.addedBy ? `Added by ${who(np.addedBy, np.addedByAvatar)}` : <AutoplayMark labelled />}
-                  </span>
-                )}
               </p>
               {np && np.duration > 0 && (
                 <div className="flex items-center gap-2.5 text-xs font-semibold tabular-nums t-2">

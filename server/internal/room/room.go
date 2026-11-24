@@ -597,6 +597,18 @@ func (r *Room) Pause(ctx context.Context, guestID string) error {
 	return r.Refresh(ctx)
 }
 
+// Seek jumps the playing song to seconds in, for a tapped lyric line. Host
+// only, like pause: it moves the song for the whole room.
+func (r *Room) Seek(ctx context.Context, guestID string, seconds float64) error {
+	if err := r.hostOnly(guestID); err != nil {
+		return err
+	}
+	if err := r.player.Seek(ctx, max(seconds, 0)); err != nil {
+		return err
+	}
+	return r.Refresh(ctx)
+}
+
 // Move puts a song at position (0-based) in Up Next. Any guest may reorder
 // any song, not just the host: it's a party, and the host can always fix
 // the order. Both indexes are resolved fresh from the player right before

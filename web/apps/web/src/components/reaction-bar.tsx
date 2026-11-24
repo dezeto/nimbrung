@@ -57,7 +57,7 @@ export function ReactionBar({ onReact }: { onReact: (reaction: Reaction) => void
       <button
         ref={trigger}
         type="button"
-        className="btn-plain react-trigger h-9 w-12 shrink-0 p-0"
+        className="btn-plain react-trigger size-9 shrink-0 p-0"
         aria-label="React"
         title="React"
         aria-expanded={open}

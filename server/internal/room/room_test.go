@@ -16,6 +16,7 @@ type fakePlayer struct {
 	queue   []ytm.Track
 	current int // index into queue; -1 = nothing playing
 	paused  bool
+	seekTo  float64     // where the last Seek went
 	guess   []ytm.Track // what Autoplay answers
 	volume  ytm.Volume
 	volErr  error // what Volume fails with, if set
@@ -122,6 +123,7 @@ func (f *fakePlayer) Next(context.Context) error {
 }
 func (f *fakePlayer) Play(context.Context) error                 { f.paused = false; return nil }
 func (f *fakePlayer) Pause(context.Context) error                { f.paused = true; return nil }
+func (f *fakePlayer) Seek(_ context.Context, s float64) error    { f.seekTo = s; return nil }
 func (f *fakePlayer) Volume(context.Context) (ytm.Volume, error) { return f.volume, f.volErr }
 func (f *fakePlayer) SetVolume(_ context.Context, level int) error {
 	f.volume.Level = level
@@ -726,5 +728,17 @@ func TestSuggestWaitsForTwoCharacters(t *testing.T) {
 	}
 	if got := r.Suggest(context.Background(), "tul"); len(got) != 1 {
 		t.Errorf("three characters got %v, want the player's suggestions", got)
+	}
+}
+
+func TestSeekIsHostOnly(t *testing.T) {
+	p := newFake(ytm.Track{VideoID: "s1"})
+	r := newTestRoom(p)
+	host, rina := mustJoin(t, r, "Host", true), mustJoin(t, r, "Rina", false)
+	if err := r.Seek(context.Background(), rina.ID, 42); !errors.Is(err, ErrNotHost) {
+		t.Fatalf("guest seek: err = %v, want ErrNotHost", err)
+	}
+	if err := r.Seek(context.Background(), host.ID, 42.5); err != nil || p.seekTo != 42.5 {
+		t.Fatalf("host seek: err = %v, seekTo = %v", err, p.seekTo)
 	}
 }

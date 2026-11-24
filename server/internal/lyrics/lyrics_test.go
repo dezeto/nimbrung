@@ -23,8 +23,9 @@ func TestCleanTitle(t *testing.T) {
 }
 
 func TestParseLRC(t *testing.T) {
-	got := ParseLRC("[ar: someone]\n[00:10.74] First line\n[01:02.5]Second\n[01:05.00]\n")
-	want := []Line{{10.74, "First line"}, {62.5, "Second"}, {65, ""}}
+	// A 2s breath and the end marker go; the 20s break stays.
+	got := ParseLRC("[ar: someone]\n[00:10.74] First line\n[00:12.00]\n[00:14.00] Second\n[00:20.00]\n[00:40.00] Third\n[00:45.00]\n")
+	want := []Line{{10.74, "First line"}, {14, "Second"}, {20, ""}, {40, "Third"}}
 	if len(got) != len(want) {
 		t.Fatalf("got %v, want %v", got, want)
 	}

@@ -26,6 +26,7 @@ func (idlePlayer) MoveInQueue(context.Context, int, int) error                  
 func (idlePlayer) Next(context.Context) error                                   { return nil }
 func (idlePlayer) Play(context.Context) error                                   { return nil }
 func (idlePlayer) Pause(context.Context) error                                  { return nil }
+func (idlePlayer) Seek(context.Context, float64) error                          { return nil }
 func (idlePlayer) Volume(context.Context) (ytm.Volume, error)                   { return ytm.Volume{}, nil }
 func (idlePlayer) SetVolume(context.Context, int) error                         { return nil }
 func (idlePlayer) SetMuted(context.Context, bool) error                         { return nil }

@@ -73,6 +73,11 @@ export function ReorderableQueue({
               e.dataTransfer.effectAllowed = "move";
               e.dataTransfer.setData("text/plain", item.videoId); // Firefox won't drag without data
               setDragFrom(i);
+              // The browser snapshots the row for the drag picture right after this
+              // handler, so the card look goes on now and comes off next frame.
+              const li = e.currentTarget;
+              li.classList.add("is-lifted");
+              requestAnimationFrame(() => li.classList.remove("is-lifted"));
             }}
             onDragOver={(e) => {
               if (dragFrom === undefined) return; // a file or link, not one of our rows

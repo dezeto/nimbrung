@@ -160,9 +160,15 @@ func toLyrics(r record) *Lyrics {
 
 var lrcLine = regexp.MustCompile(`^\[(\d+):(\d+(?:\.\d+)?)\]\s?(.*)$`)
 
+// minGap is how long a wordless line must last to show as an instrumental
+// break; shorter ones are just breaths between lines.
+const minGap = 8.0
+
 // ParseLRC reads "[mm:ss.xx] words" lines; anything else is skipped.
+// A wordless line stays only if it's a real break: LRC files end with one
+// marking where the singing stops, and sprinkle short ones between lines.
 func ParseLRC(s string) []Line {
-	var out []Line
+	var all []Line
 	for _, raw := range strings.Split(s, "\n") {
 		m := lrcLine.FindStringSubmatch(strings.TrimSpace(raw))
 		if m == nil {
@@ -170,7 +176,14 @@ func ParseLRC(s string) []Line {
 		}
 		min, _ := strconv.Atoi(m[1])
 		sec, _ := strconv.ParseFloat(m[2], 64)
-		out = append(out, Line{At: float64(min)*60 + sec, Text: strings.TrimSpace(m[3])})
+		all = append(all, Line{At: float64(min)*60 + sec, Text: strings.TrimSpace(m[3])})
+	}
+	var out []Line
+	for i, l := range all {
+		if l.Text == "" && (i == len(all)-1 || all[i+1].At-l.At < minGap) {
+			continue
+		}
+		out = append(out, l)
 	}
 	return out
 }

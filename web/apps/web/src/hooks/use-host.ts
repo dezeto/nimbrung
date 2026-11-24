@@ -65,6 +65,11 @@ export function usePlayPause() {
   return useMutation({ mutationFn: (play: boolean) => (play ? api.play() : api.pause()) });
 }
 
+// A tapped lyric line jumps the song there.
+export function useSeek() {
+  return useMutation({ mutationFn: (seconds: number) => api.seek(seconds) });
+}
+
 // Volume errors show next to the control, not as a toast. One scope runs
 // the levels one after another, so quick key presses can't land out of order.
 export function useSetVolume() {
