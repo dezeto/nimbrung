@@ -52,11 +52,11 @@ export function NowPlayingCard({ song, saved = false, onSave, lyricsShown = fals
         <span
           role="img"
           aria-label={song.addedBy ? `Added by ${song.addedBy}` : "Autoplay"}
-          title={song.addedBy ? `Added by ${song.addedBy}` : "Autoplay"}
           className="absolute top-0 right-0 translate-x-[38%] -translate-y-[38%] rotate-[20deg] text-[32px] leading-none font-extrabold text-[#FF3B3B]"
           style={{ filter: "drop-shadow(0 4px 6px rgb(0 0 0 / 0.35))" }}
         >
           {song.addedBy ? (song.addedByAvatar ?? song.addedBy.charAt(0).toUpperCase()) : <InfinityIcon className="size-8" aria-hidden />}
+          <span aria-hidden className="sticker-name">{song.addedBy ?? "Autoplay"}</span>
         </span>
       </div>
 

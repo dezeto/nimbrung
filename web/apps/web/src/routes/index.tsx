@@ -1,7 +1,7 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Check, Heart, Plus, SkipForward, SlidersHorizontal, Sparkles } from "lucide-react";
+import { Library, Check, Plus, SkipForward, SlidersHorizontal, Sparkles } from "lucide-react";
 
 import { AutoplayList } from "@/components/autoplay-list";
 import { EmptyQueue } from "@/components/empty-queue";
@@ -17,6 +17,7 @@ import { Mnemonic } from "@/components/mnemonic";
 import { NowPlayingCard } from "@/components/now-playing";
 import { ReorderableQueue } from "@/components/reorderable-queue";
 import { ShortcutHelp } from "@/components/shortcut-help";
+import { SavedList } from "@/components/saved-list";
 import { ShuffleButton } from "@/components/shuffle-button";
 import { NUDGE_LOOKS, VolumeNudges, myNudge } from "@/components/volume-nudges";
 import { WhosHere } from "@/components/whos-here";
@@ -30,6 +31,10 @@ import { Shortcut, ariaShortcut, useShortcuts } from "@/hooks/use-shortcuts";
 import { aboutMinutes, splitQueue, totalSeconds } from "@/lib/queue";
 
 export const Route = createFileRoute("/")({
+  // The Saved tab rides in the URL, so the toast's "View" and coming back from an artist land on it.
+  validateSearch: (s: Record<string, unknown>): { list?: "saved" } => ({
+    list: s.list === "saved" ? "saved" : undefined,
+  }),
   beforeLoad: ({ context }) => requireGuest(context.queryClient),
   component: QueueScreen,
 });
@@ -42,8 +47,12 @@ function QueueScreen() {
   const removeSong = useRemoveSong();
   const moveSong = useMoveSong();
   const skip = useVoteSkip(room?.nowPlaying?.videoId, room?.skipVotes ?? 0);
-  const { isSaved, toggle } = useSaved();
+  const { saved, isSaved, toggle } = useSaved();
   const navigate = useNavigate();
+  // Saved swaps in for Up next the way lyrics do; the two take turns.
+  const savedTab = Route.useSearch().list === "saved";
+  const showSaved = (on: boolean) =>
+    navigate({ to: "/", search: { list: on ? "saved" : undefined }, replace: true, resetScroll: false });
   const np = room?.nowPlaying ?? null;
   const [lyricsOn, setLyricsOn] = useState(false);
   const seek = useSeek();
@@ -161,13 +170,31 @@ function QueueScreen() {
               saved={!!np && isSaved(np.videoId)}
               onSave={toggle}
               lyricsShown={lyricsOn}
-              onLyrics={() => setLyricsOn((on) => !on)}
+              onLyrics={() => {
+                if (!lyricsOn && savedTab) showSaved(false);
+                setLyricsOn(!lyricsOn);
+              }}
             />
           </LiveStage>
         </div>
         <LiveControls
           showChat={false}
           lead={skipPill}
+          beforeReactions={
+            <button
+              type="button"
+              aria-label="Saved songs"
+              aria-pressed={savedTab}
+              title="Saved songs"
+              className="btn-plain react-trigger size-9 shrink-0 p-0"
+              onClick={() => {
+                setLyricsOn(false);
+                showSaved(!savedTab);
+              }}
+            >
+              <Library className={`size-[18px] ${savedTab ? "text-[var(--nb-accent)]" : ""}`} />
+            </button>
+          }
           feed={room.feed ?? []}
           meId={me.guest.id}
           onReact={(r) => react.mutate(r)}
@@ -196,19 +223,29 @@ function QueueScreen() {
         <section aria-labelledby="up-next" className="swap-in flex flex-1 flex-col px-4 pt-5 pb-32">
           <div className="flex items-center justify-between gap-3 pb-1">
             <h2 id="up-next" className="text-[17px] leading-[22px] font-semibold tracking-[-0.01em]">
-              Up next
+              {savedTab ? "Saved" : "Up next"}
             </h2>
-            {upNext.length > 0 && (
-              <div className="flex items-center gap-2.5">
+            {savedTab ? (
+              saved.length > 0 && (
                 <p className="text-xs tabular-nums t-2">
-                  {upNext.length} {upNext.length === 1 ? "song" : "songs"}
-                  {upNextLength > 0 && ` · ${aboutMinutes(upNextLength)}`}
+                  {saved.length} {saved.length === 1 ? "song" : "songs"}
                 </p>
-                {upNext.length > 1 && <ShuffleButton className="size-9" />}
-              </div>
+              )
+            ) : (
+              upNext.length > 0 && (
+                <div className="flex items-center gap-2.5">
+                  <p className="text-xs tabular-nums t-2">
+                    {upNext.length} {upNext.length === 1 ? "song" : "songs"}
+                    {upNextLength > 0 && ` · ${aboutMinutes(upNextLength)}`}
+                  </p>
+                  {upNext.length > 1 && <ShuffleButton className="size-9" />}
+                </div>
+              )
             )}
           </div>
-          {upNext.length === 0 ? (
+          {savedTab ? (
+            <SavedList />
+          ) : upNext.length === 0 ? (
             <EmptyQueue />
           ) : (
             <ReorderableQueue
@@ -222,7 +259,7 @@ function QueueScreen() {
               nowLeft={nowLeft}
             />
           )}
-          <div className="mt-6">
+          <div className="mt-6" hidden={savedTab}>
             <AutoplayList
               items={autoplay}
               startsIn={autoplayStartsIn}

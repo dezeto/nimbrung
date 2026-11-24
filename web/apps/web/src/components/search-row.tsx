@@ -53,6 +53,8 @@ export function SearchRow({
   mark,
 }: Props) {
   const playing = status === SearchRowStatus.Playing;
+  // The heart's 44px box is mostly air: tuck the + slot against it.
+  const slot = `size-10 shrink-0 -mr-1.5 ${onSave ? "-ml-3" : ""}`;
   const artist = showArtist ? track.artist : "";
   const details = [
     showAlbum && track.album,
@@ -98,19 +100,21 @@ export function SearchRow({
       </div>
       {onSave && <SaveButton title={track.title} saved={saved} onToggle={onSave} />}
       {playing ? (
-        <span className="status t-mine">
-          {!trackNo && <Volume2 className="size-4" />} Playing
+        // Icons in the +'s own 40px slot, so nothing shifts when a song goes in.
+        <span className={`grid place-items-center t-mine ${slot}`} role="img" aria-label="Playing" title="Playing">
+          <Volume2 className="size-4" />
         </span>
       ) : status === SearchRowStatus.Queued ? (
-        <span className="status t-2">
-          <Check className="size-4" /> Queued
+        <span className={`grid place-items-center t-2 ${slot}`} role="img" aria-label="Queued" title="Queued">
+          <Check className="size-4" strokeWidth={2.6} />
         </span>
       ) : (
         <button
           type="button"
           // A round + like a music app's list, not a labelled pill per row.
           // Busy, not disabled: it stays visible while it works.
-          className={`btn-plain size-10 shrink-0 p-0 ${status === SearchRowStatus.Adding ? "is-busy" : ""}`}
+          // A 28px disc inside a 40px tap target: big enough to hit, quiet next to the heart.
+          className={`btn-plain bg-clip-content p-1.5 ${slot} ${status === SearchRowStatus.Adding ? "is-busy" : ""}`}
           onClick={() => status !== SearchRowStatus.Adding && onAdd()}
           aria-disabled={status === SearchRowStatus.Adding}
           aria-label={`${status === SearchRowStatus.Failed ? "Retry adding" : status === SearchRowStatus.Adding ? "Adding" : "Add"} ${track.title}`}
@@ -121,7 +125,7 @@ export function SearchRow({
           ) : status === SearchRowStatus.Failed ? (
             <RotateCw className="size-4" />
           ) : (
-            <Plus className="size-5" strokeWidth={2.2} />
+            <Plus className="size-3.5" strokeWidth={2.6} />
           )}
         </button>
       )}

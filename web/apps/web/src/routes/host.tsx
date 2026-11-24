@@ -229,11 +229,11 @@ function HostDashboard() {
                 <span
                   role="img"
                   aria-label={np.addedBy ? `Added by ${np.addedBy}` : "Autoplay"}
-                  title={np.addedBy ? `Added by ${np.addedBy}` : "Autoplay"}
                   className="absolute top-0 right-0 translate-x-[38%] -translate-y-[38%] rotate-[20deg] text-[18px] leading-none font-extrabold text-[#FF3B3B]"
                   style={{ filter: "drop-shadow(0 2px 3px rgb(0 0 0 / 0.35))" }}
                 >
                   {np.addedBy ? (np.addedByAvatar ?? np.addedBy.charAt(0).toUpperCase()) : <InfinityIcon className="size-4" aria-hidden />}
+                  <span aria-hidden className="sticker-name">{np.addedBy ?? "Autoplay"}</span>
                 </span>
               )}
             </div>

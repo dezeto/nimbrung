@@ -1,5 +1,5 @@
 import { useIsFetching } from "@tanstack/react-query";
-import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Skeleton } from "@web/ui/components/skeleton";
 import { Link as LinkIcon, Search } from "lucide-react";
 import { useRef, useState } from "react";
@@ -32,8 +32,6 @@ import { formatDuration } from "@/lib/time";
 
 // A shelf is a taste, not a list: as many as a guest will swipe through.
 const SHELF_SONGS = 8;
-// Saved has a screen of its own; here it's the few most recent.
-const SAVED_SHOWN = 3;
 
 const isKind = (v: unknown): v is SearchKind => Object.values(SearchKind).includes(v as SearchKind);
 
@@ -102,7 +100,7 @@ function SearchScreen() {
   const played = usePlayedTonight();
   useStillInTheJam();
   const { add, statusOf } = useRowAdds();
-  const { saved, isSaved } = useSaved();
+  const { isSaved } = useSaved();
   const { recent, remember, forget } = useRecentSearches();
   const navigate = useNavigate();
   const setSearch = (next: { q?: string; type?: SearchKind }) =>
@@ -252,33 +250,6 @@ function SearchScreen() {
               error={add.error?.message}
               onAdd={(track) => add.mutate({ videoId: track.videoId })}
             />
-            {saved.length > 0 && (
-              <section aria-labelledby="saved-heading">
-                <div className="flex items-center justify-between">
-                  <h2 id="saved-heading" className="shelf-heading">
-                    Saved
-                  </h2>
-                  {saved.length > SAVED_SHOWN && (
-                    <Link to="/saved" className="flex min-h-9 items-center px-1 text-[13px] t-2">
-                      All {saved.length}
-                    </Link>
-                  )}
-                </div>
-                <ul className="list">
-                  {saved.slice(0, SAVED_SHOWN).map((track) => (
-                    <SearchRow
-                      key={track.videoId}
-                      track={track}
-                      status={statusOf(track.videoId)}
-                      error={add.error?.message}
-                      onAdd={() => add.mutate({ videoId: track.videoId })}
-                      saved={false} // the heading already says so
-                      note={playedNote(track.videoId)}
-                    />
-                  ))}
-                </ul>
-              </section>
-            )}
           </div>
         ) : results.isPending ? (
           <ul aria-label="Loading results…" aria-busy="true">

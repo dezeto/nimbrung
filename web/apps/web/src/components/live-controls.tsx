@@ -16,6 +16,8 @@ type Props = {
   onSend: (text: string, sent: () => void) => void;
   /** Starts the row, left of the reactions button (Skip / Vote to skip). */
   lead?: ReactNode;
+  /** Sits just left of the reactions button (the Saved toggle). */
+  beforeReactions?: ReactNode;
   /** Ends the row, right of the reactions button (the guest's Quieter | Louder). */
   aside?: ReactNode;
   /** One quiet line under the row: a standing skip vote or volume ask. */
@@ -38,6 +40,7 @@ export function LiveControls({
   commentError,
   onSend,
   lead,
+  beforeReactions,
   aside,
   status,
   showChat = true,
@@ -55,6 +58,7 @@ export function LiveControls({
       <div className="flex items-center justify-between gap-2">
         {lead ?? <span />}
         <div className="relative flex items-center gap-2">
+          {beforeReactions}
           <ReactionBar onReact={onReact} />
           {aside}
         </div>

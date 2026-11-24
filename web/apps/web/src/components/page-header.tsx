@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { AddsLeft } from "@/components/adds-left";
 
-/** The glass capsule a sub-page's back control wears, as on Search and Saved. */
+/** The glass capsule a sub-page's back control wears, as on Search. */
 export const backClass = "glass-btn is-capsule glass-rim h-11 gap-1 pr-4 pl-2.5";
 
 /**
