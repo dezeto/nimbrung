@@ -74,6 +74,7 @@ func panelTrack(r node) Track {
 		VideoID:  r.str("videoId"),
 		Title:    r.obj("title").runsText(),
 		Artist:   artistFromByline(r.obj("longBylineText").runs()),
+		ArtistID: artistID(r.obj("longBylineText")),
 		Thumb:    r.obj("thumbnail").bestThumb(),
 		Duration: parseDuration(r.obj("lengthText").runsText()),
 	}
@@ -95,6 +96,13 @@ func parseSearch(raw json.RawMessage) (SearchPage, error) {
 			if !seen[p.ID] {
 				seen[p.ID] = true
 				page.Playlists = append(page.Playlists, p)
+			}
+			return
+		}
+		if a, ok := artistRow(r); ok {
+			if !seen[a.ID] {
+				seen[a.ID] = true
+				page.Artists = append(page.Artists, a)
 			}
 			return
 		}
@@ -145,10 +153,12 @@ func trackRow(r node) (Track, bool) {
 		return Track{}, false // podcast episodes have a videoId but aren't songs
 	}
 	t.Artist, t.Album, t.Duration = splitSubtitle(runs)
+	t.ArtistID = artistID(flexColumn(r, 1))
 	// A playlist's rows give the album and the duration columns of their own.
+	// The album is the last one: an artist's songs have a play count before it.
 	if fixed := r.list("fixedColumns"); len(fixed) > 0 {
-		if t.Album == "" {
-			t.Album = flexColumn(r, 2).runsText()
+		if cols := len(r.list("flexColumns")); t.Album == "" && cols > 2 {
+			t.Album = flexColumn(r, cols-1).runsText()
 		}
 		if t.Duration == 0 {
 			t.Duration = parseDuration(fixed[0].obj("musicResponsiveListItemFixedColumnRenderer").obj("text").runsText())
@@ -160,16 +170,97 @@ func trackRow(r node) (Track, bool) {
 	return t, t.Title != ""
 }
 
-// musicPagePlaylist is the page type a playlist row opens.
-const musicPagePlaylist = "MUSIC_PAGE_TYPE_PLAYLIST"
+// The page types a row or a byline link opens.
+const (
+	musicPagePlaylist = "MUSIC_PAGE_TYPE_PLAYLIST"
+	musicPageArtist   = "MUSIC_PAGE_TYPE_ARTIST"
+)
+
+// pageTypeOf is the kind of page a browse link opens.
+func pageTypeOf(browse node) string {
+	return browse.obj("browseEndpointContextSupportedConfigs").obj("browseEndpointContextMusicConfig").str("pageType")
+}
+
+// artistID is the channel of the first artist a byline links to; "" when it
+// links none, as uploads and some videos don't.
+func artistID(byline node) string {
+	for _, run := range byline.list("runs") {
+		browse := run.obj("navigationEndpoint").obj("browseEndpoint")
+		if pageTypeOf(browse) == musicPageArtist {
+			return browse.str("browseId")
+		}
+	}
+	return ""
+}
+
+// artistRow reads an artist row of a search page: "Name" over
+// "Artist • 53.7M monthly audience".
+func artistRow(r node) (Artist, bool) {
+	browse := r.obj("navigationEndpoint").obj("browseEndpoint")
+	a := Artist{ID: browse.str("browseId"), Name: flexColumn(r, 0).runsText(), Thumb: squareThumb(rowThumb(r))}
+	return a, pageTypeOf(browse) == musicPageArtist && a.ID != "" && a.Name != ""
+}
+
+// parseArtist extracts an artist's name, photo and first few songs from
+// YouTube's raw browse response for their channel, plus the playlist that
+// holds all their songs ("" when the page links none).
+func parseArtist(raw json.RawMessage) (ArtistPage, string, error) {
+	var root any
+	if err := json.Unmarshal(raw, &root); err != nil {
+		return ArtistPage{}, "", err
+	}
+	var page ArtistPage
+	// Big artists get the immersive header, the rest the visual one.
+	for _, header := range []string{"musicImmersiveHeaderRenderer", "musicVisualHeaderRenderer"} {
+		walk(root, header, func(h node) {
+			page.Name = h.obj("title").runsText()
+			page.Thumb = squareThumb(rowThumb(h))
+		})
+	}
+	// Only the first shelf is their songs; the ones after it are albums,
+	// videos and other artists.
+	var songs string
+	seen := map[string]bool{}
+	sections := node{}
+	walk(root, "sectionListRenderer", func(s node) { sections = s })
+	for _, section := range sections.list("contents") {
+		shelf := section.obj("musicShelfRenderer")
+		if shelf == nil {
+			continue
+		}
+		songs, _ = strings.CutPrefix(shelf.obj("bottomEndpoint").obj("browseEndpoint").str("browseId"), "VL")
+		walk(map[string]any(shelf), "musicResponsiveListItemRenderer", func(r node) {
+			if t, ok := trackRow(r); ok && !seen[t.VideoID] {
+				seen[t.VideoID] = true
+				page.Tracks = append(page.Tracks, t)
+			}
+		})
+		break
+	}
+	return page, songs, nil
+}
+
+// parseSuggestions extracts the ways YouTube would finish what was typed.
+func parseSuggestions(raw json.RawMessage) ([]string, error) {
+	var root any
+	if err := json.Unmarshal(raw, &root); err != nil {
+		return nil, err
+	}
+	var out []string
+	walk(root, "searchSuggestionRenderer", func(s node) {
+		if text := s.obj("suggestion").runsText(); text != "" {
+			out = append(out, text)
+		}
+	})
+	return out, nil
+}
 
 // playlistRow reads a playlist row of a search page: "Title" over
 // "Author • 11M views".
 func playlistRow(r node) (Playlist, bool) {
 	browse := r.obj("navigationEndpoint").obj("browseEndpoint")
-	page := browse.obj("browseEndpointContextSupportedConfigs").obj("browseEndpointContextMusicConfig").str("pageType")
 	id, ok := strings.CutPrefix(browse.str("browseId"), "VL")
-	if page != musicPagePlaylist || !ok || id == "" {
+	if pageTypeOf(browse) != musicPagePlaylist || !ok || id == "" {
 		return Playlist{}, false
 	}
 	p := Playlist{ID: id, Title: flexColumn(r, 0).runsText(), Thumb: rowThumb(r)}
@@ -329,6 +420,22 @@ func (n node) bestThumb() string {
 		}
 	}
 	return best
+}
+
+// artistPhotoSize is the side, in pixels, artist photos are asked for: a
+// 72px circle on a 3x phone.
+const artistPhotoSize = 240
+
+// squareThumb asks Google's image host for a square, face-centred crop of a
+// photo: artist rows come 120px wide and artist headers as wide banners, and
+// the size is the "=w…" tail of the URL. Other hosts' URLs pass through.
+func squareThumb(url string) string {
+	base, _, sized := strings.Cut(url, "=w")
+	if !sized || !strings.Contains(base, ".googleusercontent.com/") {
+		return url
+	}
+	px := strconv.Itoa(artistPhotoSize)
+	return base + "=w" + px + "-h" + px + "-p-l90-rj"
 }
 
 // artistFromByline takes a byline like ["Artist", " • ", "Album", " • ", "3:45"]

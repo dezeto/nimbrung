@@ -24,6 +24,8 @@ type Player interface {
 	Autoplay(ctx context.Context) []Track // a guess at what plays after the queue; empty, never an error, when unknown
 	Search(ctx context.Context, req SearchRequest) (SearchPage, error)
 	Playlist(ctx context.Context, id string) (PlaylistPage, error)
+	Artist(ctx context.Context, id string) (ArtistPage, error) // an empty page when id isn't an artist
+	Suggest(ctx context.Context, input string) []string        // ways to finish a search; empty, never an error, when unknown
 	AddToQueue(ctx context.Context, videoID string, pos InsertPosition) error
 	RemoveFromQueue(ctx context.Context, index int) error
 	MoveInQueue(ctx context.Context, fromIndex, toIndex int) error // toIndex is where the row ends up
@@ -53,6 +55,7 @@ type Client struct {
 	// searching is held while a search is with the plugin; see Search.
 	searching sync.Mutex
 	autoplay  autoplayGuess // see autoplay.go
+	artists   artistCache   // see artist.go
 	log       *slog.Logger
 }
 
@@ -64,6 +67,10 @@ func WithHTTPClient(h *http.Client) Option { return func(c *Client) { c.http = h
 
 // WithToken sets a JWT obtained earlier via Authorize.
 func WithToken(t string) Option { return func(c *Client) { c.token = t } }
+
+// WithYouTube points the calls made to YouTube itself (autoplay, playlists,
+// artists, suggestions) somewhere else: a stand-in, so tests stay offline.
+func WithYouTube(base string) Option { return func(c *Client) { c.autoplay.youtube = base } }
 
 // WithLogger sets where the client reports problems it works around itself.
 func WithLogger(l *slog.Logger) Option { return func(c *Client) { c.log = l } }
@@ -163,6 +170,9 @@ const searchTimeout = 10 * time.Second
 // plugin answers even if the guest gave up, or that late reply would land on
 // the next search.
 func (c *Client) Search(ctx context.Context, req SearchRequest) (SearchPage, error) {
+	if req.Kind == SearchArtists {
+		return c.searchArtists(ctx, req.Query) // straight to YouTube: no turn to wait for
+	}
 	c.searching.Lock()
 	defer c.searching.Unlock()
 	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), searchTimeout)

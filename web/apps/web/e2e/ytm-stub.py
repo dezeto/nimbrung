@@ -50,6 +50,44 @@ def search(query):
         "sectionListRenderer": {"contents": [{"musicShelfRenderer": {"contents": [row(v) for v in vids]}}]}}}}]}}}
 
 
+# YouTube Music itself (nimbrung -youtube): one artist, their songs, and suggestions.
+ARTIST_ID = "UCstubartist0000000000"
+HITS = [track("hits%07d" % i, "Stub Artist Hit %d" % i, "Stub Artist") for i in range(1, 4)]
+
+
+def artist_link(name):
+    return {"text": name, "navigationEndpoint": {"browseEndpoint": {"browseId": ARTIST_ID,
+            "browseEndpointContextSupportedConfigs": {"browseEndpointContextMusicConfig": {"pageType": "MUSIC_PAGE_TYPE_ARTIST"}}}}}
+
+
+def hit_row(vid):
+    title, artist = CATALOG[vid]
+    return {"musicResponsiveListItemRenderer": {
+        "playlistItemData": {"videoId": vid},
+        "flexColumns": [
+            {"musicResponsiveListItemFlexColumnRenderer": {"text": runs(title)}},
+            {"musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [artist_link(artist), {"text": " • "}, {"text": "3:20"}]}}},
+        ]}}
+
+
+def youtube(endpoint, b):
+    sections = lambda shelf: {"contents": {"singleColumnBrowseResultsRenderer": {"tabs": [{"tabRenderer": {"content": {
+        "sectionListRenderer": {"contents": [{"musicShelfRenderer": shelf}]}}}}]}}}
+    if endpoint == "search":
+        return sections({"contents": [{"musicResponsiveListItemRenderer": {
+            "flexColumns": [{"musicResponsiveListItemFlexColumnRenderer": {"text": runs("Stub Artist")}},
+                            {"musicResponsiveListItemFlexColumnRenderer": {"text": runs("Artist", " • ", "1M monthly audience")}}],
+            "navigationEndpoint": artist_link("")["navigationEndpoint"]}}]})
+    if endpoint == "browse" and b.get("browseId") == ARTIST_ID:
+        page = sections({"contents": [hit_row(v) for v in HITS]})
+        page["header"] = {"musicImmersiveHeaderRenderer": {"title": runs("Stub Artist")}}
+        return page
+    if endpoint == "music/get_search_suggestions":
+        return {"contents": [{"searchSuggestionsSectionRenderer": {"contents": [
+            {"searchSuggestionRenderer": {"suggestion": runs(b.get("input", ""), " live")}}]}}]}
+    return {}  # next, other browses: nothing to say
+
+
 class H(BaseHTTPRequestHandler):
     def send(self, body=None):
         if body is None:
@@ -90,6 +128,8 @@ class H(BaseHTTPRequestHandler):
             return self.send({"accessToken": "stub"})
         if self.path == "/api/v1/search":
             return self.send(search(b.get("query", "")))
+        if self.path.startswith("/youtubei/v1/"):
+            return self.send(youtube(self.path.split("?")[0][len("/youtubei/v1/"):], b))
         if self.path == "/api/v1/queue":
             vid = b.get("videoId")
             if vid in CATALOG:

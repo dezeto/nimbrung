@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ChevronLeft, Heart } from "lucide-react";
+import { ChevronLeft, Heart, Search } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { SearchKind } from "@/api/client";
@@ -20,6 +20,11 @@ type Props = {
   q?: string;
   /** The field under the title. */
   children: ReactNode;
+  /** Tucks the title away: there's a query, and the results want the room. */
+  folded?: boolean;
+  /** Ways to finish what's being typed. While there are any, they take the chips' row. */
+  suggestions?: string[];
+  onSuggest?: (q: string) => void;
 };
 
 /**
@@ -27,7 +32,7 @@ type Props = {
  * Saved hangs off Search as a heart in the corner, and its back goes to
  * Search, so the words typed come along both ways.
  */
-export function AddSongHeader({ current, q, children }: Props) {
+export function AddSongHeader({ current, q, children, folded, suggestions = [], onSuggest }: Props) {
   const onSaved = current === "saved";
   return (
     <header className="edge-top sticky top-0 z-10 grid gap-3 px-4 pt-2 pb-3">
@@ -66,11 +71,30 @@ export function AddSongHeader({ current, q, children }: Props) {
           )}
         </div>
       </div>
-      <h1 className="pl-1 text-[30px] leading-9 font-bold tracking-[-0.025em]">
-        {onSaved ? "Saved songs" : "Add a song"}
-      </h1>
+      <div className="fold" data-folded={!!folded}>
+        <h1 className="pl-1 text-[30px] leading-9 font-bold tracking-[-0.025em]">
+          {onSaved ? "Saved songs" : "Add a song"}
+        </h1>
+      </div>
       {children}
-      {!onSaved && (
+      {suggestions.length > 0 ? (
+        <ul aria-label="Suggestions" className="chips -mx-4 overflow-x-auto px-4">
+          {suggestions.map((suggestion) => (
+            <li key={suggestion} className="flex-none">
+              <button
+                type="button"
+                className="chip gap-1.5"
+                // Keeps the keyboard up until the tap lands: a blur first would swap this row back.
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => onSuggest?.(suggestion)}
+              >
+                <Search className="size-3.5 shrink-0 t-2" aria-hidden />
+                {suggestion}
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : !onSaved && (
       <nav aria-label="Search in" className="chips -mx-4 overflow-x-auto px-4">
         {chips.map(({ kind, label }) => (
           <Link

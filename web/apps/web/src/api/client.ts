@@ -5,6 +5,7 @@ export type Track = {
   videoId: string;
   title: string;
   artist: string;
+  artistId?: string; // the first artist's page, for api.artist; absent when YouTube links none
   album?: string;
   thumb?: string;
   duration: number; // seconds, 0 if unknown
@@ -149,6 +150,12 @@ export type Playlist = { id: string; title: string; author?: string; thumb?: str
 /** A playlist's songs: YouTube's first page, up to 100 (mirrors ytm.PlaylistPage). */
 export type PlaylistPage = { title: string; tracks: Track[] };
 
+/** An artist in search results; api.artist opens them (mirrors ytm.Artist). */
+export type Artist = { id: string; name: string; thumb?: string };
+
+/** An artist and their songs, most played first, up to 100 (mirrors ytm.ArtistPage). */
+export type ArtistPage = Artist & { tracks: Track[] };
+
 export type SearchPage = {
   tracks: Track[];
   playlists?: Playlist[];
@@ -235,6 +242,16 @@ export const api = {
   search: (q: string, type: SearchKind, cursor: string) =>
     request<SearchPage>(`/search?${new URLSearchParams({ q, type, cursor })}`),
   playlist: (id: string) => request<PlaylistPage>(`/playlists/${encodeURIComponent(id)}`),
+  // Artists are a search type of their own on the server, but never a chip here.
+  artists: (q: string) =>
+    request<{ artists?: Artist[] }>(`/search?${new URLSearchParams({ q, type: "artists" })}`).then(
+      (page) => page.artists ?? [],
+    ),
+  artist: (id: string) => request<ArtistPage>(`/artists/${encodeURIComponent(id)}`),
+  suggest: (q: string) =>
+    request<{ suggestions: string[] }>(`/suggest?${new URLSearchParams({ q })}`).then(
+      (page) => page.suggestions,
+    ),
   addSong: (body: { videoId: string } | { url: string }) =>
     request<{ ok: true; addsRemaining: number }>("/queue", {
       method: HttpMethod.Post,

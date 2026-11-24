@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Check, Heart, LoaderCircle, Plus, RotateCw, Volume2 } from "lucide-react";
 
 import type { Track } from "@/api/client";
@@ -20,9 +21,30 @@ type Props = {
   saved: boolean;
   /** Shows the heart button (the Saved list, to take songs off). Elsewhere a saved song just gets a small heart. */
   onSave?: () => void;
+  /** Says the album too: for rows that otherwise read the same as a neighbour. */
+  showAlbum?: boolean;
+  /** A few quiet words after the length, e.g. "played tonight". */
+  note?: string;
+  /** False on the artist's own page, where their name leads nowhere new. */
+  linkArtist?: boolean;
 };
 
-export function SearchRow({ track, status, error, onAdd, saved, onSave }: Props) {
+export function SearchRow({
+  track,
+  status,
+  error,
+  onAdd,
+  saved,
+  onSave,
+  showAlbum,
+  note,
+  linkArtist = true,
+}: Props) {
+  const details = [
+    showAlbum && track.album,
+    track.duration > 0 && formatDuration(track.duration),
+    note,
+  ].filter(Boolean);
   return (
     <li className="row">
       <div className="thumb">
@@ -35,9 +57,15 @@ export function SearchRow({ track, status, error, onAdd, saved, onSave }: Props)
             <Heart className="size-3 shrink-0 fill-current text-[var(--nb-accent)]" aria-label="Saved" />
           )}
           <span className="truncate">
-            {[track.artist, track.duration > 0 && formatDuration(track.duration)]
-              .filter(Boolean)
-              .join(" · ")}
+            {track.artistId && linkArtist ? (
+              <Link to="/artist/$artistId" params={{ artistId: track.artistId }} className="row-artist">
+                {track.artist}
+              </Link>
+            ) : (
+              track.artist
+            )}
+            {track.artist && details.length > 0 && " · "}
+            {details.join(" · ")}
           </span>
         </p>
         {status === SearchRowStatus.Failed && (

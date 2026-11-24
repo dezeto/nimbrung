@@ -13,6 +13,7 @@ type Track struct {
 	VideoID  string `json:"videoId"`
 	Title    string `json:"title"`
 	Artist   string `json:"artist"`
+	ArtistID string `json:"artistId,omitempty"` // the first artist's channel, "UC…"; "" when the row links none
 	Album    string `json:"album,omitempty"`
 	Thumb    string `json:"thumb,omitempty"`
 	Duration int    `json:"duration"` // seconds, 0 if unknown
@@ -46,7 +47,22 @@ const (
 	SearchSongs     SearchKind = "songs"
 	SearchVideos    SearchKind = "videos"
 	SearchPlaylists SearchKind = "playlists"
+	SearchArtists   SearchKind = "artists"
 )
+
+// Artist is an artist in search results; Client.Artist opens them.
+type Artist struct {
+	ID    string `json:"id"` // YouTube's channel ID, "UC…"
+	Name  string `json:"name"`
+	Thumb string `json:"thumb,omitempty"`
+}
+
+// ArtistPage is an artist and their songs, most played first: YouTube's
+// first page, up to 100 of them.
+type ArtistPage struct {
+	Artist
+	Tracks []Track `json:"tracks"`
+}
 
 // Playlist is a playlist in search results; Client.Playlist opens it.
 type Playlist struct {
@@ -76,6 +92,7 @@ type SearchRequest struct {
 type SearchPage struct {
 	Tracks         []Track    `json:"tracks"`
 	Playlists      []Playlist `json:"playlists,omitempty"`
+	Artists        []Artist   `json:"artists,omitempty"`
 	Next           string     `json:"next,omitempty"`
 	CorrectedQuery string     `json:"correctedQuery,omitempty"`
 }

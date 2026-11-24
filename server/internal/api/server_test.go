@@ -35,6 +35,10 @@ func (idlePlayer) Search(context.Context, ytm.SearchRequest) (ytm.SearchPage, er
 func (idlePlayer) Playlist(context.Context, string) (ytm.PlaylistPage, error) {
 	return ytm.PlaylistPage{}, nil
 }
+func (idlePlayer) Artist(context.Context, string) (ytm.ArtistPage, error) {
+	return ytm.ArtistPage{}, nil
+}
+func (idlePlayer) Suggest(context.Context, string) []string { return nil }
 
 const testJoinURL = "http://192.168.1.2:8080/join/TEST"
 

@@ -1,39 +1,42 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Skeleton } from "@web/ui/components/skeleton";
-import { Clock, Link2, Search } from "lucide-react";
-import { type FormEvent, useRef, useState } from "react";
+import { Search } from "lucide-react";
+import { useRef, useState } from "react";
 
-import { SearchKind } from "@/api/client";
+import { SearchKind, type Track } from "@/api/client";
 import { AddSongHeader } from "@/components/add-song-header";
-import { PlaylistRow } from "@/components/playlist-row";
+import { ArtistStrip } from "@/components/artist-strip";
+import { MadeWith } from "@/components/made-with";
 import { MiniPlayer } from "@/components/mini-player";
-import { SearchRow } from "@/components/search-row";
+import { PasteLink } from "@/components/paste-link";
+import { PlaylistRow } from "@/components/playlist-row";
+import { RecentSearches } from "@/components/recent-searches";
+import { SearchRow, SearchRowStatus } from "@/components/search-row";
 import { ShortcutHelp } from "@/components/shortcut-help";
-import { useRowAdds, useSearch } from "@/hooks/use-queue";
+import { SongShelf } from "@/components/song-shelf";
+import { useArtistSearch, useJamArtists } from "@/hooks/use-artists";
+import { usePlayedTonight, useRowAdds, useSearch, useSuggestions } from "@/hooks/use-queue";
+import { useRecentSearches } from "@/hooks/use-recent-searches";
+import { useRoomState } from "@/hooks/use-room-state";
 import { useSaved } from "@/hooks/use-saved";
 import { requireGuest, useStillInTheJam } from "@/hooks/use-session";
 import { Shortcut, ariaShortcut, useShortcuts } from "@/hooks/use-shortcuts";
 import { playlistIdFromUrl } from "@/lib/links";
-import { MadeWith } from "@/components/made-with";
 
-// Recent searches live in this browser only, like Saved: no account.
-const RECENT_KEY = "nimbrung.recent";
-const RECENT_MAX = 8;
-function readRecent(): string[] {
-  try {
-    const list: unknown = JSON.parse(localStorage.getItem(RECENT_KEY) ?? "[]");
-    return Array.isArray(list) ? list.filter((q) => typeof q === "string") : [];
-  } catch {
-    return [];
-  }
-}
-function writeRecent(list: string[]) {
-  try {
-    localStorage.setItem(RECENT_KEY, JSON.stringify(list));
-  } catch {}
-}
+// A shelf is a taste, not a list: as many as a guest will swipe through.
+const SHELF_SONGS = 8;
+// Saved has a screen of its own; here it's the few most recent.
+const SAVED_SHOWN = 3;
 
 const isKind = (v: unknown): v is SearchKind => Object.values(SearchKind).includes(v as SearchKind);
+
+/** Rows that read the same as another: same title, same artist. Their album tells them apart. */
+function lookalikes(tracks: Track[]) {
+  const key = (t: Track) => `${t.title}\n${t.artist}`.toLowerCase();
+  const counts = new Map<string, number>();
+  for (const t of tracks) counts.set(key(t), (counts.get(key(t)) ?? 0) + 1);
+  return (t: Track) => (counts.get(key(t)) ?? 0) > 1;
+}
 
 export const Route = createFileRoute("/search")({
   // The query and type live in the URL, so Back and reload keep the search.
@@ -49,26 +52,20 @@ function SearchScreen() {
   const search = Route.useSearch();
   // Typing stays local so the box never lags; the URL follows along.
   const [input, setInput] = useState(search.q ?? "");
+  const [typing, setTyping] = useState(false);
   const [link, setLink] = useState("");
   const kind = search.type ?? SearchKind.Songs;
   const results = useSearch(input, kind);
+  // Artists ride along with songs only: Videos and Playlists are their own asks.
+  const artists = useArtistSearch(input, kind === SearchKind.Songs);
+  const suggestions = useSuggestions(typing ? input : "");
+  const room = useRoomState();
+  const jamArtists = useJamArtists();
+  const played = usePlayedTonight();
   useStillInTheJam();
   const { add, statusOf } = useRowAdds();
-  const { isSaved } = useSaved();
-  const [recent, setRecent] = useState(readRecent);
-  const [linkOpen, setLinkOpen] = useState(false);
-  // Remembered when the search was worth something: Enter, or a song added from it.
-  function remember(q: string) {
-    const text = q.trim();
-    if (text.length < 2) return;
-    const next = [text, ...recent.filter((r) => r.toLowerCase() !== text.toLowerCase())].slice(0, RECENT_MAX);
-    setRecent(next);
-    writeRecent(next);
-  }
-  function forgetRecent() {
-    setRecent([]);
-    writeRecent([]);
-  }
+  const { saved, isSaved } = useSaved();
+  const { recent, remember, forget } = useRecentSearches();
   const navigate = useNavigate();
   const setSearch = (next: { q?: string; type?: SearchKind }) =>
     navigate({
@@ -92,28 +89,48 @@ function SearchScreen() {
     },
   ]);
 
+  function runSearch(q: string) {
+    setInput(q);
+    setSearch({ q });
+  }
+  // A suggestion is the whole search: run it and put the keyboard away.
+  function onSuggest(q: string) {
+    runSearch(q);
+    remember(q);
+    searchBox.current?.blur();
+  }
+
   // The add's own state says which row or the link box it belongs to.
   const linkAdd = !!add.variables && "url" in add.variables;
   const linkPlaylistId = playlistIdFromUrl(link);
-
   // A playlist link opens the playlist to add from, like one found by search.
-  function onAddLink(e: FormEvent) {
-    e.preventDefault();
+  function onAddLink() {
     if (linkPlaylistId) {
-      navigate({
-        to: "/playlist/$playlistId",
-        params: { playlistId: linkPlaylistId },
-      });
+      navigate({ to: "/playlist/$playlistId", params: { playlistId: linkPlaylistId } });
       return;
     }
     add.mutate({ url: link }, { onSuccess: () => setLink("") });
   }
 
   const idle = input.trim().length < 2;
+  const isOpen = (videoId: string) => statusOf(videoId) === SearchRowStatus.Add;
+  const playedNote = (videoId: string) =>
+    isOpen(videoId) && played.has(videoId) ? "played tonight" : undefined;
+  // Autoplay's picks that aren't in the queue yet: the jam's taste, one tap away.
+  const np = room?.nowPlaying;
+  const alike = (room?.autoplay ?? []).filter((t) => t.videoId !== np?.videoId).slice(0, SHELF_SONGS);
+  const tracks = results.data?.tracks ?? [];
+  const isLookalike = lookalikes(tracks);
 
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-md flex-col">
-      <AddSongHeader current={kind} q={search.q}>
+      <AddSongHeader
+        current={kind}
+        q={search.q}
+        folded={input.length > 0}
+        suggestions={typing && !idle ? suggestions : []}
+        onSuggest={onSuggest}
+      >
         <div className="glass-field">
           <Search className="size-5 shrink-0" aria-hidden />
           <input
@@ -126,11 +143,16 @@ function SearchScreen() {
               setInput(e.target.value);
               setSearch({ q: e.target.value || undefined });
             }}
+            onFocus={() => setTyping(true)}
+            onBlur={() => setTyping(false)}
             placeholder="Song, artist, or a line of lyrics"
             autoComplete="off"
-            autoFocus
             enterKeyHint="search"
-            onKeyDown={(e) => e.key === "Enter" && remember(input)}
+            onKeyDown={(e) => {
+              if (e.key !== "Enter") return;
+              remember(input);
+              e.currentTarget.blur(); // the results are the point now, not the keyboard
+            }}
             aria-label="Search songs"
           />
         </div>
@@ -138,91 +160,55 @@ function SearchScreen() {
 
       <main className="flex-1 px-4 pb-28">
         {idle ? (
-          <div className="flex flex-col gap-6 pt-1">
-            {recent.length > 0 && (
-              <section aria-labelledby="recent-heading">
-                <div className="flex items-center justify-between px-1">
-                  <h2 id="recent-heading" className="text-[17px] font-bold">
-                    Recent searches
+          <div className="flex flex-col gap-7 pt-1">
+            {/* One artist is just the song that's playing; two or more is a jam's taste. */}
+            {jamArtists.length > 1 && <ArtistStrip id="jam-artists" heading="In this jam" artists={jamArtists} />}
+            <SongShelf
+              id="alike"
+              heading="More like what’s playing"
+              sub={np ? [np.title, np.artist].filter(Boolean).join(" · ") : undefined}
+              tracks={alike}
+              statusOf={statusOf}
+              error={add.error?.message}
+              onAdd={(track) => add.mutate({ videoId: track.videoId })}
+            />
+            {saved.length > 0 && (
+              <section aria-labelledby="saved-heading">
+                <div className="flex items-center justify-between">
+                  <h2 id="saved-heading" className="shelf-heading">
+                    Saved
                   </h2>
-                  <button type="button" onClick={forgetRecent} className="min-h-9 px-1 text-[13px] t-2">
-                    Clear
-                  </button>
+                  {saved.length > SAVED_SHOWN && (
+                    <Link to="/saved" className="flex min-h-9 items-center px-1 text-[13px] t-2">
+                      All {saved.length}
+                    </Link>
+                  )}
                 </div>
-                <ul className="flex flex-wrap gap-2 pt-2">
-                  {recent.map((q) => (
-                    <li key={q} className="min-w-0">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setInput(q);
-                          setSearch({ q });
-                        }}
-                        className="chip max-w-full gap-1.5"
-                      >
-                        <Clock className="size-3.5 shrink-0 t-2" aria-hidden />
-                        <span className="truncate">{q}</span>
-                      </button>
-                    </li>
+                <ul className="list">
+                  {saved.slice(0, SAVED_SHOWN).map((track) => (
+                    <SearchRow
+                      key={track.videoId}
+                      track={track}
+                      status={statusOf(track.videoId)}
+                      error={add.error?.message}
+                      onAdd={() => add.mutate({ videoId: track.videoId })}
+                      saved={false} // the heading already says so
+                      note={playedNote(track.videoId)}
+                    />
                   ))}
                 </ul>
               </section>
             )}
-            {linkOpen ? (
-              <section className="section flex flex-col px-4 pb-4">
-            <form onSubmit={onAddLink} className="flex flex-col gap-2.5 pt-3.5">
-              <label htmlFor="link" className="flex items-center gap-2.5 text-[15px] font-semibold">
-                <Link2 className="size-5 text-[var(--nb-accent-text)]" aria-hidden /> Got a link?
-              </label>
-              <p className="text-[13px] t-2">
-                Paste a YouTube or YouTube Music link to a song or a playlist, or use Share →
-                Nimbrung from the app.
-              </p>
-              <div className="mt-0.5 flex gap-2">
-                <div className="field-inset min-w-0 flex-1">
-                  <input
-                    id="link"
-                    type="url"
-                    name="url"
-                    required
-                    value={link}
-                    onChange={(e) => setLink(e.target.value)}
-                    autoComplete="off"
-                    autoFocus
-                    spellCheck={false}
-                    placeholder="https://music.youtube.com/watch?v=…"
-                    className="text-sm"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={add.isPending}
-                  className="btn-plain is-primary h-11 px-[18px] text-[15px]"
-                >
-                  {linkPlaylistId ? "Open" : linkAdd && add.isPending ? "Adding…" : "Add"}
-                </button>
-              </div>
-              {linkAdd && add.isError && (
-                <p role="alert" className="first-letter:uppercase text-xs t-mine">
-                  {add.error.message}
-                </p>
-              )}
-              {linkAdd && add.isSuccess && (
-                <p role="status" className="text-xs t-2">
-                  Added to the queue ✓
-                </p>
-              )}
-            </form>
-              </section>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setLinkOpen(true)}
-                className="flex min-h-11 items-center gap-2 self-start px-1 text-[15px] font-medium t-2 hover:text-[var(--lg-ink)]"
-              >
-                <Link2 className="size-[18px]" aria-hidden /> Paste a link
-              </button>
-            )}
+            <RecentSearches recent={recent} onPick={runSearch} onClear={forget} />
+            <PasteLink
+              link={link}
+              onLinkChange={setLink}
+              onSubmit={onAddLink}
+              opensPlaylist={!!linkPlaylistId}
+              pending={add.isPending}
+              error={linkAdd && add.isError ? add.error.message : undefined}
+              added={linkAdd && add.isSuccess}
+            />
           </div>
         ) : results.isPending ? (
           <ul aria-label="Loading results…" aria-busy="true">
@@ -237,31 +223,30 @@ function SearchScreen() {
             ))}
           </ul>
         ) : results.isError && !results.isFetchNextPageError ? (
-          <div
-            role="alert"
-            className="grid justify-items-center gap-3 py-8 text-center text-sm text-muted-foreground"
-          >
+          <div role="alert" className="grid justify-items-center gap-3 py-8 text-center text-sm t-2">
             <p className="first-letter:uppercase">{results.error.message}</p>
             <button type="button" onClick={() => results.refetch()} className="btn-plain">
               Try again
             </button>
           </div>
-        ) : results.data?.tracks.length === 0 && results.data.playlists.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">
-            Nothing found for “{input.trim()}”.
-          </p>
+        ) : tracks.length === 0 && results.data?.playlists.length === 0 && artists.length === 0 ? (
+          <p className="py-8 text-center text-sm t-2">Nothing found for “{input.trim()}”.</p>
         ) : (
-          <>
+          <div className={results.isPlaceholderData ? "opacity-60" : undefined}>
             {results.data?.correctedQuery && (
-              <p className="pt-2 text-xs text-muted-foreground">
-                Showing results for “{results.data.correctedQuery}”
-              </p>
+              <p className="pt-2 text-xs t-2">Showing results for “{results.data.correctedQuery}”</p>
             )}
-            <ul className={results.isPlaceholderData ? "list opacity-60" : "list"}>
+            {artists.length > 0 && (
+              <div className="pt-1 pb-4">
+                <ArtistStrip id="found-artists" heading="Artists" artists={artists} />
+              </div>
+            )}
+            {artists.length > 0 && tracks.length > 0 && <h2 className="shelf-heading">Songs</h2>}
+            <ul className="list">
               {results.data?.playlists.map((playlist) => (
                 <PlaylistRow key={playlist.id} playlist={playlist} q={input.trim()} />
               ))}
-              {results.data?.tracks.map((track) => (
+              {tracks.map((track) => (
                 <SearchRow
                   key={track.videoId}
                   track={track}
@@ -272,6 +257,8 @@ function SearchScreen() {
                     add.mutate({ videoId: track.videoId });
                   }}
                   saved={isSaved(track.videoId)}
+                  showAlbum={isLookalike(track)}
+                  note={playedNote(track.videoId)}
                 />
               ))}
             </ul>
@@ -290,7 +277,7 @@ function SearchScreen() {
                 {results.error.message}
               </p>
             )}
-          </>
+          </div>
         )}
         <MadeWith className="mt-10" />
       </main>
