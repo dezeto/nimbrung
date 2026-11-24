@@ -1,6 +1,7 @@
 import { Check, LoaderCircle, Plus, RotateCw, Volume2 } from "lucide-react";
 
 import type { Track } from "@/api/client";
+import { ArtistLink } from "@/components/artist-link";
 import { SearchRowStatus } from "@/components/search-row";
 
 type Props = {
@@ -39,7 +40,9 @@ export function SongShelf({ id, heading, tracks, statusOf, error, onAdd }: Props
                   {error}
                 </p>
               ) : (
-                <p className="row-sub">{track.artist}</p>
+                <p className="row-sub">
+                  {track.artist && <ArtistLink name={track.artist} id={track.artistId} />}
+                </p>
               )}
             </li>
           );

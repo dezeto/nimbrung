@@ -1,7 +1,7 @@
-import { Link } from "@tanstack/react-router";
 import { Check, Heart, LoaderCircle, Plus, RotateCw, Volume2 } from "lucide-react";
 
 import type { Track } from "@/api/client";
+import { ArtistLink } from "@/components/artist-link";
 import { SaveButton } from "@/components/save-button";
 import { formatDuration } from "@/lib/time";
 
@@ -81,13 +81,7 @@ export function SearchRow({
             <Heart className="size-3 shrink-0 fill-current text-[var(--nb-accent)]" aria-label="Saved" />
           )}
           <span className="truncate">
-            {artist && track.artistId && linkArtist ? (
-              <Link to="/artist/$artistId" params={{ artistId: track.artistId }} className="row-artist">
-                {artist}
-              </Link>
-            ) : (
-              artist
-            )}
+            {artist && linkArtist ? <ArtistLink name={artist} id={track.artistId} /> : artist}
             {artist && details.length > 0 && " · "}
             {details.join(" · ")}
           </span>

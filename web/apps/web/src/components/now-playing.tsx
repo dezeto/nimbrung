@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Infinity as InfinityIcon, MessageSquareQuote, Pause } from "lucide-react";
 
 import type { NowPlaying } from "@/api/client";
+import { ArtistLink } from "@/components/artist-link";
 import { SaveButton } from "@/components/save-button";
 import { formatDuration } from "@/lib/time";
 
@@ -67,15 +68,7 @@ export function NowPlayingCard({ song, saved = false, onSave, lyricsShown = fals
           </h2>
           {/* The artist opens their page; one the queue can't name by ID opens a search for them. */}
           <p className="-my-1.5 truncate py-1.5 text-[17px] leading-6 font-medium t-2">
-            {song.artistId ? (
-              <Link to="/artist/$artistId" params={{ artistId: song.artistId }} className="row-artist">
-                {song.artist}
-              </Link>
-            ) : song.artist ? (
-              <Link to="/search" search={{ q: song.artist }} className="row-artist">
-                {song.artist}
-              </Link>
-            ) : null}
+            {song.artist && <ArtistLink name={song.artist} id={song.artistId} />}
           </p>
         </div>
         {onLyrics && (
