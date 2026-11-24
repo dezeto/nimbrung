@@ -35,6 +35,7 @@ type Player interface {
 	Next(ctx context.Context) error
 	Play(ctx context.Context) error
 	Pause(ctx context.Context) error
+	Seek(ctx context.Context, seconds float64) error
 	Volume(ctx context.Context) (Volume, error)
 	SetVolume(ctx context.Context, level int) error // 0–100
 	SetMuted(ctx context.Context, muted bool) error
@@ -270,6 +271,10 @@ func (c *Client) Play(ctx context.Context) error {
 
 func (c *Client) Pause(ctx context.Context) error {
 	return ignoreNoContent(c.do(ctx, http.MethodPost, "/api/v1/pause", nil, nil))
+}
+
+func (c *Client) Seek(ctx context.Context, seconds float64) error {
+	return ignoreNoContent(c.do(ctx, http.MethodPost, "/api/v1/seek-to", map[string]float64{"seconds": seconds}, nil))
 }
 
 func (c *Client) Volume(ctx context.Context) (Volume, error) {

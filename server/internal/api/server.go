@@ -98,6 +98,7 @@ func (s *Server) routes(static fs.FS) {
 	m.HandleFunc("POST /api/comments", s.withGuest(s.handleComment))
 	m.HandleFunc("POST /api/host/play", s.withGuest(s.handlePlay))
 	m.HandleFunc("POST /api/host/pause", s.withGuest(s.handlePause))
+	m.HandleFunc("POST /api/host/seek", s.withGuest(s.handleSeek))
 	m.HandleFunc("POST /api/shuffle", s.withGuest(s.handleShuffle))
 	m.HandleFunc("PUT /api/host/rules", s.withGuest(s.handleRules))
 	m.HandleFunc("PUT /api/host/volume", s.withGuest(s.handleVolume))
@@ -511,6 +512,21 @@ func (s *Server) handlePlay(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handlePause(w http.ResponseWriter, r *http.Request) {
 	if err := s.room.Pause(r.Context(), guestFrom(r).ID); err != nil {
+		s.writeRoomErr(w, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (s *Server) handleSeek(w http.ResponseWriter, r *http.Request) {
+	var in struct {
+		Seconds float64 `json:"seconds"`
+	}
+	if err := readJSON(r, &in); err != nil {
+		writeErr(w, http.StatusBadRequest, "bad request")
+		return
+	}
+	if err := s.room.Seek(r.Context(), guestFrom(r).ID, in.Seconds); err != nil {
 		s.writeRoomErr(w, err)
 		return
 	}

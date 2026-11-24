@@ -8,6 +8,7 @@ type Props = {
   loading: boolean;
   time: number; // seconds into the song
   big?: boolean; // the room view's size
+  onSeek?: (at: number) => void; // given, a tapped line jumps the song to it (the host's)
 };
 
 /** The current line of timed lyrics (the last one already started), or -1 before the first. */
@@ -15,32 +16,41 @@ export const currentLine = (lines: { at: number }[], time: number) => lines.find
 
 // How far down the box the current line sits: a third on a phone, lower on the TV.
 const ANCHOR = { phone: 0.33, big: 0.4 };
-// Room above the first line and below the last, so both can reach the anchor.
-const PAD = { phone: "28svh", big: "32svh" };
+// Room above the first line and below the last: just past the edge fades, so
+// the opening lines sit at the top and the closing ones at the bottom, like a
+// music app, instead of beside a blank screen. Lines near either end stop
+// short of the anchor; that's fine.
+const PAD = { phone: { top: "28px", bottom: "64px" }, big: { top: "48px", bottom: "96px" } };
 // After someone scrolls by hand, follow the song again this long after they stop.
 const RESUME_MS = 4000;
 
 /**
  * Lyrics that follow the song in their own scroll box: sung lines fade, the
  * current one is bright and held a third of the way down, the next ones wait
- * half-bright. Scrolling by hand pauses following and offers "Back to now".
+ * half-bright. Scrolling by hand pauses following and offers "Now", back to the current line.
+ * With onSeek, each line is a button that jumps the song to it.
  * The box fills its parent, so give the parent a height.
  */
-export function LyricsLines({ lyrics, loading, time, big = false }: Props) {
+export function LyricsLines({ lyrics, loading, time, big = false, onSeek }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const [pausedAt, setPausedAt] = useState(0); // when the last hand scroll happened; 0 = following
+  const placedFor = useRef<Lyrics | null | undefined>(undefined); // lyrics already scrolled to once
   const lines = lyrics?.lines ?? [];
   const current = currentLine(lines, time);
   const following = pausedAt === 0;
+  const [nowAbove, setNowAbove] = useState(false); // while paused: is the current line above what's in view?
+  const anchor = big ? ANCHOR.big : ANCHOR.phone;
 
   // Keep the current line at the anchor, unless someone is reading elsewhere.
   useEffect(() => {
     const el = box.current;
     const row = el?.querySelector<HTMLElement>(`[data-line="${Math.max(current, 0)}"]`);
     if (!el || !row || !following) return;
-    const top = row.offsetTop - el.clientHeight * (big ? ANCHOR.big : ANCHOR.phone);
-    el.scrollTo({ top, behavior: "smooth" });
-  }, [current, following, big]);
+    const top = row.offsetTop - el.clientHeight * anchor;
+    // Jump straight there the first time (opened mid-song), glide after that.
+    el.scrollTo({ top, behavior: placedFor.current === lyrics ? "smooth" : "instant" });
+    placedFor.current = lyrics;
+  }, [current, following, anchor, lyrics]); // lyrics: they arrive after the box opens
 
   useEffect(() => {
     if (following) return;
@@ -48,12 +58,23 @@ export function LyricsLines({ lyrics, loading, time, big = false }: Props) {
     return () => clearTimeout(id);
   }, [pausedAt, following]);
 
+  // Which way the "Now" button points: toward the current line, from the anchor.
+  const aim = () => {
+    const el = box.current;
+    const row = el?.querySelector<HTMLElement>(`[data-line="${Math.max(current, 0)}"]`);
+    if (el && row) setNowAbove(row.offsetTop < el.scrollTop + el.clientHeight * anchor);
+  };
+  // The song moves on while someone reads: the arrow may need to turn.
+  useEffect(() => {
+    if (!following) aim();
+  }, [current, following]);
+
   // Only real hands pause it: the box's own smooth scrolling fires scroll events too.
   const pause = () => lines.length > 0 && setPausedAt(Date.now());
 
   if (loading) {
     return (
-      <div role="status" aria-label="Finding lyrics" className={`flex flex-col ${big ? "gap-8 pt-[20svh]" : "gap-5 pt-[18svh]"} px-1`}>
+      <div role="status" aria-label="Finding lyrics" className={`flex flex-col ${big ? "gap-8 pt-12" : "gap-5 pt-7"} px-1`}>
         {[82, 64, 74, 52, 68].map((w, i) => (
           <span
             key={w}
@@ -84,6 +105,7 @@ export function LyricsLines({ lyrics, loading, time, big = false }: Props) {
       <div
         ref={box}
         onWheel={pause}
+        onScroll={following ? undefined : aim}
         onTouchMove={pause}
         onKeyDown={pause}
         // Focusable so a keyboard can scroll it; the fade hides the edges.
@@ -97,8 +119,12 @@ export function LyricsLines({ lyrics, loading, time, big = false }: Props) {
           </p>
         ) : (
           <ol
-            className={`flex flex-col px-1 font-extrabold tracking-[-0.02em] ${size}`}
-            style={{ paddingBlock: big ? PAD.big : PAD.phone }}
+            // The right padding leaves room for the current line's 1.06 scale.
+            className={`flex flex-col pr-[6%] pl-1 font-extrabold tracking-[-0.02em] ${size}`}
+            style={{
+              paddingTop: big ? PAD.big.top : PAD.phone.top,
+              paddingBottom: big ? PAD.big.bottom : PAD.phone.bottom,
+            }}
           >
             {lines.map((line, i) => (
               <li
@@ -113,7 +139,21 @@ export function LyricsLines({ lyrics, loading, time, big = false }: Props) {
                       : "lyric-next"
                 }`}
               >
-                {line.text || <GapDots big={big} live={i === current} />}
+                {onSeek ? (
+                  <button
+                    type="button"
+                    className="lyric-seek"
+                    aria-label={`Play from “${line.text || "instrumental"}”`}
+                    onClick={() => {
+                      setPausedAt(0); // follow again from the tapped line
+                      onSeek(line.at);
+                    }}
+                  >
+                    {line.text || <GapDots big={big} live={i === current} />}
+                  </button>
+                ) : (
+                  line.text || <GapDots big={big} live={i === current} />
+                )}
               </li>
             ))}
           </ol>
@@ -122,10 +162,17 @@ export function LyricsLines({ lyrics, loading, time, big = false }: Props) {
       {!following && (
         <button
           type="button"
-          className="glass-btn is-capsule glass-rim absolute bottom-3 left-1/2 h-10 -translate-x-1/2 gap-2 pr-4 pl-3 text-sm font-semibold"
+          className="back-to-now glass-btn is-capsule glass-rim absolute bottom-3 left-1/2 h-9 -translate-x-1/2 gap-1.5 pr-3.5 pl-3 text-[13px] font-semibold"
+          aria-label="Back to the current line"
           onClick={() => setPausedAt(0)}
         >
-          <ArrowDown className="size-4" strokeWidth={2.6} /> Back to now
+          {/* One arrow that turns to point at the current line, above or below. */}
+          <ArrowDown
+            aria-hidden
+            className={`size-4 transition-transform duration-300 ease-[cubic-bezier(0.77,0,0.175,1)] ${nowAbove ? "rotate-180" : ""}`}
+            strokeWidth={2.6}
+          />
+          Now
         </button>
       )}
     </div>

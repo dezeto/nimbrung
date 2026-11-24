@@ -283,6 +283,8 @@ export const api = {
   voteSkip: () => request<{ votes: number; skipped: boolean }>("/skip", { method: HttpMethod.Post }),
   play: () => request<void>("/host/play", { method: HttpMethod.Post }),
   pause: () => request<void>("/host/pause", { method: HttpMethod.Post }),
+  seek: (seconds: number) =>
+    request<void>("/host/seek", { method: HttpMethod.Post, body: JSON.stringify({ seconds }) }),
   shuffle: () => request<void>("/shuffle", { method: HttpMethod.Post }),
   // null: no lyrics for this song.
   lyrics: (videoId: string) =>

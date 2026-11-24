@@ -1,21 +1,21 @@
 import { Link } from "@tanstack/react-router";
-import { Pause } from "lucide-react";
+import { Infinity as InfinityIcon, MessageSquareQuote, Pause } from "lucide-react";
 
 import type { NowPlaying } from "@/api/client";
-import { AutoplayMark } from "@/components/autoplay-mark";
-import { LyricsSheet } from "@/components/lyrics-sheet";
 import { SaveButton } from "@/components/save-button";
 import { formatDuration } from "@/lib/time";
-import { who } from "@/lib/who";
 
 // The heart shows only when onSave is given: guests get it, the host screen doesn't.
 type Props = {
   song: NowPlaying | null;
   saved?: boolean;
   onSave?: (song: NowPlaying) => void;
+  // The lyrics button shows only when onLyrics is given; it toggles them in place of Up next.
+  lyricsShown?: boolean;
+  onLyrics?: () => void;
 };
 
-export function NowPlayingCard({ song, saved = false, onSave }: Props) {
+export function NowPlayingCard({ song, saved = false, onSave, lyricsShown = false, onLyrics }: Props) {
   if (!song) {
     return (
       <section
@@ -35,16 +35,29 @@ export function NowPlayingCard({ song, saved = false, onSave }: Props) {
   // height too, so on a phone Up next still peeks above the Add a song bar.
   return (
     <section aria-label="Now playing" className="flex flex-col gap-4 pt-5">
-      <div className="relative mx-auto aspect-square w-[min(78vw,320px,32svh)] overflow-hidden rounded-[22px] bg-muted shadow-[0_28px_60px_-20px_rgb(0_0_0/0.75)]">
-        {song.thumb && (
-          <img src={song.thumb} alt="" fetchPriority="high" className="size-full object-cover" />
-        )}
-        {song.isPaused && (
-          <span className="absolute inset-0 flex items-center justify-center bg-black/50 text-white">
-            <Pause className="size-10" />
-            <span className="sr-only">Paused</span>
-          </span>
-        )}
+      <div className="relative mx-auto aspect-square w-[min(78vw,320px,32svh)]">
+        <div className="size-full overflow-hidden rounded-[22px] bg-muted shadow-[0_28px_60px_-20px_rgb(0_0_0/0.75)]">
+          {song.thumb && (
+            <img src={song.thumb} alt="" fetchPriority="high" className="size-full object-cover" />
+          )}
+          {song.isPaused && (
+            <span className="absolute inset-0 flex items-center justify-center rounded-[22px] bg-black/50 text-white">
+              <Pause className="size-10" />
+              <span className="sr-only">Paused</span>
+            </span>
+          )}
+        </div>
+        {/* Who added it: just their face, stuck on the art's corner like a sticker.
+            Outside the clipped box so it can hang over the edge; a guest without a face shows their initial. */}
+        <span
+          role="img"
+          aria-label={song.addedBy ? `Added by ${song.addedBy}` : "Autoplay"}
+          title={song.addedBy ? `Added by ${song.addedBy}` : "Autoplay"}
+          className="absolute top-0 right-0 translate-x-[38%] -translate-y-[38%] rotate-[20deg] text-[32px] leading-none font-extrabold text-[#FF3B3B]"
+          style={{ filter: "drop-shadow(0 4px 6px rgb(0 0 0 / 0.35))" }}
+        >
+          {song.addedBy ? (song.addedByAvatar ?? song.addedBy.charAt(0).toUpperCase()) : <InfinityIcon className="size-8" aria-hidden />}
+        </span>
       </div>
 
       <div className="flex items-center gap-2">
@@ -64,11 +77,18 @@ export function NowPlayingCard({ song, saved = false, onSave }: Props) {
               </Link>
             ) : null}
           </p>
-          <p className="truncate pt-0.5 text-[13px] t-2">
-            {song.addedBy ? `Added by ${who(song.addedBy, song.addedByAvatar)}` : <AutoplayMark labelled />}
-          </p>
         </div>
-        <LyricsSheet song={song} />
+        {onLyrics && (
+          <button
+            type="button"
+            aria-label="Lyrics"
+            aria-pressed={lyricsShown}
+            className={`icon-btn ${lyricsShown ? "" : "text-[var(--lg-ink)]"}`}
+            onClick={onLyrics}
+          >
+            <MessageSquareQuote className="size-[22px]" />
+          </button>
+        )}
         {onSave && <SaveButton title={song.title} saved={saved} onToggle={() => onSave(song)} />}
       </div>
 
