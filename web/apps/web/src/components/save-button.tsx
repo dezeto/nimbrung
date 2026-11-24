@@ -21,7 +21,7 @@ export function SaveButton({ title, saved, onToggle }: Props) {
     }
     setBurst((n) => n + 1);
     toast("Saved to your list", {
-      action: { label: "View", onClick: () => void navigate({ to: "/saved" }) },
+      action: { label: "View", onClick: () => void navigate({ to: "/", search: { list: "saved" } }) },
     });
   }
 

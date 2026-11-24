@@ -20,7 +20,7 @@ export function EmptyQueue() {
     .slice(0, SUGGESTED);
 
   return (
-    <div className="mt-2 grid justify-items-center gap-3 rounded-3xl border border-dashed border-[rgb(var(--nb-fg)/0.2)] px-4 py-8 text-center">
+    <div className="mt-2 grid grid-cols-[minmax(0,1fr)] justify-items-center gap-3 rounded-3xl border border-dashed border-[rgb(var(--nb-fg)/0.2)] px-4 py-8 text-center">
       <ListMusic className="size-6 t-2" />
       <div className="grid gap-1">
         <p className="text-sm font-medium">Nothing queued yet</p>
