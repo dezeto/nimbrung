@@ -7,14 +7,15 @@ export const backClass = "glass-btn is-capsule glass-rim h-11 gap-1 pr-4 pl-2.5"
 
 /**
  * The top of a page opened from Search (a playlist, an artist): back, adds
- * left, and the page's own title underneath.
+ * left, and the page's own title underneath. `end` takes adds left's place
+ * when the page has something better to say there.
  */
-export function PageHeader({ back, children }: { back: ReactNode; children: ReactNode }) {
+export function PageHeader({ back, end, children }: { back: ReactNode; end?: ReactNode; children?: ReactNode }) {
   return (
     <header className="edge-top sticky top-0 z-10 grid gap-3 px-4 pt-2 pb-3">
       <div className="flex h-[52px] items-center justify-between gap-3">
         {back}
-        <AddsLeft />
+        {end ?? <AddsLeft />}
       </div>
       {children}
     </header>

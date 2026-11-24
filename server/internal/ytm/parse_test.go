@@ -96,11 +96,11 @@ func TestParseSearchLiveCaptures(t *testing.T) {
 			},
 			Next: "songs-page-3",
 		}},
-		{"videos carry the channel and no album, not the view count", "search_videos.json", SearchPage{
+		{"videos carry the channel and the view count where songs have the album", "search_videos.json", SearchPage{
 			Tracks: []Track{
-				{VideoID: "fJ9rUzIMcZQ", Title: wembley, Artist: "Queen", Duration: 360},
-				{VideoID: "dthAWAIDkog", Title: "LYKN (WILLIAM) - Bohemian Rhapsody @LYKN REFLEXION CONCERT Day1 - 23 Oct 2026 [4K]", Artist: "ChocolatezB", Duration: 379},
-				{VideoID: "_j4KIDFtpcA", Title: "Bohemian Rhapsody", Artist: "Forestella", Duration: 368},
+				{VideoID: "fJ9rUzIMcZQ", Title: wembley, Artist: "Queen", Views: "2.1B views", Duration: 360},
+				{VideoID: "dthAWAIDkog", Title: "LYKN (WILLIAM) - Bohemian Rhapsody @LYKN REFLEXION CONCERT Day1 - 23 Oct 2026 [4K]", Artist: "ChocolatezB", Views: "36K views", Duration: 379},
+				{VideoID: "_j4KIDFtpcA", Title: "Bohemian Rhapsody", Artist: "Forestella", Views: "6.1M views", Duration: 368},
 			},
 			Next: "videos-page-2",
 		}},
@@ -124,8 +124,20 @@ func TestParseSearchLiveCaptures(t *testing.T) {
 		{"the unfiltered layout drops episodes and video albums and has no next page", "search_plain.json", SearchPage{
 			Tracks: []Track{
 				{VideoID: "nV8sePyzZkk", Title: "Bohemian Rhapsody", Artist: "Ahmad Dhani & Philharmonic Orchestra"},
-				{VideoID: "fJ9rUzIMcZQ", Title: wembley, Artist: "Queen"},
+				{VideoID: "fJ9rUzIMcZQ", Title: wembley, Artist: "Queen", Views: "2.1B views"},
 			},
+		}},
+		// A live anonymous "abbey road" search with the Albums filter, Nov 2026.
+		{"albums carry kind, artist and year, and aren't read as songs or playlists", "search_albums.json", SearchPage{
+			Albums: []Album{
+				{ID: "MPREb_LQwx7Jq6u9H", Title: "Abbey Road (2019 Mix)", Artist: "The Beatles", ArtistID: "UC2XdaAVUannpujzv32jcouQ", Year: "1969", Kind: "Album",
+					Thumb: "https://yt3.googleusercontent.com/VXxc8oK7A7SGIY-hueFohH1Kd361e8UiMZXnKb2rpKTYaR-UgdTE07LyoGeQ30vpwEr6nlx1f2Fycvr0=w264-h264-p-l90-rj"},
+				{ID: "MPREb_augylbAw3Jc", Title: "Love Goes (Live at Abbey Road Studios)", Artist: "Sam Smith", ArtistID: "UCgpBsaDW2n_6ruzht3wvP0A", Year: "2021", Kind: "Album",
+					Thumb: "https://yt3.googleusercontent.com/eRzY6pzQEB3PtZZzS2kZJgG-1rNe4UwDcI3EMoTroPfB-pAh3SuaBMoYVEilMpYeTj-Gy_RdqRwErrrnJg=w264-h264-p-l90-rj"},
+				{ID: "MPREb_8ZK2auRO6dy", Title: "Abbey Road", Artist: "Gabriella Kaye", ArtistID: "UC0Z3hjNu41byF-XO1c4f8kQ", Year: "2026", Kind: "Single",
+					Thumb: "https://yt3.googleusercontent.com/Jxe8Q3sITZR5iikpbhdJYtL_Vkjx8E65zo0HBkYXPkGwR-St5GfEXpApKZm0SIJqYbRG2m4NDxGaQ94=w264-h264-p-l90-rj"},
+			},
+			Next: "albums-page-2",
 		}},
 	}
 	for _, c := range cases {
@@ -246,24 +258,35 @@ func TestParseSearchReadsArtistRows(t *testing.T) {
 }
 
 // browse_artist.json is a live anonymous browse of Tulus's channel (Nov
-// 2026), trimmed to its header and two of the five songs on its first shelf.
+// 2026), trimmed to its header, two of the five songs on its first shelf,
+// and a tile or two from each shelf after it.
 func TestParseArtist(t *testing.T) {
 	live, err := os.ReadFile(filepath.Join("testdata", "browse_artist.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
 	cases := []struct {
-		name      string
-		raw       []byte
-		wantName  string
-		wantThumb string
-		wantSongs string
-		wantIDs   []string
+		name       string
+		raw        []byte
+		wantName   string
+		wantThumb  string
+		wantSongs  string
+		wantIDs    []string
+		wantAlbums []Album
 	}{
-		{"name, a square photo, the first shelf's songs and the playlist behind it", live, "Tulus",
+		{"name, a square photo, the first shelf's songs and the playlist behind it, then albums and singles but not videos, playlists or artists", live, "Tulus",
 			"https://yt3.googleusercontent.com/h8P1jEIZLM8lkMxNA6Nbq98b43wcqllJSNmcZTCRPAB-F6rG_0Nqw5w7fwou0PN1QGwSW5viwWD5NV0=w240-h240-p-l90-rj",
-			"OLAK5uy_mHgw7gB4UOePEByyIUPoXcCIWTbVade7w", []string{"5F28ye50-Kc", "qrnJL6P-QqQ"}},
-		{"a page that isn't an artist has no name", []byte(`{"contents":{}}`), "", "", "", nil},
+			"OLAK5uy_mHgw7gB4UOePEByyIUPoXcCIWTbVade7w", []string{"5F28ye50-Kc", "qrnJL6P-QqQ"}, []Album{
+				{ID: "MPREb_7FNmIeIV9kf", Title: "Manusia", Year: "2022", Kind: "Album",
+					Thumb: "https://yt3.googleusercontent.com/0LkNos-al_3gRdfeVnsoULGEInj8_1uQkE4p9nT_6heSYKzO2emQrqm-XcexNEhl_sfTueS-gT45yoQ=w264-h264-p-l90-rj"},
+				{ID: "MPREb_4TEBtGA3cZb", Title: "Monokrom", Year: "2016", Kind: "Album",
+					Thumb: "https://yt3.googleusercontent.com/SJTWzxOnk0D_TIfYfkcIUzlYbSB5P8QtPYfdjRt3cBeyMk-0cuxdxTIXYp45ghLEhjEvnUpakX8scPgN=w264-h264-p-l90-rj"},
+				{ID: "MPREb_RVAbNZdUasD", Title: "Teh Hijau", Year: "2026", Kind: "Single",
+					Thumb: "https://yt3.googleusercontent.com/xrGDyYO3umAVFdsdyIM2G451xiAxCD6haJkCQel6TQlqE-XsEUCGsj_Q5Er4YjFpjWqv-_Ze-VaPPL0j=w264-h264-p-l90-rj"},
+				{ID: "MPREb_FKsUDydW3qF", Title: "Adaptasi", Year: "2020", Kind: "Single",
+					Thumb: "https://yt3.googleusercontent.com/vNgubMQUiW7RRLYNMVHuLpeC1Z2LahUFsdqpnJ6A-wFnIqBmN5WzKqxf_-RDhvgr_DOsho9iYXbbETCNxg=w264-h264-p-l90-rj"},
+			}},
+		{"a page that isn't an artist has no name", []byte(`{"contents":{}}`), "", "", "", nil, nil},
 	}
 	for _, c := range cases {
 		page, songs, err := parseArtist(c.raw)
@@ -274,6 +297,124 @@ func TestParseArtist(t *testing.T) {
 		if err != nil || page.Name != c.wantName || page.Thumb != c.wantThumb || songs != c.wantSongs || !reflect.DeepEqual(ids, c.wantIDs) {
 			t.Errorf("%s:\n got %q %q songs=%q %v, %v", c.name, page.Name, page.Thumb, songs, ids, err)
 		}
+		if !reflect.DeepEqual(page.Albums, c.wantAlbums) {
+			t.Errorf("%s:\n got albums %+v\nwant %+v", c.name, page.Albums, c.wantAlbums)
+		}
+	}
+}
+
+// browse_album.json is a live anonymous browse of "Abbey Road (2019 Mix)"
+// (Nov 2026), trimmed to its header, three of its 17 songs and one tile of
+// the "Releases for you" shelf under them.
+func TestParseAlbum(t *testing.T) {
+	live, err := os.ReadFile(filepath.Join("testdata", "browse_album.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	art := "https://yt3.googleusercontent.com/VXxc8oK7A7SGIY-hueFohH1Kd361e8UiMZXnKb2rpKTYaR-UgdTE07LyoGeQ30vpwEr6nlx1f2Fycvr0=w544-h544-l90-rj"
+	beatles := "UC2XdaAVUannpujzv32jcouQ"
+	song := func(id, title string, duration int) Track {
+		return Track{VideoID: id, Title: title, Artist: "The Beatles", ArtistID: beatles, Album: "Abbey Road (2019 Mix)", Thumb: art, Duration: duration}
+	}
+	cases := []struct {
+		name string
+		raw  []byte
+		want AlbumPage
+	}{
+		{"the header's title, kind, year and artist, and its songs with the album's art, not their play counts", live, AlbumPage{
+			Album: Album{Title: "Abbey Road (2019 Mix)", Artist: "The Beatles", ArtistID: beatles, Year: "1969", Kind: "Album", Thumb: art},
+			Tracks: []Track{
+				song("45cYwDMibGo", "Come Together (2019 Mix)", 261),
+				song("UelDrZ1aFeY", "Something (2019 Mix)", 183),
+				song("J-DRvbY9KhQ", "Maxwell's Silver Hammer (2019 Mix)", 208),
+			},
+		}},
+		{"a page that isn't an album has no title", []byte(`{"contents":{}}`), AlbumPage{}},
+	}
+	for _, c := range cases {
+		got, err := parseAlbum(c.raw)
+		if err != nil || !reflect.DeepEqual(got, c.want) {
+			t.Errorf("%s:\n got %+v, %v\nwant %+v", c.name, got, err, c.want)
+		}
+	}
+}
+
+func TestAlbumSubtitle(t *testing.T) {
+	cases := []struct {
+		runs               []string
+		kind, artist, year string
+	}{
+		{[]string{"Album", " • ", "The Beatles", " • ", "1969"}, "Album", "The Beatles", "1969"},
+		{[]string{"EP", " • ", "Yovie Widianto", " & ", "Tulus", " • ", "2019"}, "EP", "Yovie Widianto & Tulus", "2019"},
+		{[]string{"Single", " • ", "2026"}, "Single", "", "2026"},
+		{[]string{"2022"}, "", "", "2022"},
+		{nil, "", "", ""},
+	}
+	for _, c := range cases {
+		kind, artist, year := albumSubtitle(c.runs)
+		if kind != c.kind || artist != c.artist || year != c.year {
+			t.Errorf("albumSubtitle(%q) = %q %q %q, want %q %q %q", c.runs, kind, artist, year, c.kind, c.artist, c.year)
+		}
+	}
+}
+
+// next_track.json is a live anonymous next call for Queen's "Bohemian
+// Rhapsody" (Nov 2026), trimmed to the one row it answers with.
+func TestParseTrack(t *testing.T) {
+	live, err := os.ReadFile(filepath.Join("testdata", "next_track.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	cases := []struct {
+		name, videoID string
+		want          Track
+	}{
+		{"the video asked for, with its artist and album links", "BSTsnWoslP4", Track{VideoID: "BSTsnWoslP4", Title: "Bohemian Rhapsody",
+			Artist: "Queen", ArtistID: "UCEPMVbUzImPl4p8k4LkGevA", Album: "A Night At The Opera", Duration: 355,
+			Thumb: "https://yt3.googleusercontent.com/nLn1gxvYiZqzXOY9HyUXVXbFtmR5nhY8sDpbvBT1aw-Ejjsz__Nz90sZoc4nZgff2sf8WjowuVRVBlBTww=w544-h544-l90-rj"}},
+		{"an answer about another video is no answer", "aaaaaaaaaaa", Track{}},
+	}
+	for _, c := range cases {
+		got, err := parseTrack(live, c.videoID)
+		if err != nil || got != c.want {
+			t.Errorf("%s:\n got %+v, %v\nwant %+v", c.name, got, err, c.want)
+		}
+	}
+}
+
+// next_radio.json is a live anonymous next call for the song radio of IU's
+// "Dear my crazy soulmate" (Nov 2026), trimmed to four rows plus the seed
+// repeated at the end.
+func TestParseRadioDropsTheSeedAndRepeats(t *testing.T) {
+	live, err := os.ReadFile(filepath.Join("testdata", "next_radio.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := parseRadio(live, "IHIt9S2DWcQ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []struct{ videoID, title, artist, album string }{
+		{"es6bbfAjk3I", "Celebrity", "IU", "IU 5th Album 'LILAC'"},
+		{"bB8rDZPNjyI", "삐그덕 (seesaw) (feat. 아이유(IU))", "Crush", "삐그덕 (seesaw)"},
+		{"R5By6ms2a3Y", "Suddenly", "I.O.I", "I.O.I 3rd MINI ALBUM [I.O.I : LOOP]"},
+	}
+	if len(got) != len(want) {
+		t.Fatalf("got %d tracks, want %d: %+v", len(got), len(want), got)
+	}
+	for i, w := range want {
+		g := got[i]
+		if g.VideoID != w.videoID || g.Title != w.title || g.Artist != w.artist || g.Album != w.album || g.Duration == 0 || g.Thumb == "" {
+			t.Errorf("track %d: got %+v, want %+v with a duration and thumb", i, g, w)
+		}
+	}
+}
+
+func TestParseRadioGivesARowWithoutArtItsVideoStill(t *testing.T) {
+	raw := []byte(`{"contents":[{"playlistPanelVideoRenderer":{"videoId":"abcdefghijk","title":{"runs":[{"text":"Your Existence"}]},"longBylineText":{"runs":[{"text":"Wonstein"}]}}}]}`)
+	got, err := parseRadio(raw, "seed0000000")
+	if err != nil || len(got) != 1 || got[0].Thumb != "https://i.ytimg.com/vi/abcdefghijk/hqdefault.jpg" {
+		t.Fatalf("got %+v, %v", got, err)
 	}
 }
 

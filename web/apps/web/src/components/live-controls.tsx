@@ -14,9 +14,9 @@ type Props = {
   sending: boolean;
   commentError?: string;
   onSend: (text: string, sent: () => void) => void;
-  /** Starts the row under the reactions (Skip / Vote to skip). */
+  /** Starts the row, left of the reactions button (Skip / Vote to skip). */
   lead?: ReactNode;
-  /** Ends the row under the reactions (the guest's Quieter | Louder). */
+  /** Ends the row, right of the reactions button (the guest's Quieter | Louder). */
   aside?: ReactNode;
   /** One quiet line under the row: a standing skip vote or volume ask. */
   status?: string | false;
@@ -25,8 +25,8 @@ type Props = {
 };
 
 /**
- * Reactions and the chat, kept quiet so the music stays the focus: a row
- * of reactions, then Skip and volume, the comment box, then the latest comment on one line.
+ * Reactions and the chat, kept quiet so the music stays the focus: one row
+ * of Skip, the reactions button and volume, the comment box, then the latest comment on one line.
  * Tapping that line opens the history.
  */
 export function LiveControls({
@@ -50,14 +50,15 @@ export function LiveControls({
 
   return (
     <section className="grid gap-1.5">
-      <ReactionBar onReact={onReact} />
-      {/* Own row under the reactions: one row of everything was too tight on a phone. */}
-      {(lead || aside) && (
-        <div className="flex items-center justify-between gap-2">
-          {lead}
+      {/* One row: Skip on the left; reactions beside volume on the right. The
+          right group anchors the reactions tray, so it stays on screen. */}
+      <div className="flex items-center justify-between gap-2">
+        {lead ?? <span />}
+        <div className="relative flex items-center gap-2">
+          <ReactionBar onReact={onReact} />
           {aside}
         </div>
-      )}
+      </div>
       {status && (
         <p role="status" className="first-letter:uppercase px-1 text-xs t-2">
           {status}

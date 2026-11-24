@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Pause } from "lucide-react";
 
 import type { NowPlaying } from "@/api/client";
@@ -33,7 +34,7 @@ export function NowPlayingCard({ song, saved = false, onSave }: Props) {
   // around it (the page's backdrop is already this song's colours). Capped by
   // height too, so on a phone Up next still peeks above the Add a song bar.
   return (
-    <section aria-label="Now playing" className="flex flex-col gap-4 pt-1">
+    <section aria-label="Now playing" className="flex flex-col gap-4 pt-5">
       <div className="relative mx-auto aspect-square w-[min(78vw,320px,32svh)] overflow-hidden rounded-[22px] bg-muted shadow-[0_28px_60px_-20px_rgb(0_0_0/0.75)]">
         {song.thumb && (
           <img src={song.thumb} alt="" fetchPriority="high" className="size-full object-cover" />
@@ -46,12 +47,23 @@ export function NowPlayingCard({ song, saved = false, onSave }: Props) {
         )}
       </div>
 
-      <div className="flex items-center gap-2 px-1">
+      <div className="flex items-center gap-2">
         <div className="flex min-w-0 flex-1 flex-col">
           <h2 className="line-clamp-2 text-[24px] leading-[30px] font-bold tracking-[-0.02em]">
             {song.title}
           </h2>
-          <p className="truncate text-[17px] leading-6 font-medium t-2">{song.artist}</p>
+          {/* The artist opens their page; one the queue can't name by ID opens a search for them. */}
+          <p className="-my-1.5 truncate py-1.5 text-[17px] leading-6 font-medium t-2">
+            {song.artistId ? (
+              <Link to="/artist/$artistId" params={{ artistId: song.artistId }} className="row-artist">
+                {song.artist}
+              </Link>
+            ) : song.artist ? (
+              <Link to="/search" search={{ q: song.artist }} className="row-artist">
+                {song.artist}
+              </Link>
+            ) : null}
+          </p>
           <p className="truncate pt-0.5 text-[13px] t-2">
             {song.addedBy ? `Added by ${who(song.addedBy, song.addedByAvatar)}` : <AutoplayMark labelled />}
           </p>
@@ -61,7 +73,7 @@ export function NowPlayingCard({ song, saved = false, onSave }: Props) {
       </div>
 
       {song.duration > 0 && (
-        <div className="grid gap-1.5 px-1">
+        <div className="grid gap-1.5">
           <div
             className="progress"
             role="progressbar"

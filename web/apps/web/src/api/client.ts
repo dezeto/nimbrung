@@ -9,6 +9,7 @@ export type Track = {
   album?: string;
   thumb?: string;
   duration: number; // seconds, 0 if unknown
+  views?: string; // a video's count as YouTube words it, e.g. "2.1B views"
 };
 
 export type NowPlaying = Track & {
@@ -153,12 +154,27 @@ export type PlaylistPage = { title: string; tracks: Track[] };
 /** An artist in search results; api.artist opens them (mirrors ytm.Artist). */
 export type Artist = { id: string; name: string; thumb?: string };
 
+/** An album, EP or single; api.album opens it (mirrors ytm.Album). id is YouTube's "MPREb_…". */
+export type Album = {
+  id: string;
+  title: string;
+  artist: string;
+  artistId?: string;
+  year?: string;
+  kind?: string; // "Album", "EP" or "Single", as YouTube says it
+  thumb?: string;
+};
+
+/** An album and its songs in album order (mirrors ytm.AlbumPage). */
+export type AlbumPage = Album & { tracks: Track[] };
+
 /** An artist and their songs, most played first, up to 100 (mirrors ytm.ArtistPage). */
-export type ArtistPage = Artist & { tracks: Track[] };
+export type ArtistPage = Artist & { tracks: Track[]; albums?: Album[] };
 
 export type SearchPage = {
   tracks: Track[];
   playlists?: Playlist[];
+  albums?: Album[];
   next?: string;
   correctedQuery?: string;
 };
@@ -168,6 +184,7 @@ export enum SearchKind {
   Songs = "songs",
   Videos = "videos",
   Playlists = "playlists",
+  Albums = "albums",
 }
 
 /** position is the 0-based slot in Up Next the song should land in. */
@@ -248,6 +265,10 @@ export const api = {
       (page) => page.artists ?? [],
     ),
   artist: (id: string) => request<ArtistPage>(`/artists/${encodeURIComponent(id)}`),
+  album: (id: string) => request<AlbumPage>(`/albums/${encodeURIComponent(id)}`),
+  // One song by ID, for a pasted link: what it is before it's added.
+  track: (videoId: string) => request<Track>(`/tracks/${encodeURIComponent(videoId)}`),
+  radio: (videoId: string) => request<{ tracks: Track[] }>(`/radio/${encodeURIComponent(videoId)}`),
   suggest: (q: string) =>
     request<{ suggestions: string[] }>(`/suggest?${new URLSearchParams({ q })}`).then(
       (page) => page.suggestions,

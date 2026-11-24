@@ -11,7 +11,7 @@ export function PlaylistRow({ playlist, q }: { playlist: Playlist; q: string }) 
         to="/playlist/$playlistId"
         params={{ playlistId: playlist.id }}
         search={{ q }}
-        className="flex min-w-0 flex-1 items-center gap-3"
+        className="row-link"
       >
         <div className="thumb grid place-items-center">
           {playlist.thumb ? (
@@ -26,7 +26,7 @@ export function PlaylistRow({ playlist, q }: { playlist: Playlist; q: string }) 
             {["Playlist", playlist.author].filter(Boolean).join(" · ")}
           </p>
         </div>
-        <ChevronRight className="size-5 shrink-0 t-2" />
+        <ChevronRight className="size-5 shrink-0 t-2" aria-hidden />
       </Link>
     </li>
   );

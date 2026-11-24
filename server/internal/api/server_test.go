@@ -38,7 +38,12 @@ func (idlePlayer) Playlist(context.Context, string) (ytm.PlaylistPage, error) {
 func (idlePlayer) Artist(context.Context, string) (ytm.ArtistPage, error) {
 	return ytm.ArtistPage{}, nil
 }
-func (idlePlayer) Suggest(context.Context, string) []string { return nil }
+func (idlePlayer) Album(context.Context, string) (ytm.AlbumPage, error) {
+	return ytm.AlbumPage{}, nil
+}
+func (idlePlayer) FindTrack(context.Context, string) (ytm.Track, error) { return ytm.Track{}, nil }
+func (idlePlayer) Radio(context.Context, string) []ytm.Track            { return nil }
+func (idlePlayer) Suggest(context.Context, string) []string             { return nil }
 
 const testJoinURL = "http://192.168.1.2:8080/join/TEST"
 
@@ -414,6 +419,51 @@ func TestSearchPassesTypeAndCursorAndAnswersNextAndCorrectedQuery(t *testing.T) 
 	_ = json.Unmarshal(rec.Body.Bytes(), &page)
 	if len(page.Tracks) != 1 || page.Next != "page-3" || page.CorrectedQuery != "bohemian rhapsody" {
 		t.Errorf("got %d %s", rec.Code, rec.Body)
+	}
+}
+
+// catalogPlayer knows one album, with no songs, and one video.
+type catalogPlayer struct{ idlePlayer }
+
+func (catalogPlayer) Album(_ context.Context, id string) (ytm.AlbumPage, error) {
+	if id != "MPREb_LQwx7Jq6u9H" {
+		return ytm.AlbumPage{}, nil
+	}
+	return ytm.AlbumPage{Album: ytm.Album{ID: id, Title: "Abbey Road (2019 Mix)", Artist: "The Beatles"}}, nil
+}
+
+func (catalogPlayer) FindTrack(_ context.Context, videoID string) (ytm.Track, error) {
+	if videoID != "BSTsnWoslP4" {
+		return ytm.Track{}, nil
+	}
+	return ytm.Track{VideoID: videoID, Title: "Bohemian Rhapsody", Artist: "Queen", Duration: 355}, nil
+}
+
+func TestAlbumsAndTracksAnswerGuestsWithTheRightStatus(t *testing.T) {
+	s := New(room.New("TEST", "test jam", catalogPlayer{}, room.DefaultRules, nil), "secret", testJoinURLNow, nil, nil)
+	guest := call(s, http.MethodPost, "/api/join", `{"code":"TEST","name":"Rina"}`).Result().Cookies()
+	cases := []struct {
+		name, path string
+		cookies    []*http.Cookie
+		wantStatus int
+		wantBody   string
+	}{
+		{"an album, with tracks never null", "/api/albums/MPREb_LQwx7Jq6u9H", guest, http.StatusOK, `"tracks":[]`},
+		{"a browse ID that isn't an album", "/api/albums/MPREb_LQwx7Jq6u9X", guest, http.StatusNotFound, ""},
+		{"an album needs a guest", "/api/albums/MPREb_LQwx7Jq6u9H", nil, http.StatusUnauthorized, ""},
+		{"a video", "/api/tracks/BSTsnWoslP4", guest, http.StatusOK, `"title":"Bohemian Rhapsody"`},
+		{"a video YouTube doesn't know", "/api/tracks/aaaaaaaaaaa", guest, http.StatusNotFound, ""},
+		{"something that can't be a video ID", "/api/tracks/nope", guest, http.StatusBadRequest, ""},
+		{"a track needs a guest", "/api/tracks/BSTsnWoslP4", nil, http.StatusUnauthorized, ""},
+		{"a radio YouTube has nothing for is an empty list, not null", "/api/radio/BSTsnWoslP4", guest, http.StatusOK, `{"tracks":[]}`},
+		{"a radio for something that can't be a video ID", "/api/radio/nope", guest, http.StatusBadRequest, ""},
+		{"a radio needs a guest", "/api/radio/BSTsnWoslP4", nil, http.StatusUnauthorized, ""},
+	}
+	for _, c := range cases {
+		rec := call(s, http.MethodGet, c.path, "", c.cookies...)
+		if rec.Code != c.wantStatus || !strings.Contains(rec.Body.String(), c.wantBody) {
+			t.Errorf("%s: got %d %s, want %d with %s", c.name, rec.Code, rec.Body, c.wantStatus, c.wantBody)
+		}
 	}
 }
 

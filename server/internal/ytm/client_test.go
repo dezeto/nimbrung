@@ -65,9 +65,8 @@ func TestSearchSendsTheKindsFilterAndTheCursor(t *testing.T) {
 		wantParams, wantCursorAs string
 	}{
 		{"songs", SearchRequest{Query: "q", Kind: SearchSongs}, songsFilter, ""},
-		{"videos", SearchRequest{Query: "q", Kind: SearchVideos}, videosFilter, ""},
 		{"playlists", SearchRequest{Query: "q", Kind: SearchPlaylists}, playlistsFilter, ""},
-		{"an unknown kind searches songs", SearchRequest{Query: "q", Kind: "albums"}, songsFilter, ""},
+		{"an unknown kind searches songs", SearchRequest{Query: "q", Kind: "podcasts"}, songsFilter, ""},
 		{"a cursor asks for the next page", SearchRequest{Query: "q", Cursor: "songs-page-2"}, songsFilter, "songs-page-2"},
 	}
 	for _, c := range cases {
@@ -76,7 +75,7 @@ func TestSearchSendsTheKindsFilterAndTheCursor(t *testing.T) {
 			_ = json.NewDecoder(r.Body).Decode(&sent)
 			fmt.Fprint(w, `{}`)
 		}))
-		if _, err := New(srv.URL).Search(context.Background(), c.req); err != nil {
+		if _, err := New(srv.URL, WithYouTube("http://youtube.invalid")).Search(context.Background(), c.req); err != nil {
 			t.Errorf("%s: %v", c.name, err)
 		}
 		if sent.Params != c.wantParams || sent.Continuation != c.wantCursorAs {
@@ -313,30 +312,98 @@ func TestArtistAsksYouTubeForThePageThenItsSongsAndRemembers(t *testing.T) {
 		if err != nil || got.ID != tulus || got.Name != "Tulus" || len(got.Tracks) != 6 || got.Tracks[0].Duration != 213 {
 			t.Errorf("got %q (%s) with %d songs, %v; want Tulus with the playlist's 6", got.Name, got.ID, len(got.Tracks), err)
 		}
+		if len(got.Albums) != 4 || got.Albums[0].Artist != "Tulus" || got.Albums[0].ArtistID != tulus {
+			t.Errorf("got albums %+v; want 4, each by Tulus", got.Albums)
+		}
 	}
 	if want := []string{tulus, "VLOLAK5uy_mHgw7gB4UOePEByyIUPoXcCIWTbVade7w"}; !reflect.DeepEqual(asked, want) {
 		t.Errorf("asked YouTube for %v, want %v once", asked, want)
 	}
 }
 
-func TestSearchForArtistsSkipsThePlugin(t *testing.T) {
-	live, err := os.ReadFile(filepath.Join("testdata", "search_artists.json"))
+func TestSearchForVideosArtistsAndAlbumsSkipsThePlugin(t *testing.T) {
+	cases := []struct {
+		name       string
+		req        SearchRequest
+		wantParams string
+	}{
+		{"videos", SearchRequest{Query: "q", Kind: SearchVideos}, videosFilter},
+		{"more videos", SearchRequest{Query: "q", Kind: SearchVideos, Cursor: "videos-page-2"}, videosFilter},
+		{"artists", SearchRequest{Query: "q", Kind: SearchArtists}, artistsFilter},
+		{"more albums", SearchRequest{Query: "q", Kind: SearchAlbums, Cursor: "albums-page-2"}, albumsFilter},
+	}
+	for _, c := range cases {
+		var sent struct{ Query, Params, Continuation string }
+		var path string
+		youtube := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			_ = json.NewDecoder(r.Body).Decode(&sent)
+			path = r.URL.Path
+			fmt.Fprint(w, `{}`)
+		}))
+		cl := New("http://plugin.invalid", WithYouTube(youtube.URL)) // a call to the plugin would fail
+		if _, err := cl.Search(context.Background(), c.req); err != nil {
+			t.Errorf("%s: %v", c.name, err)
+		}
+		// YouTube wants the query and filter again alongside the cursor.
+		if path != "/youtubei/v1/search" || sent.Query != "q" || sent.Params != c.wantParams || sent.Continuation != c.req.Cursor {
+			t.Errorf("%s: asked %s for %+v; want the search endpoint, %q and cursor %q", c.name, path, sent, c.wantParams, c.req.Cursor)
+		}
+		youtube.Close()
+	}
+}
+
+func TestAlbumAsksYouTubeOnceForAnAlbum(t *testing.T) {
+	live, err := os.ReadFile(filepath.Join("testdata", "browse_album.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	var params string
+	var asked []string
 	youtube := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var in struct{ Params string }
+		var in struct{ BrowseID string }
 		_ = json.NewDecoder(r.Body).Decode(&in)
-		params = in.Params
+		asked = append(asked, in.BrowseID)
+		if in.BrowseID != "MPREb_LQwx7Jq6u9H" {
+			fmt.Fprint(w, `{"contents":{}}`) // what YouTube answers for a browse ID it has no album for
+			return
+		}
 		w.Write(live)
 	}))
 	defer youtube.Close()
-	cl := New("http://plugin.invalid") // a call to the plugin would fail
-	cl.autoplay.youtube = youtube.URL
+	cl := New("http://plugin.invalid", WithYouTube(youtube.URL))
 
-	got, err := cl.Search(context.Background(), SearchRequest{Query: "tulus", Kind: SearchArtists})
-	if err != nil || len(got.Artists) != 2 || params != artistsFilter {
-		t.Errorf("got %d artists with filter %q, %v; want 2 with the artists filter", len(got.Artists), params, err)
+	for range 2 {
+		got, err := cl.Album(context.Background(), "MPREb_LQwx7Jq6u9H")
+		if err != nil || got.ID != "MPREb_LQwx7Jq6u9H" || got.Title != "Abbey Road (2019 Mix)" || len(got.Tracks) != 3 {
+			t.Errorf("got %q (%s) with %d songs, %v; want Abbey Road with 3", got.Title, got.ID, len(got.Tracks), err)
+		}
+	}
+	for range 2 {
+		if got, err := cl.Album(context.Background(), "MPREb_LQwx7Jq6u9X"); err != nil || got.Title != "" {
+			t.Errorf("not an album: got %+v, %v; want an empty page", got, err)
+		}
+	}
+	if want := []string{"MPREb_LQwx7Jq6u9H", "MPREb_LQwx7Jq6u9X", "MPREb_LQwx7Jq6u9X"}; !reflect.DeepEqual(asked, want) {
+		t.Errorf("asked YouTube for %v, want %v: albums remembered, non-albums not", asked, want)
+	}
+}
+
+func TestFindTrackAsksYouTubesNextForTheVideo(t *testing.T) {
+	live, err := os.ReadFile(filepath.Join("testdata", "next_track.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var path, videoID string
+	youtube := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var in struct{ VideoID string }
+		_ = json.NewDecoder(r.Body).Decode(&in)
+		path, videoID = r.URL.Path, in.VideoID
+		w.Write(live)
+	}))
+	defer youtube.Close()
+	cl := New("http://plugin.invalid", WithYouTube(youtube.URL))
+
+	got, err := cl.FindTrack(context.Background(), "BSTsnWoslP4")
+	if err != nil || got.Title != "Bohemian Rhapsody" || path != "/youtubei/v1/next" || videoID != "BSTsnWoslP4" {
+		t.Errorf("asked %s for %q and got %+v, %v", path, videoID, got, err)
 	}
 }

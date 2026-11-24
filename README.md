@@ -45,14 +45,16 @@
 
 - **Join with a name and a face.** Pick one of twelve emoji faces; the ones
   already taken are greyed out. The face shows next to every song you add.
-- **Search** songs, videos or playlists (pick songs from one), even by a line
-  from the lyrics, and add them. Before anyone types, Add a song already
-  shows the artists in this jam, songs like the one playing and their saved
-  songs. Type an artist's name and they come first: tap them for all their
-  songs, most played first.
-- **Share a link** from the YouTube Music app (Share → Nimbrung) or paste one.
-  A playlist link opens the playlist to pick songs from, so guests can bring
-  their own (public or unlisted; private ones can't be read).
+- **Search** songs, videos, albums or playlists (pick songs from one), even
+  by a line from the lyrics, and add them. Before anyone types, Add a song
+  already shows the artists in this jam, songs like the one playing and their
+  saved songs. Type an artist's name and they come first, with their albums
+  and videos: tap them for their songs, most played first, and search inside
+  them.
+- **Share a link** from the YouTube Music app (Share → Nimbrung) or paste one
+  into the search box. A playlist or album link opens it to pick songs from,
+  so guests can bring their own (public or unlisted; private ones can't be
+  read).
 - **Save songs** with the heart, on what's playing or in search. The list
   stays on their phone for the next jam, under ♡ at the top of Add a song.
 - **Reorder** Up next with ↑/↓ (or drag with a mouse), remove their own songs,

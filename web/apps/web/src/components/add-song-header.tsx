@@ -10,6 +10,7 @@ import { Shortcut, ariaShortcut } from "@/hooks/use-shortcuts";
 const chips: { kind: SearchKind; label: string }[] = [
   { kind: SearchKind.Songs, label: "Songs" },
   { kind: SearchKind.Videos, label: "Videos" },
+  { kind: SearchKind.Albums, label: "Albums" },
   { kind: SearchKind.Playlists, label: "Playlists" },
 ];
 
@@ -25,6 +26,8 @@ type Props = {
   /** Ways to finish what's being typed. While there are any, they take the chips' row. */
   suggestions?: string[];
   onSuggest?: (q: string) => void;
+  /** False when the box holds a link: there's nothing to search in. */
+  showChips?: boolean;
 };
 
 /**
@@ -32,7 +35,15 @@ type Props = {
  * Saved hangs off Search as a heart in the corner, and its back goes to
  * Search, so the words typed come along both ways.
  */
-export function AddSongHeader({ current, q, children, folded, suggestions = [], onSuggest }: Props) {
+export function AddSongHeader({
+  current,
+  q,
+  children,
+  folded,
+  suggestions = [],
+  onSuggest,
+  showChips = true,
+}: Props) {
   const onSaved = current === "saved";
   return (
     <header className="edge-top sticky top-0 z-10 grid gap-3 px-4 pt-2 pb-3">
@@ -72,13 +83,13 @@ export function AddSongHeader({ current, q, children, folded, suggestions = [], 
         </div>
       </div>
       <div className="fold" data-folded={!!folded}>
-        <h1 className="pl-1 text-[30px] leading-9 font-bold tracking-[-0.025em]">
+        <h1 className="text-[30px] leading-9 font-bold tracking-[-0.025em]">
           {onSaved ? "Saved songs" : "Add a song"}
         </h1>
       </div>
       {children}
       {suggestions.length > 0 ? (
-        <ul aria-label="Suggestions" className="chips -mx-4 overflow-x-auto px-4">
+        <ul aria-label="Suggestions" className="chips -mx-4 overflow-x-auto px-4 min-[28rem]:mx-0 min-[28rem]:px-0">
           {suggestions.map((suggestion) => (
             <li key={suggestion} className="flex-none">
               <button
@@ -94,8 +105,8 @@ export function AddSongHeader({ current, q, children, folded, suggestions = [], 
             </li>
           ))}
         </ul>
-      ) : !onSaved && (
-      <nav aria-label="Search in" className="chips -mx-4 overflow-x-auto px-4">
+      ) : !onSaved && showChips && (
+      <nav aria-label="Search in" className="chips -mx-4 overflow-x-auto px-4 min-[28rem]:mx-0 min-[28rem]:px-0">
         {chips.map(({ kind, label }) => (
           <Link
             key={kind}
@@ -103,6 +114,8 @@ export function AddSongHeader({ current, q, children, folded, suggestions = [], 
             search={{ q, type: kind === SearchKind.Songs ? undefined : kind }}
             replace
             resetScroll={false}
+            // Songs has no type in the URL; without this the router calls it active on every chip.
+            activeOptions={{ explicitUndefined: true }}
             aria-current={kind === current ? "page" : undefined}
             className="chip"
           >

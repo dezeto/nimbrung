@@ -7,7 +7,7 @@ import { cn } from "@web/ui/lib/utils";
 export function MadeWith({ className = "" }: { className?: string }) {
   return (
     <p className={cn("text-center text-xs t-2", className)}>
-      © {new Date().getFullYear()} Nimbrung · Host your own jam at{" "}
+      Made with Nimbrung ·{" "}
       <a
         href="https://nimbrung.dezeto.dev"
         target="_blank"

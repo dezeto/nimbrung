@@ -20,6 +20,7 @@ type fakePlayer struct {
 	volume  ytm.Volume
 	volErr  error // what Volume fails with, if set
 	artists map[string]ytm.ArtistPage
+	albums  map[string]ytm.AlbumPage
 }
 
 func newFake(tracks ...ytm.Track) *fakePlayer {
@@ -54,6 +55,30 @@ func (f *fakePlayer) Playlist(_ context.Context, id string) (ytm.PlaylistPage, e
 }
 func (f *fakePlayer) Artist(_ context.Context, id string) (ytm.ArtistPage, error) {
 	return f.artists[id], nil
+}
+func (f *fakePlayer) Album(_ context.Context, id string) (ytm.AlbumPage, error) {
+	return f.albums[id], nil
+}
+
+// Radio is the queue after the seed: what a radio for it would play.
+func (f *fakePlayer) Radio(_ context.Context, videoID string) []ytm.Track {
+	var tracks []ytm.Track
+	for _, t := range f.queue {
+		if t.VideoID != videoID {
+			tracks = append(tracks, t)
+		}
+	}
+	return tracks
+}
+
+// FindTrack knows the songs in the queue and nothing else.
+func (f *fakePlayer) FindTrack(_ context.Context, videoID string) (ytm.Track, error) {
+	for _, t := range f.queue {
+		if t.VideoID == videoID {
+			return t, nil
+		}
+	}
+	return ytm.Track{}, nil
 }
 func (f *fakePlayer) Suggest(_ context.Context, input string) []string {
 	return []string{input + " live"}
@@ -649,6 +674,37 @@ func TestArtistOpensOnlyChannelIDsThatAreArtists(t *testing.T) {
 		if _, err := r.Artist(context.Background(), c.id); !errors.Is(err, c.want) {
 			t.Errorf("%s: got %v, want %v", c.name, err, c.want)
 		}
+	}
+}
+
+func TestAlbumOpensOnlyBrowseIDsThatAreAlbums(t *testing.T) {
+	const abbeyRoad = "MPREb_LQwx7Jq6u9H"
+	f := newFake()
+	f.albums = map[string]ytm.AlbumPage{abbeyRoad: {Album: ytm.Album{ID: abbeyRoad, Title: "Abbey Road (2019 Mix)"}}}
+	r := New("TEST", "test jam", f, DefaultRules, nil)
+	cases := []struct {
+		name, id string
+		want     error
+	}{
+		{"an album", abbeyRoad, nil},
+		{"a browse ID YouTube has no album for", "MPREb_LQwx7Jq6u9X", ErrNotFound},
+		{"an artist's channel", "UC_DHlXllTSMB8pTC38_leFg", ErrNotFound},
+		{"not an id at all", "MPREb_../home", ErrNotFound},
+	}
+	for _, c := range cases {
+		if _, err := r.Album(context.Background(), c.id); !errors.Is(err, c.want) {
+			t.Errorf("%s: got %v, want %v", c.name, err, c.want)
+		}
+	}
+}
+
+func TestFindTrackIsNotFoundWhenYouTubeDoesntKnowIt(t *testing.T) {
+	r := New("TEST", "test jam", newFake(ytm.Track{VideoID: "BSTsnWoslP4", Title: "Bohemian Rhapsody"}), DefaultRules, nil)
+	if got, err := r.FindTrack(context.Background(), "BSTsnWoslP4"); err != nil || got.Title != "Bohemian Rhapsody" {
+		t.Errorf("a known video: %+v, %v", got, err)
+	}
+	if _, err := r.FindTrack(context.Background(), "aaaaaaaaaaa"); !errors.Is(err, ErrNotFound) {
+		t.Errorf("an unknown video: %v, want ErrNotFound", err)
 	}
 }
 

@@ -24,8 +24,11 @@ type Player interface {
 	Autoplay(ctx context.Context) []Track // a guess at what plays after the queue; empty, never an error, when unknown
 	Search(ctx context.Context, req SearchRequest) (SearchPage, error)
 	Playlist(ctx context.Context, id string) (PlaylistPage, error)
-	Artist(ctx context.Context, id string) (ArtistPage, error) // an empty page when id isn't an artist
-	Suggest(ctx context.Context, input string) []string        // ways to finish a search; empty, never an error, when unknown
+	Artist(ctx context.Context, id string) (ArtistPage, error)    // an empty page when id isn't an artist
+	Album(ctx context.Context, id string) (AlbumPage, error)      // an empty page when id isn't an album
+	FindTrack(ctx context.Context, videoID string) (Track, error) // a zero Track when YouTube doesn't know it
+	Radio(ctx context.Context, videoID string) []Track            // songs like this one; empty, never an error, when unknown
+	Suggest(ctx context.Context, input string) []string           // ways to finish a search; empty, never an error, when unknown
 	AddToQueue(ctx context.Context, videoID string, pos InsertPosition) error
 	RemoveFromQueue(ctx context.Context, index int) error
 	MoveInQueue(ctx context.Context, fromIndex, toIndex int) error // toIndex is where the row ends up
@@ -54,8 +57,10 @@ type Client struct {
 	addWait time.Duration // how long AddToQueue watches for the song to land
 	// searching is held while a search is with the plugin; see Search.
 	searching sync.Mutex
-	autoplay  autoplayGuess // see autoplay.go
-	artists   artistCache   // see artist.go
+	autoplay  autoplayGuess         // see autoplay.go
+	artists   pageCache[ArtistPage] // see artist.go
+	albums    pageCache[AlbumPage]
+	radios    pageCache[[]Track] // see radio.go
 	log       *slog.Logger
 }
 
@@ -69,7 +74,8 @@ func WithHTTPClient(h *http.Client) Option { return func(c *Client) { c.http = h
 func WithToken(t string) Option { return func(c *Client) { c.token = t } }
 
 // WithYouTube points the calls made to YouTube itself (autoplay, playlists,
-// artists, suggestions) somewhere else: a stand-in, so tests stay offline.
+// artists, albums, most searches, suggestions) somewhere else: a stand-in,
+// so tests stay offline.
 func WithYouTube(base string) Option { return func(c *Client) { c.autoplay.youtube = base } }
 
 // WithLogger sets where the client reports problems it works around itself.
@@ -146,6 +152,8 @@ const (
 	songsFilter     = "EgWKAQIIAWoMEA4QChADEAQQCRAF"
 	videosFilter    = "EgWKAQIQAWoMEA4QChADEAQQCRAF"
 	playlistsFilter = "EgWKAQIoAWoMEA4QChADEAQQCRAF"
+	artistsFilter   = "EgWKAQIgAWoMEA4QChADEAQQCRAF"
+	albumsFilter    = "EgWKAQIYAWoMEA4QChADEAQQCRAF"
 )
 
 // filter is k's params token. An unknown kind searches songs: that's what
@@ -156,6 +164,10 @@ func (k SearchKind) filter() string {
 		return videosFilter
 	case SearchPlaylists:
 		return playlistsFilter
+	case SearchArtists:
+		return artistsFilter
+	case SearchAlbums:
+		return albumsFilter
 	default:
 		return songsFilter
 	}
@@ -168,10 +180,12 @@ const searchTimeout = 10 * time.Second
 // flight with whichever reply comes back first, so two guests searching at
 // once would get each other's results. A search keeps its turn until the
 // plugin answers even if the guest gave up, or that late reply would land on
-// the next search.
+// the next search. Only songs go through the plugin; videos, artists and
+// albums ask YouTube itself, which has no turn to wait for.
 func (c *Client) Search(ctx context.Context, req SearchRequest) (SearchPage, error) {
-	if req.Kind == SearchArtists {
-		return c.searchArtists(ctx, req.Query) // straight to YouTube: no turn to wait for
+	switch req.Kind {
+	case SearchVideos, SearchArtists, SearchAlbums:
+		return c.searchYouTube(ctx, req)
 	}
 	c.searching.Lock()
 	defer c.searching.Unlock()

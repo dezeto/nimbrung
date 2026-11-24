@@ -2,13 +2,13 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 import { addSharedLink } from "@/hooks/use-queue";
 import { requireGuest } from "@/hooks/use-session";
-import { playlistIdFromUrl } from "@/lib/links";
+import { albumIdFromUrl, playlistIdFromUrl } from "@/lib/links";
 
 const str = (v: unknown) => (typeof v === "string" ? v : undefined);
 
 // PWA share target (see vite.config.ts): "Share → Nimbrung" lands here with
 // ?url= or ?text=. No screen; add the song, then show the queue. A shared
-// playlist opens instead, to add from.
+// playlist or album opens instead, to add from.
 export const Route = createFileRoute("/add")({
   validateSearch: (s: Record<string, unknown>) => ({ url: str(s.url), text: str(s.text) }),
   beforeLoad: async ({ context, search }) => {
@@ -19,6 +19,8 @@ export const Route = createFileRoute("/add")({
     const link = search.url || search.text?.match(/https?:\/\/\S+/)?.[0];
     const playlistId = link && playlistIdFromUrl(link);
     if (playlistId) throw redirect({ to: "/playlist/$playlistId", params: { playlistId } });
+    const albumId = link && albumIdFromUrl(link);
+    if (albumId) throw redirect({ to: "/album/$albumId", params: { albumId } });
     await addSharedLink(link);
     throw redirect({ to: "/" });
   },

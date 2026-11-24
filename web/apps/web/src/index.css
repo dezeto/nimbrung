@@ -113,5 +113,9 @@ html {
   }
 }
 
-/* Thin, quiet scrollbars that sit on the glass instead of a grey gutter */
-* { scrollbar-width: thin; scrollbar-color: rgb(var(--nb-fg) / 0.25) transparent; }
+/* Thin, quiet scrollbars that sit on the glass instead of a grey gutter. In
+   the base layer: unlayered, it beat the strips' and chips' "no scrollbar"
+   (layered rules lose to unlayered ones whatever their specificity). */
+@layer base {
+  * { scrollbar-width: thin; scrollbar-color: rgb(var(--nb-fg) / 0.25) transparent; }
+}

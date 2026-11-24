@@ -29,16 +29,25 @@ type Recap struct {
 // historyLength caps what Recap remembers: a long night is ~150 songs.
 const historyLength = 500
 
-// Recap returns what played tonight, oldest first.
+// Recap returns what played today, oldest first. The history outlives
+// restarts (persist.go), so without the cut-off last week's jam would count
+// as tonight's. Today starts at midnight on the host's clock.
+// ponytail: a jam that runs past midnight starts over at 00:00; cut on a long silence instead if that bites.
 func (r *Room) Recap() Recap {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	played := make([]Played, len(r.history))
-	for i, p := range r.history {
+	now := r.now()
+	y, m, d := now.Date()
+	today := time.Date(y, m, d, 0, 0, 0, 0, now.Location())
+	played := []Played{}
+	for _, p := range r.history {
+		if p.StartedAt.Before(today) {
+			continue
+		}
 		p.Reactions = maps.Clone(p.Reactions) // React keeps counting into the original
-		played[i] = p
+		played = append(played, p)
 	}
-	return Recap{Name: r.name, People: len(r.guests), Played: played, Now: r.now()}
+	return Recap{Name: r.name, People: len(r.guests), Played: played, Now: now}
 }
 
 // notePlayedLocked adds the current song to the history when it changed.

@@ -78,7 +78,7 @@ function JoinScreen() {
       <form onSubmit={onSubmit} className="grid gap-3">
         {faces.length > 0 && (
           <fieldset className="mb-2 grid gap-2.5">
-            <legend className="mb-2.5 px-1 text-[13px] font-semibold t-2">Pick your face</legend>
+            <legend className="mb-2.5 text-[13px] font-semibold t-2">Pick your face</legend>
             <div className="grid grid-cols-6 gap-2">
               {faces.map((face) => (
                 <label
@@ -99,7 +99,7 @@ function JoinScreen() {
                 </label>
               ))}
             </div>
-            <p className="px-1 text-xs t-2">Two people can’t have the same one.</p>
+            <p className="text-xs t-2">Two people can’t have the same one.</p>
           </fieldset>
         )}
         <label htmlFor="name" className="sr-only">
