@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import { Infinity as InfinityIcon, MessageSquareQuote, Pause } from "lucide-react";
 
 import type { NowPlaying } from "@/api/client";
