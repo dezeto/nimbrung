@@ -248,6 +248,24 @@ test.describe("search", () => {
     await expect(page.getByRole("searchbox", { name: "Search songs" })).toHaveValue("lofi");
   });
 
+  test("an artist YouTube names no ID for searches for them, and Back returns to the old search", async ({ browser }) => {
+    const page = await joinAs(browser, "Wayan");
+    await page.goto("/search?q=first");
+    const box = page.getByLabel("Search songs");
+    await page.getByRole("link", { name: "Search Artist 1", exact: true }).first().click();
+    await expect(box).toHaveValue("Search Artist 1");
+    await expect(page.getByText("Search Artist 1 Result 1", { exact: true })).toBeVisible();
+    await page.goBack();
+    await expect(box).toHaveValue("first");
+    await expect(page.getByText("first Result 1", { exact: true })).toBeVisible();
+
+    // Typing only replaces the URL, so it must never be written back over the box.
+    await box.fill("");
+    await box.pressSequentially("quick typing", { delay: 5 });
+    await expect(box).toHaveValue("quick typing");
+    await page.context().close();
+  });
+
   test("a suggestion searches, the artist comes first, and their page adds songs", async ({ browser }) => {
     const page = await joinAs(browser, "Kai");
     await page.getByRole("link", { name: "Add a song" }).click();

@@ -1,8 +1,8 @@
 import { useIsFetching } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { Skeleton } from "@web/ui/components/skeleton";
 import { Link as LinkIcon, Search } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { type Album, SearchKind, type Track } from "@/api/client";
 import { AddSongHeader } from "@/components/add-song-header";
@@ -77,6 +77,18 @@ function SearchScreen() {
   const search = Route.useSearch();
   // Typing stays local so the box never lags; the URL follows along.
   const [input, setInput] = useState(search.q ?? "");
+  // An artist's link or Back changes the search from outside the box. Typing only
+  // ever replaces the URL, and that lags the box, so it's never written back.
+  const router = useRouter();
+  useEffect(
+    () =>
+      router.history.subscribe(({ location, action }) => {
+        if (action.type === "REPLACE" || location.pathname !== "/search") return;
+        const { q } = router.options.parseSearch(location.search) as { q?: unknown };
+        setInput(typeof q === "string" ? q : "");
+      }),
+    [router],
+  );
   const [typing, setTyping] = useState(false);
   // A link the guest asked to search as words after all.
   const [asWords, setAsWords] = useState<string>();
