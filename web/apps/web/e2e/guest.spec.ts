@@ -49,8 +49,7 @@ test.describe("queue", () => {
     const dock = page.getByRole("navigation", { name: "Song actions" });
     await expect(dock.getByRole("link", { name: "Add a song" })).toBeVisible();
     await expect(dock.getByRole("button", { name: /^Chat/ })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Saved songs" })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: "Saved songs" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Saved songs" })).toHaveAttribute("aria-pressed", "false");
   });
 
   test("a guest can leave after confirming, and lands on the join screen", async ({ browser }) => {
@@ -79,7 +78,7 @@ test.describe("queue", () => {
     await expect(page.getByRole("button", { name: /^Voted to skip/ }).first()).toHaveAttribute("aria-pressed", "true");
   });
 
-  test("save heart toggles with toasts, undo, and shows behind the Saved heart on /search", async ({ browser }) => {
+  test("save heart toggles with toasts, undo, and shows in Saved in place of Up next", async ({ browser }) => {
     const page = await joinAs(browser, "Di");
     const heart = page.getByRole("button", { name: `Save ${NOW_TITLE}` });
     await heart.click();
@@ -92,10 +91,14 @@ test.describe("queue", () => {
     await page.getByRole("button", { name: "Undo" }).click();
     await expect(heart).toHaveAttribute("aria-pressed", "true");
 
-    await page.getByRole("link", { name: "Add a song" }).click();
-    await page.getByRole("link", { name: "Saved songs" }).click();
-    await expect(page.getByRole("heading", { name: "Saved songs" })).toBeVisible();
-    await expect(page.locator("main").getByText(NOW_TITLE)).toBeVisible();
+    const savedTab = page.getByRole("button", { name: "Saved songs" });
+    await savedTab.click();
+    await expect(savedTab).toHaveAttribute("aria-pressed", "true");
+    await expect(page).toHaveURL(/[?&]list=saved/);
+    const list = page.getByRole("region", { name: "Saved" });
+    await expect(list.getByText(NOW_TITLE)).toBeVisible();
+    await page.reload(); // the tab is kept in the URL
+    await expect(list.getByText(NOW_TITLE)).toBeVisible();
   });
 
   test("empty Up next suggests saved songs with one-tap add", async ({ browser }) => {
@@ -202,7 +205,7 @@ test.describe("queue", () => {
 });
 
 test.describe("search", () => {
-  test("results, recent searches, clear, and paste a link", async ({ browser }) => {
+  test("results, recent searches and clear", async ({ browser }) => {
     const page = await joinAs(browser, "Ivy");
     await page.getByRole("link", { name: "Add a song" }).click();
     const box = page.getByRole("searchbox", { name: "Search songs" });
@@ -211,11 +214,11 @@ test.describe("search", () => {
     await expect(page.getByRole("button", { name: "Add lofi Result 1", exact: true })).toBeVisible();
 
     await page.goto("/search");
-    const recent = page.getByRole("region", { name: "Recent searches" });
-    await expect(recent.getByText("lofi")).toBeVisible();
+    const recent = page.getByRole("list", { name: "Recent searches" });
+    await expect(recent.getByRole("button", { name: "lofi" })).toBeVisible();
 
-    await recent.getByRole("button", { name: "Clear" }).click();
-    await expect(page.getByRole("heading", { name: "Recent searches" })).toHaveCount(0);
+    await recent.getByRole("button", { name: "Clear recent searches" }).click();
+    await expect(recent).toHaveCount(0);
   });
 
   test("a link in the search box is offered as one card, not searched", async ({ browser }) => {
@@ -233,19 +236,6 @@ test.describe("search", () => {
     await expect(page.getByText("That isn’t a YouTube link")).toBeVisible();
     await page.getByRole("button", { name: "Search for it anyway" }).click();
     await expect(page.getByText("That isn’t a YouTube link")).toHaveCount(0);
-  });
-
-  test("the Saved heart keeps the typed words both ways", async ({ browser }) => {
-    const page = await joinAs(browser, "Ola");
-    await page.getByRole("link", { name: "Add a song" }).click();
-    await page.getByRole("searchbox", { name: "Search songs" }).fill("lofi");
-    await expect(page.getByRole("button", { name: "Add lofi Result 1", exact: true })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Saved", exact: true })).toHaveCount(0); // no chip any more
-
-    await page.getByRole("link", { name: "Saved songs" }).click();
-    await expect(page.getByRole("searchbox", { name: "Search your saved songs" })).toHaveValue("lofi");
-    await page.getByRole("link", { name: "Search" }).click();
-    await expect(page.getByRole("searchbox", { name: "Search songs" })).toHaveValue("lofi");
   });
 
   test("an artist YouTube names no ID for searches for them, and Back returns to the old search", async ({ browser }) => {
@@ -277,7 +267,7 @@ test.describe("search", () => {
     await page.getByRole("region", { name: "Artists" }).getByRole("link", { name: "Stub Artist" }).click();
     await expect(page.getByRole("heading", { name: "Stub Artist" })).toBeVisible();
     await page.getByRole("button", { name: "Add Stub Artist Hit 1", exact: true }).click();
-    await expect(page.getByText("Queued")).toBeVisible();
+    await expect(page.getByRole("img", { name: "Queued" })).toBeVisible();
 
     await page.getByRole("button", { name: "Back" }).click();
     await expect(box).toHaveValue("stub live");
@@ -297,10 +287,12 @@ test.describe("search", () => {
 });
 
 test.describe("lyrics", () => {
-  test("the phone sheet and the room view follow the song", async ({ browser }) => {
+  test("the lyrics panel and the room view follow the song", async ({ browser }) => {
     const page = await joinAs(browser, "Singer");
-    await page.getByRole("button", { name: "Lyrics" }).click();
-    const sheet = page.getByRole("dialog", { name: "Lyrics" });
+    const toggle = page.getByRole("button", { name: "Lyrics" });
+    await toggle.click();
+    const sheet = page.getByRole("region", { name: "Lyrics" });
+    await expect(page.getByRole("heading", { name: "Up next" })).toHaveCount(0); // lyrics take its place
     // The stub song sits at 0:42, so the line from 0:40 is the one being sung.
     await expect(sheet.locator("li[aria-current]")).toHaveText("Stub line 9");
     await expect(sheet.getByRole("img", { name: "Instrumental" })).toBeVisible();
@@ -308,11 +300,12 @@ test.describe("lyrics", () => {
     // Scrolling by hand stops the follow and offers the way back.
     await sheet.getByLabel("Lyrics", { exact: true }).last().hover();
     await page.mouse.wheel(0, -400);
-    await sheet.getByRole("button", { name: "Back to now" }).click();
-    await expect(sheet.getByRole("button", { name: "Back to now" })).toBeHidden();
+    await sheet.getByRole("button", { name: "Back to the current line" }).click();
+    await expect(sheet.getByRole("button", { name: "Back to the current line" })).toBeHidden();
 
-    await sheet.getByRole("button", { name: "Close lyrics" }).click();
+    await toggle.click();
     await expect(sheet).toBeHidden();
+    await expect(page.getByRole("heading", { name: "Up next" })).toBeVisible();
 
     await page.goto("/room");
     await expect(page.getByRole("button", { name: "Lyrics" })).toHaveAttribute("aria-pressed", "true");
