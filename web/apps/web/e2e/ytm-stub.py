@@ -116,10 +116,11 @@ class H(BaseHTTPRequestHandler):
         if self.path == "/api/v1/volume":
             return self.send(VOLUME)
         if self.path.startswith("/api/get?"):  # LRCLIB stand-in: every song gets the same timed lines
-            # a line every 5s, with an instrumental gap (empty line) at 0:25
+            # a line every 5s, with an instrumental gap (empty line) from 0:25 to 0:35:
+            # line 7 is left out because nimbrung drops wordless lines under 8s
             return self.send({"syncedLyrics": "\n".join(
                 "[%02d:%02d.00] %s" % (s // 60, s % 60, "" if n == 6 else "Stub line %d" % n)
-                for n, s in ((n, (n - 1) * 5) for n in range(1, 25)))})
+                for n, s in ((n, (n - 1) * 5) for n in range(1, 25) if n != 7))})
         self.send()
 
     def do_POST(self):
